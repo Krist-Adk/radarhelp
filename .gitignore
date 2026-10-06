@@ -1,0 +1,14 @@
+# Not published yet: only the landing page (index.html) and the Getting Started
+# page (feature.html?m=getting-started) go to GitHub for now. Remove a line to publish that page.
+article.html
+features.html
+guides.html
+page.html
+roles.html
+search.html
+workflow.html
+workflows.html
+
+# Editor and OS files
+.vscode/
+Thumbs.db
