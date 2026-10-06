@@ -179,6 +179,8 @@
 
   // Light page head: breadcrumbs on the left, article search on the right
   function crumbBar(parts) {
+    // This bar has its own search, so drop the header's to avoid two search boxes
+    var hs = $('.header-search'); if (hs) hs.remove();
     var h = $('#head');
     h.className = 'gs-crumbbar';
     h.innerHTML = '<div class="wrap bar">' + crumbs(parts) +
