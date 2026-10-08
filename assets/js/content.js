@@ -20,8 +20,11 @@
       // FAQs shown at the end of the page: [question, answer HTML]
       faqs: [
         ['What’s the difference between the person responsible for proposed treatment of risks and the Escalation Manager?',
-          '<p>The <b>Escalation Manager</b> is nominated once for your whole RTO, in Update RTO Profile. They track all of your organisational risks and are emailed whenever a risk is rated high.</p>' +
+          '<p>The <b>Escalation Manager</b> is nominated once for your whole RTO, in Update RTO Profile. They keep watch over all of your organisational risks and are notified whenever a risk is added to or removed from your register, at any risk level.</p>' +
           '<p>The <b>person responsible for the proposed treatment</b> is nominated on each treatment plan. They get an improvement item in the Continuous Improvement Register with the proposed treatment to carry out.</p>'],
+        ['What happens when I complete a risk assessment?',
+          '<p>Completing a risk assessment saves a snapshot of your RTO’s risks at that point in time, and sends your Escalation Manager one email summarising the risks you’ve added.</p>' +
+          '<p>Because each completion sends a new email, complete your assessment once you’ve added all the risks you want to record, rather than after each one. You can always add more later from Risk Assessment › Actions › Edit Comprehensive Assessment.</p>'],
         ['How are organisational, course and unit risk scores calculated?',
           '<p>Risk is worked out in three tiers. Each tier builds on the one above it, and each score sets the recommended validation frequency at its level.</p>' +
           '<ul class="formulas">' +
@@ -30,6 +33,13 @@
             '<li><b>Unit risk</b><code>(Course risk × Unit risks) ÷ 10</code><span>Unit risks come from each unit’s settings, such as physical risk, sensitive content and completion rate.</span></li>' +
           '</ul>' +
           '<p>So a change to your organisational risk flows down to every course and unit, and a riskier course or unit is validated more often.</p>'],
+        ['What’s the difference between Complete and Verify on an improvement item?',
+          '<p>Both close out an improvement item, and both ask you to record what was done: the actions taken, how they resolve the item, a follow-up or review date, and any updated risk level as a result.</p>' +
+          '<ul>' +
+            '<li><b>Complete</b> marks the item as complete straight away.</li>' +
+            '<li><b>Verify</b> sends it to another person in your RTO to check first. They confirm the right steps were taken and the updated risk level is correct. The item is only marked complete across your organisation once they’ve verified it. If they think it needs more scrutiny, the verifier can escalate it to someone more senior to verify as well.</li>' +
+          '</ul>' +
+          '<p>Use Verify when an item needs a second set of eyes, such as one tied to a high or extreme risk.</p>'],
         ['When should I use Silent User?',
           '<p>Silent User adds someone to RTO Radar without emailing them an invitation. It’s useful when you want to:</p>' +
           '<ul>' +
@@ -199,8 +209,20 @@
 
   // Written guides. Everything else shows as "being written" but keeps all its links.
   var BODIES = {
+    'risk-heatmap':
+      '<p>The heatmap places every risk on a five-by-five grid using the ratings you gave it: likelihood runs across, from Rare to Almost Certain, and consequence runs down, from Insignificant to Catastrophic. Each square shows how many risks share that rating.</p>' +
+      '<p>A risk’s score is its likelihood multiplied by its consequence, and the colour shows its level: <b>Low</b> (1–4) in green, <b>Medium</b> (5–9) in yellow, <b>High</b> (10–16) in orange and <b>Extreme</b> (17–25) in red. Risks gather towards the top right as they get more serious, so you can see at a glance where to act first.</p>',
     'gs-welcome':
       '<p class="lead">RTO Radar is compliance software built for Australian Registered Training Organisations. It brings the work that keeps your RTO compliant with the Standards for RTOs 2025 into one connected platform: risk, validation, policies and procedures, trainer competency, professional development, feedback and continuous improvement.</p>' +
+
+      '<h2>Find your way around</h2>' +
+      '<p>Every screen in RTO Radar has two parts:</p>' +
+      '<ul>' +
+        '<li><b>The navigation bar (1)</b> on the left lists every part of RTO Radar, from Dashboard and Document Management through to Risk Assessment, Events and Settings. Select one to open it. The navigation bar stays in place wherever you go.</li>' +
+        '<li><b>The content area (2)</b> on the right shows whatever you’ve opened, and changes as you move around.</li>' +
+      '</ul>' +
+      '<figure class="shot" data-marks="0.3,9,15.5,90.5,zone,#1; 17.2,6.4,81.6,93.2,zone,#2"><img src="assets/img/gs-welcome-dashboard.png" alt="RTO Radar after signing in. Marker 1 points to the navigation bar on the left, listing Dashboard, Document Management, Program Management, Continuous Improvement, Workforce Management, Risk Assessment, Complaints and Suggestions, Events and Settings. Marker 2 points to the content area on the right, showing the Admin Dashboard: a Risk Register Overview with 1 missing treatment, 1 responsibility gap and 12 overdue or missing dates, a Risk Level Breakdown bar chart and a Treatment Status Overview pie chart." loading="lazy"><figcaption>The navigation bar (1) and the content area (2), showing your dashboard.</figcaption></figure>' +
+      '<p>When you sign in, the content area opens on your <b>dashboard</b>. It brings forward everything across RTO Radar that needs your immediate attention, from risks and improvement items to documents, staff and upcoming events, so you can see what to act on first without opening every module. Select any item to go straight to it. The last step in this series shows you how to tailor it.</p>' +
 
       '<h2>How it fits together</h2>' +
       '<p>RTO Radar runs on a quality cycle. Each part feeds the next:</p>' +
@@ -262,7 +284,8 @@
       '<ol class="steps-list">' +
         '<li>In aXcelerate, go to <b>Settings</b> › <b>System Settings</b> › <b>Web and Other Integrations</b>. Copy your <b>API Token</b> and <b>Web Service Token</b>.</li>' +
         '<li>Note your <b>API endpoint</b>. It’s the web address you use to sign in to aXcelerate, for example <code>https://yourrto.app.axcelerate.com</code>.</li>' +
-        '<li>In RTO Radar, open <b>Settings</b> › <b>Integrations</b>.</li>' +
+        '<li>In RTO Radar, open <b>Settings</b> › <b>Integrations</b>.' +
+          '<figure class="shot" data-marks="0.2,45.4,6.6,4.8,oval,right,#1; 33.4,14.4,8.8,4.8,oval,#2; 25.7,91.3,arrow-down,tiny"><img src="assets/img/gs-ax-settings.png" alt="Organisation Settings, showing the aXcelerate Integration settings with fields for API Endpoint, API Token and WS Token, and Save Settings and Test Connection buttons. Marker 1 circles Settings in the navigation bar, marker 2 circles the Integrations tab, and an arrow points down at Save Settings." loading="lazy"><figcaption>Select Settings (1), then the Integrations tab (2). Once your details are in, select Save Settings.</figcaption></figure></li>' +
         '<li>Enter your API endpoint, paste both tokens, and connect.</li>' +
       '</ol>' +
       '<div class="callout warn"><b>Permission</b><span>Only Admins can connect integrations. Treat both tokens like passwords.</span></div>',
@@ -270,115 +293,155 @@
       '<h2 class="ghost">Update RTO Profile</h2>' +
       '<p>Your RTO profile is the baseline for your risk score, so start here: confirm your details, choose your risk factors and add your logo.</p>' +
       '<ol class="steps-list">' +
-        '<li>Go to <b>Risk Assessment</b> › <b>Actions</b> › <b>Update RTO Profile</b>.</li>' +
-        '<li>Check your RTO name and code, and enter your RTO’s <b>Approximate Annual Enrolments</b>.</li>' +
-        '<li>Choose your RTO’s <b>Basic Provider Risk Factors</b>. Together with your enrolments, these feed into your organisational risk score.' +
+        '<li>On your navigation bar, go to <b>Risk Assessment</b>.' +
+          '<figure class="shot" data-marks="0.2,32.3,11.4,6.9,oval,#"><img src="assets/img/gs-welcome-dashboard.png" alt="The RTO Radar dashboard, with Risk Assessment circled in the navigation bar on the left." loading="lazy"><figcaption>Select Risk Assessment in the navigation bar.</figcaption></figure>' +
+          '<p>Your RTO profile lives under Risk Assessment because it’s where your risk score starts: your enrolments and basic provider risk factors set the baseline for your organisational risk, and for how often every course is validated.</p></li>' +
+        '<li>Under <b>Actions</b>, select <b>Update RTO Profile</b>.' +
+          '<figure class="shot" data-marks="63.6,57.2,36,10.4,oval,#"><img src="assets/img/gs-org-step1.png" alt="The Risk Assessment page, with the Update RTO Profile button circled, the first button in the Actions panel." loading="lazy"><figcaption>Select Update RTO Profile under Actions.</figcaption></figure></li>' +
+        '<li>Check your RTO name and code, enter your RTO’s <b>Approximate Annual Enrolments</b>, and choose your <b>Basic Provider Risk Factors</b>. Together, your enrolments and risk factors feed into your organisational risk score.' +
+          '<figure class="shot"><img src="assets/img/gs-org-details.png" alt="The top of the Update RTO Profile form. RTO Information shows the RTO name and code and Approximate Annual Enrolments of 200. Basic Provider Risk Factors lists checkboxes such as CRICOS registered, government funding received, compliance issues identified within the past 3 years and high assessor turnover." loading="lazy"><figcaption>Your RTO information and basic provider risk factors.</figcaption></figure>' +
           '<div class="callout tip"><b>Tip</b><span>Not sure which risk factors apply? Choose what you know now. You can change them later from Update RTO Profile.</span></div></li>' +
-        '<li>Nominate an <b>Escalation Manager</b>.' +
-          '<div class="callout note"><b>Note</b><span>This person is notified whenever an organisational risk is rated high.</span></div></li>' +
-        '<li>Select <b>Save &amp; Exit</b>.</li>' +
+        '<li>Nominate an <b>Escalation Manager</b>, then select <b>Save &amp; Exit</b>.' +
+          '<div class="callout note"><b>Note</b><span>Your Escalation Manager keeps watch over your organisational risks. RTO Radar notifies them whenever a risk is added to or removed from your register, at any risk level, so nothing changes without them knowing. Choose a senior manager or board member.</span></div>' +
+          '<figure class="shot" data-marks="78.55,69.2,arrow-down"><img src="assets/img/gs-org-escalation.png" alt="The Escalation Manager section of the Update RTO Profile form, with Name and Email fields filled in as Admin Demo and admindemo@rtoradar.com.au, and a note that the Escalation Manager also serves as the default manager for the System Default team. Below it, the save bar shows Save Status: Not saved, with Edit Comprehensive Assessment and Save and Exit buttons. An arrow points down at the Save and Exit button." loading="lazy"><figcaption>Enter your Escalation Manager’s name and email, then select Save &amp; Exit.</figcaption></figure></li>' +
       '</ol>' +
       '<h2>Risk Register Overview</h2>' +
       '<p>Your risk score, validation frequency, risks identified, Escalation Manager and basic risk factors.</p>' +
       '<figure class="shot"><img src="assets/img/gs-risk-overview.png" alt="The Risk Assessment overview for an RTO, showing a risk score of 6.0 out of 10, a validation frequency of 6 months, 27 risks identified, the Escalation Manager, an Actions panel and five active basic provider risk factors." loading="lazy"><figcaption>The Risk Register overview after saving your RTO profile.</figcaption></figure>' +
       '<h2>Branding</h2>' +
+      '<p>Make RTO Radar your own. Your export logo appears on PDF and Word exports in place of the RTO Radar logo, and your sidebar icon replaces the default icon in the navigation for everyone in your RTO.</p>' +
       '<ol class="steps-list">' +
-        '<li>Go to <b>Settings</b> › <b>Customisation</b> › <b>Branding</b>.</li>' +
-        '<li>Import your organisation’s logo.</li>' +
+        '<li>Go to <b>Settings</b> › <b>Customisation</b> › <b>Branding</b>.' +
+          '<figure class="shot" data-marks="0.2,52.6,11,8,oval,right,#1; 77.6,0.2,13.4,6,oval,right,#2; 85,22.2,13.6,6.6,oval,right,#3; 91.9,22,arrow-down; 65.6,60.6,arrow-left,#4"><img src="assets/img/gs-org-branding.png" alt="The Branding page in Settings. Marker 1 circles Settings in the navigation, marker 2 the Customisation tab along the top, and marker 3 the Branding tab under Customisation, with an arrow pointing down at it. Marker 4 is an arrow pointing left at Click to upload under Export Logo. The page shows two upload areas, Export Logo and Sidebar Icon, each with Click to upload." loading="lazy"><figcaption>Select Settings (1), then the Customisation tab (2), then Branding (3), then Click to upload (4).</figcaption></figure></li>' +
+        '<li>Import your organisation’s logo by selecting <b>Click to upload</b>.</li>' +
       '</ol>',
     'gs-risks':
       '<p>Your organisational risk score combines your basic profile from the previous step with your comprehensive risk factors. It sets the baseline validation frequency for all your courses, and a course’s own risk factors can shorten it further.</p>' +
       '<h2 class="ghost">Begin Comprehensive Assessment</h2>' +
       '<ol class="steps-list">' +
-        '<li>Go to <b>Risk Assessment</b> › <b>Actions</b> › <b>Begin Comprehensive Assessment</b>.</li>' +
-        '<li>Scroll down to <b>Risk Assessment by Category</b>.' +
-          '<div class="callout tip"><b>Tip</b><span>To set up risk categories that fit your RTO, go to Settings › Customisation › Risk › Risk Register and scroll down to Configure Risk Categories.</span></div></li>' +
-        '<li>Choose the category where you want to enter your first risk.</li>' +
-        '<li>Select <b>Add Additional Risk</b>.</li>' +
-        '<li>Enter the risk title, description, likelihood and consequence.</li>' +
-        '<li>Select <b>Add Risk Factor</b>.</li>' +
+        '<li>Go to <b>Risk Assessment</b> › <b>Actions</b> › <b>Begin Comprehensive Assessment</b>.' +
+          '<figure class="shot" data-marks="0.4,47.3,15.6,7.8,oval,#1; 63.6,65.6,36,10.4,oval,#2"><img src="assets/img/gs-org-step1.png" alt="RTO Radar with Risk Assessment selected in the navigation, showing the Actions panel. Marker 1 circles Risk Assessment in the navigation, and marker 2 the second button in Actions, which reads Edit Comprehensive Assessment here and Begin Comprehensive Assessment before an assessment has been started." loading="lazy"><figcaption>Select Risk Assessment (1), then Begin Comprehensive Assessment (2). Once you’ve started an assessment, this button reads Edit Comprehensive Assessment.</figcaption></figure></li>' +
+        '<li>You’ll be greeted by the <b>Risk Heatmap</b>.' +
+          '<figure class="shot"><img src="assets/img/gs-risk-heatmap-grid.png" alt="The Risk Heatmap: a five by five grid with likelihood across the top, from Rare to Almost Certain, and consequence down the side, from Insignificant to Catastrophic. Each square is coloured Low, Medium, High or Extreme and shows how many risks fall in it." loading="lazy"><figcaption>The Risk Heatmap.</figcaption></figure>' +
+          '<p>The Risk Heatmap shows all your organisational risks at a glance, placed by how likely each one is and how serious it would be. The further towards the top right a risk sits, the more urgently it needs attention.</p></li>' +
+        '<li>Scroll down to <b>Risk Assessment by Category</b>.</li>' +
+        '<li>Choose the category where you want to enter your first risk, then select <b>Add Additional Risk</b>.' +
+          '<figure class="shot" data-marks="12.2,19.9,10.9,7.9,oval,#1; 53.8,28.2,14.4,6.1,oval,#2"><img src="assets/img/gs-risk-categories.png" alt="Risk Assessment by Category in the comprehensive assessment. On the left is the list of 12 risk categories with how many risks each has; Financial Risk is selected and shows 0 risks identified, an example, and an Add Additional Risk button. Marker 1 circles the Financial Risk category, and marker 2 the Add Additional Risk button. A bar along the bottom shows the save status and a Complete Risk Assessment button." loading="lazy"><figcaption>Choose a category such as Financial Risk (1), then select Add Additional Risk (2).</figcaption></figure>' +
+          '<div class="callout tip"><b>Tip</b><span>Want risk categories that fit your RTO? See how to set them up in <a href="feature.html?m=custom">Customisation</a>.</span></div></li>' +
+        '<li>Enter the risk title, description, likelihood and consequence, then select <b>Add Risk Factor</b>.' +
+          '<figure class="shot" data-marks="27.2,68.8,15.4,10.2,oval,#"><img src="assets/img/gs-risk-add-factor.png" alt="The Add New Risk Factor form, filled in with an example: the risk title Cash-flow pressure from delayed student payments, a description, likelihood 3 - Possible and consequence 3 - Moderate. The Add Risk Factor button is circled." loading="lazy"><figcaption>Enter the risk details, then select Add Risk Factor.</figcaption></figure></li>' +
       '</ol>' +
       '<h2>Add Treatment Plan</h2>' +
-      '<p>For risks rated medium or higher, we recommend adding existing controls and a treatment plan.</p>' +
-      '<ol class="steps-list" start="7" style="counter-reset: s 6">' +
-        '<li>Select <b>Add Treatment Plan</b>.</li>' +
+      '<p>For risks rated medium or higher, we recommend adding Existing Controls and a Treatment Plan.</p>' +
+      '<ol class="steps-list" start="6" style="counter-reset: s 5">' +
+        '<li>Add your <b>Existing Controls</b>: what you already do to manage this risk.' +
+          '<div class="callout note"><b>Note</b><span>Existing Controls and the treatment plan only appear after you select Add Risk Factor.</span></div></li>' +
+        '<li>Select <b>Treatment Plan Strongly Recommended</b>.' +
+          '<figure class="shot" data-marks="25.4,79.4,30.6,10.6,oval,#; 30,81,arrow-down,tiny"><img src="assets/img/gs-risk-controls.png" alt="A saved risk, Cash-flow pressure from delayed student payments, rated Medium Risk with a score of 9 and marked Escalation Required, with its Existing Controls filled in. A small arrow leads from the last existing control, management review of outstanding debts, down to the Treatment Plan Strongly Recommended button, which is circled." loading="lazy"><figcaption>Select Treatment Plan Strongly Recommended.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>This button’s wording depends on the risk’s score. For medium, high and extreme risks it reads Treatment Plan Strongly Recommended. For low risks a treatment plan is optional, so it reads Add Optional Treatment Plan instead.</span></div></li>' +
         '<li>Enter a title, description and proposed treatment, nominate the person responsible, and set a due date and status.' +
-          '<div class="callout note"><b>Note</b><span>The responsible person gets an improvement item in the CIR with the proposed treatment.</span></div></li>' +
+          '<div class="callout note"><b>Note</b><span>The responsible person gets an improvement item in the <a href="feature.html?m=cir">Continuous Improvement Register (CIR)</a> with the proposed treatment.</span></div>' +
+          '<figure class="shot"><img src="assets/img/gs-risk-treatment.png" alt="A treatment plan being added to a risk: title Monthly Cash-Flow Monitoring, a description, a proposed treatment, responsible person Compliance Manager, due date 30/10/2026 and status Not started. A bar along the bottom shows the save status, 1 item queued for CI Register and a Complete Risk Assessment button." loading="lazy"><figcaption>Fill in the treatment plan. Use the calendar icon to pick a due date.</figcaption></figure></li>' +
+        '<li>Repeat steps 4 to 8 to add more risks, then select <b>Complete Risk Assessment</b>.' +
+          '<figure class="shot" data-marks="8.4,54.2,17.6,10,oval,#; 49,16.4,arrow-down; 88.1,92.6,arrow-down"><img src="assets/img/gs-risk-repeat.png" alt="Risk Assessment by Category with a second category selected. ICT and Cyber-Security Risk is circled in the category list, and an arrow points down at its content on the right: its description, an example, and a risk being entered, Staff Awareness of Cyber Risks, rated Medium Risk with a score of 9. A second arrow points down at the Complete Risk Assessment button in the save bar along the bottom, which shows 2 items queued for CI Register." loading="lazy"><figcaption>Choose another category, such as ICT and Cyber-Security Risk, and add its risks the same way.</figcaption></figure></li>' +
+        '<li>Review your changes, then select <b>Complete Risk Assessment</b>.' +
+          '<figure class="shot" data-marks="54.4,69.8,17.6,11.4,oval,#"><img src="assets/img/gs-risk-review.png" alt="The review shown before completing the assessment, headed New Risks Added (2). It lists both new risks with their category, likelihood and consequence, and treatment plan: Cash-flow pressure from delayed student payments, rated Medium with a score of 9, and Staff Awareness of Cyber Risks, rated Low with a score of 4. The Complete Risk Assessment button, between Discard and Exit and Cancel, is circled." loading="lazy"><figcaption>Review the new risks and their treatment plans, then select Complete Risk Assessment.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>You can add more risks later from Risk Assessment › Actions › Edit Comprehensive Assessment.</span></div></li>' +
+        '<li>Check that your <b>Escalation Manager</b> has received an email about the risks you’ve added.' +
+          '<div class="callout tip"><b>Tip</b><span>No email? Check that the right person is nominated in Update RTO Profile, that their email address is entered correctly, and their junk folder.</span></div></li>' +
       '</ol>' +
       '<h2>Risk Heatmap</h2>' +
-      '<ol class="steps-list" start="9" style="counter-reset: s 8">' +
-        '<li>Check the <b>Risk Heatmap</b> at the top of the page.' +
-          '<figure class="shot"><img src="assets/img/gs-risk-heatmap.png" alt="The Risk Heatmap: a five by five grid of likelihood, from Rare to Almost Certain, against consequence, from Insignificant to Catastrophic. Cells are coloured Low, Medium, High or Extreme and show how many risks fall in each. Below it are totals of 22 comprehensive risks, 20 rated medium, high or extreme, and 1 missing treatment plan, with an Export Register button and a Governance and Policy Compliance checklist." loading="lazy"><figcaption>The Risk Heatmap, with your risk totals and governance checklist underneath.</figcaption></figure></li>' +
-        '<li>Select <b>Complete Risk Assessment</b>.' +
-          '<div class="callout note"><b>Note</b><span>You don’t have to add all your organisational risks now. You can come back any time from Risk Assessment › Actions › Edit Comprehensive Assessment.</span></div></li>' +
-        '<li>Check that your <b>Escalation Manager</b> has received an email about the high risks you’ve added.' +
-          '<div class="callout tip"><b>Tip</b><span>No email? Check their junk folder, and that the right person is nominated in Update RTO Profile.</span></div></li>' +
+      '<ol class="steps-list" start="12" style="counter-reset: s 11">' +
+        '<li>Check the updated <b>Risk Heatmap</b>.' +
+          '<figure class="shot"><img src="assets/img/gs-risk-heatmap-updated.png" alt="The Risk Heatmap after completing the assessment, with the number of risks in each square. The pointer is over the Possible and Moderate square, which shows 4 risks, likelihood 3 times consequence 3 for a score of 9, and lists the risks in it, each marked Medium Risk." loading="lazy"><figcaption>Hover over a square to see the risks in it and how they were scored.</figcaption></figure></li>' +
       '</ol>',
     'gs-cir':
       '<p>The Continuous Improvement Register (CIR) is one list of every improvement action in your RTO. Risk treatments, feedback, validation findings and audit outcomes all land here, each with a person responsible, a due date and a priority, so nothing slips through and you have a record of continuous improvement ready for audit.</p>' +
       '<ol class="steps-list">' +
-        '<li>Go to <b>Continuous Improvement</b>.</li>' +
-        '<li>Find the item created from your treatment plan. Its source is <b>Risk Register</b>, and it shows the person responsible, due date and priority.' +
-          '<figure class="shot"><img src="assets/img/gs-cir-list.png" alt="The Continuous Improvement item list, showing two items with Risk Register as their source. Each row shows the item number, who created it, status, person responsible, assigned date, description, tags, due date and priority." loading="lazy"><figcaption>Items created from treatment plans show Risk Register as their source.</figcaption></figure></li>' +
-        '<li>Select the eye icon in the <b>Actions</b> column to open the item.' +
-          '<figure class="shot"><img src="assets/img/gs-cir-item.png" alt="An improvement item opened in full. It shows the title, source, person responsible, dates, tags and the original risk score, notes carried over from the risk (category, description, level, existing controls, likelihood and consequence), and the proposed treatment. Buttons along the bottom are Delete Item, Complete Item, Verify, More info and Edit Item." loading="lazy"><figcaption>The item carries over the risk’s details and proposed treatment.</figcaption></figure>' +
+        '<li>From your navigation bar, go to <b>Continuous Improvement</b>.' +
+          '<figure class="shot" data-marks="0.1,21.9,11.8,5.4,oval,#"><img src="assets/img/gs-cir-nav.png" alt="The Continuous Improvement Register, with Continuous Improvement circled in the navigation bar on the left. The Item List shows 10 improvement items with their item number, who created them, status, source, person responsible, assigned date, description, tags, due date and priority." loading="lazy"><figcaption>Select Continuous Improvement in the navigation bar.</figcaption></figure></li>' +
+        '<li>Find the item created from your treatment plan. Its source is <b>Risk Register</b>, and it shows the person responsible, due date and priority. Select the eye icon in the <b>Actions</b> column to open it.' +
+          '<figure class="shot" data-marks="23.9,57.4,6.9,9.6,underline,#; 93.4,54.6,5.6,14.6,oval,#"><img src="assets/img/gs-cir-list.png" alt="The Continuous Improvement item list, showing two items with Risk Register as their source. Each row shows the item number, who created it, status, person responsible, assigned date, description, tags, due date and priority. Risk Register is underlined on the first item, and its eye icon is circled." loading="lazy"><figcaption>Items created from treatment plans show Risk Register as their source. Select the eye icon to open one.</figcaption></figure></li>' +
+        '<li>Review the item. It carries over everything from the risk: its title, category and description, its risk level and score, your existing controls, and the proposed treatment from your treatment plan, along with who’s responsible and when it’s due. From here you can edit, verify or complete the item.' +
+          '<figure class="shot"><img src="assets/img/gs-cir-item.png" alt="An improvement item opened in full. It shows the title, source, person responsible, dates, tags and the original risk score, notes carried over from the risk (category, description, level, existing controls, likelihood and consequence), and the proposed treatment. Buttons along the bottom are Delete Item, Complete Item, Verify, More info and Edit Item." loading="lazy"><figcaption>An improvement item created from a risk treatment plan.</figcaption></figure>' +
           '<div class="callout note"><b>Note</b><span>The person responsible gets this exact item too.</span></div></li>' +
       '</ol>',
     'gs-documents':
       '<p>RTO Radar is also your quality management system (QMS). Your policies, procedures and other compliance documents live in one repository, each with an owner, a reviewer and review reminders, and each mapped to the standards it evidences. The Compliance Dashboard then shows how well your documents cover your frameworks.</p>' +
       '<h2>Upload Document</h2>' +
       '<ol class="steps-list">' +
-        '<li>Go to <b>Document Management</b> › <b>Upload Document</b>.</li>' +
-        '<li>Choose <b>File Upload</b> or <b>Link</b>.</li>' +
-        '<li>Fill in the document details.</li>' +
-        '<li>Nominate a document reviewer and set up email reminders for reviews.</li>' +
-        '<li>Map the document to the compliance frameworks set for your RTO.</li>' +
-        '<li>Set the compliance status, and add any notes about the document.</li>' +
-        '<li>Select <b>Upload Document</b>.</li>' +
-        '<li>Find your document in the <b>Document Repository</b>.' +
+        '<li>From your navigation bar, go to <b>Document Management</b>, then select <b>Upload Document</b>.' +
+          '<figure class="shot" data-marks="0.2,15.1,12.8,5,oval,#1; 78.2,10.7,10.6,5.6,oval,right,#2"><img src="assets/img/gs-doc-upload.png" alt="Document Management (QMS), showing totals for documents, approved, review due and drafts, and the Document Repository. Marker 1 circles Document Management in the navigation bar, and marker 2 circles the Upload Document button at the top right." loading="lazy"><figcaption>Select Document Management (1), then Upload Document (2).</figcaption></figure></li>' +
+        '<li>Choose <b>File upload</b>, then select <b>Choose File</b> and pick a file from your computer.' +
+          '<figure class="shot" data-marks="50,66.4,arrow-down"><img src="assets/img/gs-doc-file.png" alt="The Upload Document form, with Source set to File upload and a Link option beside it. An arrow points down at the Choose File button under Document File." loading="lazy"><figcaption>Select Choose File to add a document from your computer.</figcaption></figure>' +
+          '<div class="callout tip"><b>Tip</b><span>Is the document stored online? Choose <b>Link</b> instead and paste its web address.</span></div></li>' +
+        '<li>Fill in the document details.' +
+          '<figure class="shot"><img src="assets/img/gs-doc-details.png" alt="The document details section of the Upload Document form, filled in for an enrolment and admissions policy: document number (left blank to auto-generate), initial version 1.0, document title, document type Policy, category, description, tags, a review frequency of 12 months, a review due date, and the document owner." loading="lazy"><figcaption>Document details, including the review frequency and document owner.</figcaption></figure></li>' +
+        '<li>Nominate a document reviewer and set up email reminders for reviews.' +
+          '<figure class="shot"><img src="assets/img/gs-doc-reviewer.png" alt="The Document Reviewer and Email Reminders section of the form. Claire Smith, an Administrator, is chosen as reviewer, and reminders can be sent 1 day, 3 days, 5 days, 7 days, 14 days or 1 month before the review due date, with 14 days ticked." loading="lazy"><figcaption>Choose a reviewer and when they’re reminded before the review is due.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>The reviewer is emailed as the document’s review due date approaches, at each reminder you tick. The reviewer can be different from the document’s owner.</span></div></li>' +
+        '<li>Map the document to the compliance frameworks set for your RTO.' +
+          '<figure class="shot"><img src="assets/img/gs-doc-mapping.png" alt="Compliance Framework Mapping for Demo RTO, with 5 standards selected. Under the Standards for RTOs 2025, standards such as 1.6, 1.7, 2.1 and 2.2 are ticked, each with its description, and there is a search box for finding standards." loading="lazy"><figcaption>Tick each standard the document provides evidence for.</figcaption></figure></li>' +
+        '<li>Set the document’s status and compliance status, add any notes, then select <b>Upload Document</b>.' +
+          '<figure class="shot" data-marks="75.2,72,arrow-down"><img src="assets/img/gs-doc-status.png" alt="The Document Status section, with Status set to Approved, Compliance Status set to Compliant, and an empty notes box. An arrow points down at the Upload Document button." loading="lazy"><figcaption>Set the statuses, then select Upload Document.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>Until a document is approved and compliant, Admins can upload newer versions of it to make corrections.</span></div></li>' +
+        '<li>Repeat steps 1 to 6 to add your RTO’s initial documents.</li>' +
+        '<li>Find your documents in the <b>Document Repository</b>.' +
           '<figure class="shot"><img src="assets/img/gs-doc-repository.png" alt="The Document Repository, listing three documents with their document number, title and category, type, compliance status, review date, reviewer and the SRTO 2025 standards each is mapped to, such as 2.1 and 4.1." loading="lazy"><figcaption>Each document shows its compliance status, next review date, reviewer and the standards it’s mapped to.</figcaption></figure></li>' +
       '</ol>' +
       '<h2>Compliance Dashboard</h2>' +
-      '<p>The Compliance Dashboard shows how well your documents cover each framework, using the standards you mapped them to. As you upload and map more documents, it fills in. At a glance you can see:</p>' +
-      '<ul>' +
-        '<li><b>Standards coverage</b>: how many standards have at least one mapped document, and which are still missing one.</li>' +
-        '<li><b>Policy Compliance Health</b>: a score out of 100 that combines standards coverage, review timeliness and document freshness.</li>' +
-        '<li><b>Upcoming reviews</b>: documents that are overdue, or due for review in the next 30 or 90 days.</li>' +
-        '<li><b>Quality area coverage</b>: how well each quality area of the framework is documented.</li>' +
-      '</ul>' +
-      '<figure class="shot"><img src="assets/img/gs-compliance-dashboard.png" alt="The Compliance Dashboard for the Standards for RTOs 2025. It shows 23 total standards, 9 covered and 14 missing; a standards coverage chart at 39 percent; a Policy Compliance Health score of 52, rated Fair; an upcoming reviews timeline with 1 overdue, 1 due in 30 days and 1 due in 90 days; a list of missing standards; and a quality area coverage bar chart." loading="lazy"><figcaption>The Compliance Dashboard for the Standards for RTOs 2025.</figcaption></figure>',
+      '<p>The Compliance Dashboard shows how well your documents cover each framework, using the standards you mapped them to. As you upload and map more documents, it fills in.</p>' +
+      '<p><b>Standards coverage</b> shows how many standards have at least one mapped document. <b>Policy Compliance Health</b> is a score out of 100 that combines standards coverage, review timeliness and document freshness.</p>' +
+      '<figure class="shot"><img src="assets/img/gs-cd-coverage.png" alt="The top of the Compliance Dashboard for the Standards for RTOs 2025: 23 total standards, 9 covered and 14 missing. A Standards Coverage chart shows 39 percent coverage, and a Policy Compliance Health gauge shows 52, rated Fair, on a scale of 0 to 39, 40 to 69 and 70 to 100." loading="lazy"><figcaption>Standards coverage and Policy Compliance Health.</figcaption></figure>' +
+      '<p><b>Upcoming reviews</b> shows documents that are overdue, or due for review in the next 30 or 90 days.</p>' +
+      '<figure class="shot"><img src="assets/img/gs-cd-reviews.png" alt="Upcoming Reviews for the next 90 days, on a timeline: 1 overdue, 1 due in 30 days and 1 due in 90 days." loading="lazy"><figcaption>Documents overdue or due for review soon.</figcaption></figure>' +
+      '<p><b>Quality area coverage</b> shows how well each quality area of the framework is documented, and lists the standards that still have no documents mapped to them.</p>' +
+      '<div class="shot-pair"><figure class="shot"><img src="assets/img/gs-cd-missing.png" alt="Missing Standards (14), listing standards such as 1.5, 1.6, 1.7, 2.1, 2.2 and 2.3, each with no documentation found." loading="lazy"><figcaption>Standards that still need a document.</figcaption></figure>' +
+      '<figure class="shot"><img src="assets/img/gs-cd-quality.png" alt="Quality Area Coverage as a bar chart: Quality Area 1 is about 63 percent covered and Quality Area 4 is fully covered, while Quality Areas 2 and 3 have no coverage yet. Colours show 80 percent and above, 60 to 79, 40 to 59 and under 40." loading="lazy"><figcaption>Coverage for each quality area.</figcaption></figure></div>',
     'gs-programs':
       '<p>Program Management is where your courses and units live. It’s connected to training.gov.au, so you can search for nationally recognised courses and units and add them in a few clicks, and each course gets a risk assessment that recommends how often it’s validated.</p>' +
       '<h2>Add a Course</h2>' +
       '<ol class="steps-list">' +
-        '<li>Go to <b>Program Management</b> › <b>Add Course</b>.</li>' +
+        '<li>From your navigation bar, go to <b>Program Management</b>, then select <b>Add Course</b>.' +
+          '<figure class="shot" data-marks="0.2,21,10.8,4.2,oval,right,#1; 83,5.3,9.4,6.4,oval,right,#2"><img src="assets/img/gs-prog-add.png" alt="Program Management, showing totals for programs, accredited programs, units managed and risk assessments, and the Courses list. Marker 1 circles Program Management in the navigation bar, and marker 2 circles the Add Course button at the top right." loading="lazy"><figcaption>Select Program Management (1), then Add Course (2).</figcaption></figure></li>' +
         '<li>Choose <b>TGA Accredited Courses</b>, or enter a custom program.' +
           '<div class="callout note"><b>Note</b><span>Custom programs aren’t TGA-accredited qualifications. You’ll need to add their units or modules yourself and make sure they meet the relevant industry standards.</span></div></li>' +
-        '<li>Under TGA Accredited Courses, search by course code, title or keyword, then select <b>Search TGA</b>.</li>' +
-        '<li>Find your course in the search results and select <b>Add Course</b>.</li>' +
-        '<li>Complete the <b>Course Risk Assessment</b> by choosing the course-specific risk factors and any additional risk factors.</li>' +
-        '<li>Review the course risk assessment result and the recommended validation frequency.' +
-          '<div class="callout note"><b>Note</b><span>You can change validation frequencies in Settings.</span></div></li>' +
+        '<li>Under TGA Accredited Courses, search by course code, title or keyword, then select <b>Search TGA</b>.' +
+          '<figure class="shot" data-marks="26.4,33.6,14.5,3,underline,#1; 18.6,58.2,arrow-down,tiny,#2; 76.2,55.2,11,7.6,oval,right,#3"><img src="assets/img/gs-prog-search.png" alt="Add Courses and Programs, on the TGA Accredited Courses tab. Marker 1 underlines TGA Accredited Courses, marker 2 is an arrow pointing at the course code BSB50120 entered in the search box, and marker 3 circles the Search TGA button. Hints below say you can search by national code, course title or keywords, and that results come directly from training.gov.au." loading="lazy"><figcaption>On TGA Accredited Courses (1), enter a course code (2), then select Search TGA (3).</figcaption></figure></li>' +
+        '<li>Find your course in the search results and select <b>Add Course</b>.' +
+          '<figure class="shot" data-marks="61.2,69,12,8.4,oval,#"><img src="assets/img/gs-prog-results.png" alt="Search results for BSB50120, showing 1 of 1 results: BSB50120 Diploma of Business, marked Qualification and Current. Its Add Course button is circled." loading="lazy"><figcaption>Select Add Course beside your course.</figcaption></figure></li>' +
+        '<li>Complete the <b>Course Risk Assessment</b> by choosing the course-specific risk factors and any additional risk factors.' +
+          '<figure class="shot"><img src="assets/img/gs-prog-risk.png" alt="Course-Specific Risk Factors for the course: primary delivery mode, use of recognition of prior learning, use of unsupervised assessments, student enrolment volume and course completion rate for the past 12 months, each with the points it adds. Below is a checklist of additional risk factors, such as structured work placement and delivery to international CRICOS students, each worth one or two points." loading="lazy"><figcaption>Each answer adds points to the course’s risk score.</figcaption></figure></li>' +
+        '<li>Review the course risk assessment result and the recommended validation frequency, then select <b>Complete Course Assessment</b>.' +
+          '<figure class="shot" data-marks="57,69.4,24.6,9.8,oval,#"><img src="assets/img/gs-prog-result.png" alt="The Course Risk Assessment Result: provider risk 3.6 out of 6, course risk 7 out of 24, and a total risk score of 5.2 out of 10, rated Medium Risk. The recommended validation frequency is every 18 months, based on combined provider and course-specific risk factors. The Complete Course Assessment button is circled." loading="lazy"><figcaption>Your course’s risk score and recommended validation frequency.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>You can change how risk scores map to validation frequencies in <a href="feature.html?m=custom">Customisation</a>.</span></div></li>' +
         '<li>Find your course in <b>Program Management</b>.' +
           '<figure class="shot"><img src="assets/img/gs-courses-list.png" alt="The Courses list in Program Management, showing three courses with their program code, title, team, number of units, a Manage button for units, risk status from Low to High, and when each was created." loading="lazy"><figcaption>Each course shows its team, number of units and risk status.</figcaption></figure></li>' +
       '</ol>' +
       '<h2>Manage Course Units</h2>' +
       '<ol class="steps-list">' +
-        '<li>Go to <b>Courses</b> › <b>Manage Units</b> › <b>Add Unit</b>.</li>' +
-        '<li>Search TGA units, or create a custom unit.</li>' +
+        '<li>In <b>Program Management</b>, on the <b>Courses</b> tab, select <b>Manage</b> next to your course.' +
+          '<figure class="shot" data-marks="2.8,36.2,16.4,4.8,oval,right,#1; 22.2,17,5.6,4.6,oval,#2; 64.4,47.6,7.6,5.8,oval,above,#3"><img src="assets/img/gs-prog-manage.png" alt="Program Management on the Courses tab, listing BSB50120 Diploma of Business with 0 units and a Medium risk status, and CHC50121 Diploma of Early Childhood Education and Care with 26 units. Marker 1 circles Program Management in the navigation bar, marker 2 the Courses tab, and marker 3 the Manage button for the Diploma of Business." loading="lazy"><figcaption>Select Program Management (1), the Courses tab (2), then Manage next to your course (3).</figcaption></figure></li>' +
+        '<li>Select <b>Add Unit</b>. Under <b>Search TGA units</b>, select <b>Search [course code]’s Units</b> to load all the units in your course, or enter a unit code to find one.' +
+          '<figure class="shot" data-marks="82.4,13.4,9.8,8.2,oval,above,#1; 12.6,41.4,14.4,1.6,underline,#2; 64,43.4,26.4,9.6,oval,above,#3"><img src="assets/img/gs-prog-add-unit.png" alt="The Add Unit panel for BSB50120. Marker 1 circles the Add Unit button at the top right, marker 2 underlines Search TGA units, and marker 3 circles the Search BSB50120’s Units button beside the search box. A Create custom unit option sits above, and a hint says to enter a unit code or select the button to load all BSB50120 units." loading="lazy"><figcaption>Select Add Unit (1), then under Search TGA units (2), select Search [course code]’s Units (3).</figcaption></figure>' +
+          '<div class="callout tip"><b>Tip</b><span>Unit not on training.gov.au? Choose <b>Create custom unit</b> instead.</span></div></li>' +
         '<li>Filter and select from core or elective units, or from unit groups.</li>' +
-        '<li>When you’re happy with your units, select <b>Add Selected</b>. The button shows how many units you’ve chosen.</li>' +
+        '<li>When you’re happy with your units, select <b>Add Selected</b>. The button shows how many units you’ve chosen.' +
+          '<figure class="shot" data-marks="8.7,25.8,3.4,6.6,oval,#1; 18.6,9,15.6,7.4,oval,right,#2"><img src="assets/img/gs-prog-select-units.png" alt="The unit list for the course, showing 12 of 12 units selected: 5 core and 7 elective. Units are grouped under Core Units and Group A, Business Operations, each with a ticked box, its code, Core or Elective, and Current. Filters for status, type and group sit at the top. Marker 1 circles the ticked box beside the first core unit, and marker 2 circles the Add Selected (12) button." loading="lazy"><figcaption>Tick the units you want (1), then select Add Selected (2).</figcaption></figure></li>' +
         '<li>Scroll down to find your units under <b>Course Units</b>.</li>' +
         '<li>Configure each unit: any physical risks or sensitive content involved, and its completion rate. These give the unit its own validation frequency.' +
           '<figure class="shot"><img src="assets/img/gs-course-units.png" alt="The Course Units list for a course with 10 units. Each unit shows its code and title, its recommended validation frequency, such as every 36 or 24 months, whether a validation is scheduled, Validate Now and Schedule buttons, and settings for unit type, physical risk, sensitive content and completion rate." loading="lazy"><figcaption>Each unit’s settings give it its own recommended validation frequency.</figcaption></figure></li>' +
-        '<li>Select <b>Save Changes</b> at the top of the page.</li>' +
+        '<li>Select <b>Save Changes</b> at the top of the page.' +
+          '<figure class="shot" data-marks="82.6,18.4,12.6,8.6,oval,#"><img src="assets/img/gs-prog-save.png" alt="Manage Course Units for BSB50120 Diploma of Business, marked Unsaved Changes. The Save Changes button at the top right is circled. Below, the added units are marked Added in the unit list." loading="lazy"><figcaption>Select Save Changes. Until you do, the page shows Unsaved Changes.</figcaption></figure></li>' +
       '</ol>',
     'gs-workforce':
       '<p>Each staff member gets their own RTO Radar account, and their role decides what they can see and do. Start with a trainer to see how it works.</p>' +
       '<ol class="steps-list">' +
-        '<li>Go to <b>Settings</b> › <b>User Management</b> › <b>Staff</b> › <b>Add New User</b>.</li>' +
-        '<li>Choose a trainer who will deliver the course you added in the previous step. You’ll assign that course to them below.</li>' +
+        '<li>On your navigation bar, go to <b>Settings</b> › <b>User Management</b> › <b>Staff</b>, then select <b>Add New User</b>.' +
+          '<figure class="shot" data-marks="0.5,80.4,8.2,6.2,oval,right,#1; 39.2,43.2,14.6,7.6,oval,above,#2; 35.1,77.3,7.7,5.8,oval,right,#3; 28.6,87.6,13.8,10.8,oval,right,#4"><img src="assets/img/gs-trainer-add.png" alt="Organisation Settings on the User Management tab. Marker 1 circles Settings in the navigation bar, marker 2 the User Management tab, marker 3 the Staff tab, and marker 4 the Add New User button." loading="lazy"><figcaption>Select Settings (1), User Management (2) and Staff (3), then Add New User (4).</figcaption></figure></li>' +
+        '<li>Choose a trainer who will deliver a course you’ve added to RTO Radar. You’ll assign that course to them in the next step.</li>' +
         '<li>Enter their name and email, select the <b>Trainer/Assessor</b> role, leave the team as <b>System Default</b>, and leave <b>Silent User</b> off.' +
+          '<figure class="shot" data-marks="52.2,88.4,11.6,7.8,oval,#"><img src="assets/img/gs-trainer-form.png" alt="The Create New User form, filled in with a first and last name, an email address, the Trainer/Assessor role, the team left as System Default (no team), and Silent user switched off. The Send Invitation button at the bottom is circled." loading="lazy"><figcaption>Fill in their details, then select Send Invitation.</figcaption></figure>' +
           '<div class="callout note"><b>Note</b><span>Silent User stops RTO Radar from emailing an invitation straight away.</span></div>' +
           '<div class="callout tip"><b>Tip</b><span>For more on roles, permissions and teams, see <a href="feature.html?m=users">Users, Roles &amp; Teams</a> in Features.</span></div></li>' +
         '<li>Select <b>Send Invitation</b>. They’ll get an email to set up their account.</li>' +
@@ -386,29 +449,41 @@
     'gs-dashboard':
       '<p>Your dashboard is a live snapshot of your whole RTO. Risk, improvement items, workforce readiness, documents and upcoming events each have their own widget, and each one brings forward only the items that need your immediate attention. No digging through every module: what’s overdue, due soon or at risk is right in front of you.</p>' +
       '<ol class="steps-list">' +
-        '<li>Select <b>Dashboard</b> in the navigation bar.</li>' +
-        '<li>Look over your widgets. Everything you set up in this series, from your organisational risks to your trainer, now shows up here.</li>' +
-        '<li>Make it yours: select the gear icon at the top right, then turn widgets on or off to show only what matters to you.</li>' +
-        '<li>Use the filter on any widget to narrow down the items it shows.</li>' +
+        '<li>Select <b>Dashboard</b> in the navigation bar.' +
+          '<figure class="shot" data-marks="0.3,13.6,7.3,3.9,oval,#"><img src="assets/img/gs-welcome-dashboard.png" alt="The Admin Dashboard, with Dashboard circled in the navigation bar. It shows a Risk Register Overview with missing treatments, responsibility gaps and overdue or missing dates, a Risk Level Breakdown bar chart and a Treatment Status Overview pie chart." loading="lazy"><figcaption>Select Dashboard in the navigation bar.</figcaption></figure></li>' +
+        '<li>Look over your widgets. Everything you set up in this series, from your organisational risks to your trainer, now shows up here.' +
+          '<figure class="shot"><img src="assets/img/gs-dashboard-widgets.png" alt="Further down the dashboard: Admin’s Continuous Improvement Items, with Overdue, Upcoming and All tabs listing items with their due dates and priority; Workforce, with pending admin actions such as documents pending verification and overdue PD, and a Delivery Readiness chart for each trainer; and a QMS Overview with total, approved, review due and draft documents." loading="lazy"><figcaption>Improvement items, workforce readiness and your QMS documents, each in its own widget.</figcaption></figure></li>' +
+        '<li>Make it yours: select the gear icon at the top right. In <b>Customise Dashboard</b>, turn widgets on or off to show only what matters to you, use the arrows to reorder them, then select <b>Save</b>.' +
+          '<figure class="shot" data-marks="92.55,13.65,3.45,6,oval,#; 93.3,30.5,arrow-down,small; 88.2,87.85,4.9,6.1,oval,#"><img src="assets/img/gs-dashboard-customise.png" alt="The Admin Dashboard with the Customise Dashboard menu open on top of it. The gear icon at the top right is circled, and an arrow points from it down to the menu, which lists widgets such as Risk Matrix Dashboard, Continuous Improvement, Workforce Statistics, Workforce Table and QMS Overview, each with a tick box and arrows to reorder it. The Save button at the bottom of the menu is circled." loading="lazy"><figcaption>Select the gear icon to open Customise Dashboard, choose your widgets, then select Save.</figcaption></figure></li>' +
+        '<li>Use the filter on any widget to narrow down the items it shows.' +
+          '<figure class="shot" data-marks="66.2,22,10.1,5.4,oval,#; 3.2,40.9,7.2,2.85,underline,#; 3.2,49.5,7.2,2.85,underline,#"><img src="assets/img/gs-dashboard-filter.png" alt="The Matrix Risks Identified widget, filtered by Category to Financial Risk, which is circled. The two remaining risks, Reliance on State Funding rated High and a cash-flow risk rated Medium, both have their Financial Risk category underlined." loading="lazy"><figcaption>Filtering by Financial Risk shows only the risks in that category.</figcaption></figure></li>' +
       '</ol>' +
       '<p>That’s the foundations in place. As your team adds documents, risks and evidence, your dashboard keeps watch, surfacing whatever needs action next.</p>',
     'gs-training':
       '<p>Give your new trainer the courses and units they’ll deliver, set out the documents trainers need to provide, and see how it all comes together on their profile.</p>' +
       '<h2 class="ghost">Assign Courses and Units</h2>' +
       '<ol class="steps-list">' +
-        '<li>Go to <b>Workforce Management</b>.</li>' +
-        '<li>On the <b>Workforce</b> tab, select the trainer you just added to open their profile.</li>' +
-        '<li>Select <b>Assign Training</b> at the top right of the page.</li>' +
-        '<li>Under <b>Course Assignment</b>, select their courses, then select <b>Assign Courses</b>. The button shows how many you’ve chosen.</li>' +
-        '<li>Under <b>Unit Assignments</b>, select the units they’ll deliver from each course, then select <b>Assign Units</b>.</li>' +
-        '<li>Open the <b>Units</b> tab on their profile to check the units assigned to them.' +
-          '<figure class="shot"><img src="assets/img/gs-staff-units.png" alt="The Units tab of a staff profile, headed Units Delivered: 11. Each row shows the unit code and title, its course, team, unit status of Assigned, an evidence map icon, the assigned date, and the completed date, which reads No map provided." loading="lazy"><figcaption>The Units tab lists every unit assigned to the trainer, with its course, status and evidence map.</figcaption></figure></li>' +
+        '<li>On your navigation bar, go to <b>Workforce Management</b>.' +
+          '<figure class="shot" data-marks="0.1,29.6,12.7,4.4,oval,#"><img src="assets/img/gs-training-nav.png" alt="Workforce Management, with Workforce Management circled in the navigation bar. The page shows the total workforce, RTO staff and admin actions, and the Workforce tab lists three trainers: Ken Lombardo, John Doe and Staff Demo." loading="lazy"><figcaption>Select Workforce Management in the navigation bar.</figcaption></figure></li>' +
+        '<li>On the <b>Workforce</b> tab, select the trainer you just added to open their profile.' +
+          '<figure class="shot" data-marks="34.8,91.3,arrow-left"><img src="assets/img/gs-training-nav.png" alt="The Workforce tab in Workforce Management, listing three trainers: Ken Lombardo, John Doe and Staff Demo. An arrow points left at Staff Demo." loading="lazy"><figcaption>Select your new trainer, such as Staff Demo here.</figcaption></figure></li>' +
+        '<li>Select <b>Assign Training</b> at the top right of the page.' +
+          '<figure class="shot" data-marks="81,15.2,14.3,8.1,oval,#"><img src="assets/img/gs-training-assign.png" alt="Workforce Management, now viewing Staff Demo, with Profile, Documents, Units and PD Calendar tabs. The Assign Training button at the top right is circled." loading="lazy"><figcaption>Select Assign Training while viewing the trainer.</figcaption></figure></li>' +
+        '<li>Under <b>Course Assignments</b>, search for and tick their courses, scroll down, then select <b>Assign Courses</b>. The button shows how many you’ve chosen.' +
+          '<figure class="shot" data-marks="29.5,17.1,11.5,3.7,oval,#1; 55,30.4,4.8,3.2,underline,right,#2; 53.4,56.9,1.9,3.6,oval,#3; 86.3,1.6,1.9,39.2,oval,#; 89.6,64,arrow-down,#4; 52,75.2,33.6,6.5,oval,#5"><img src="assets/img/gs-training-courses.png" alt="Manage Assignments for Staff Demo, on step 1, Course Assignments. Current course assignments are listed on the left. On the right, under Assign New Courses, the search box contains BSB50120 and the Diploma of Business is ticked. Marker 1 circles the Course Assignments tab, marker 2 underlines the course code in the search box, marker 3 circles the tick box before the course, marker 4 circles the scroll bar, with an arrow beside it showing to scroll down, and marker 5 circles the Assign 1 Course(s) button." loading="lazy"><figcaption>On Course Assignments (1), search by course code (2), tick the course (3), scroll down (4), then select Assign Courses (5).</figcaption></figure></li>' +
+        '<li>Under <b>Unit Assignments</b>, search for and tick the units they’ll deliver, scroll down, then select <b>Assign Units</b>. The button shows how many you’ve chosen.' +
+          '<figure class="shot" data-marks="59,1,9.2,3.6,oval,#1; 50.5,21.2,2.4,2.9,underline,right,#2; 49,47.5,1.7,3,oval,#3; 81.3,9.5,1.9,42.4,oval,#; 85.4,58,arrow-down,#4; 47.6,81.3,33,6.4,oval,#5"><img src="assets/img/gs-training-units.png" alt="Manage Assignments for Staff Demo, on step 2, Unit Assignments. The Current Unit Assignments list on the left is empty. On the right, under Assign New Units, the search box contains BSB and units such as Manage business resources and Articulate, present and debate ideas are ticked, each showing the course it comes from. Marker 1 circles the Unit Assignments tab, marker 2 underlines the search term, marker 3 circles the tick box before the first unit, marker 4 circles the page scroll bar, with an arrow showing to scroll down, and marker 5 circles the Assign 5 Unit(s) button." loading="lazy"><figcaption>On Unit Assignments (1), search by unit code (2), tick the units (3), scroll down (4), then select Assign Units (5).</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>You can only assign units from courses already assigned to this trainer.</span></div></li>' +
+        '<li>From their staff profile, open the <b>Units</b> tab to check the units assigned to them.' +
+          '<figure class="shot" data-marks="11.1,26.2,3.75,6.3,oval,#"><img src="assets/img/gs-staff-units.png" alt="The Units tab of a staff profile, with the Units tab circled, headed Units Delivered: 11. Each row shows the unit code and title, its course, team, unit status of Assigned, an evidence map icon, the assigned date, and the completed date, which reads No map provided." loading="lazy"><figcaption>The Units tab lists every unit assigned to the trainer, with its course, status and evidence map.</figcaption></figure></li>' +
       '</ol>' +
       '<h2>Create a Document Checklist</h2>' +
       '<ol class="steps-list">' +
-        '<li>In <b>Workforce Management</b>, go to the <b>Document Checklist</b> tab.</li>' +
+        '<li>In <b>Workforce Management</b>, go to the <b>Document Checklist</b> tab.' +
+          '<figure class="shot" data-marks="35.3,41,14.1,4.6,oval,above,#1; 64.5,75.6,11.9,4.8,oval,#2"><img src="assets/img/gs-checklist-role.png" alt="The Document Checklist tab in Workforce Management, asking you to select a role. Roles shown are Administrator and Trainer/Assessor, with a Display all documents option. Marker 1 circles the Document Checklist tab, and marker 2 circles the Trainer/Assessor role." loading="lazy"><figcaption>Open Document Checklist (1), then choose the Trainer/Assessor role (2).</figcaption></figure></li>' +
         '<li>Select the <b>Trainer/Assessor</b> role.</li>' +
-        '<li>Select <b>Add Document Type</b> and add each document trainers need, such as a Working With Children Check or White Card.</li>' +
+        '<li>Select <b>Add Document Type</b> and add each document trainers need, such as a Working With Children Check or White Card.' +
+          '<figure class="shot" data-marks="83.3,66.6,12.2,6.4,oval,#3"><img src="assets/img/gs-checklist-add.png" alt="The document checklist for the Trainer/Assessor role. Document Expiry Health shows 10 current documents and 1 expired, and Role coverage shows how many trainers have submitted each required document. The table lists White Card and Working With Children Check with how many have been received. Marker 3 circles the Add document type button." loading="lazy"><figcaption>Select Add document type (3) to add each document trainers need.</figcaption></figure></li>' +
       '</ol>' +
       '<h2>Staff Documents</h2>' +
       '<p>Once the trainer accepts the invitation and signs in, they can upload the documents on their checklist and send them for review, see the courses and units assigned to them, and use AI to map their evidence against those units.</p>' +
@@ -420,18 +495,26 @@
   BODIES['gs-connect-axcelerate'] = BODIES['connect-axcelerate'] +
     '<h2>Import Courses</h2>' +
     '<ol class="steps-list">' +
-      '<li>Under <b>aXcelerate Integration</b>, go to <b>Import Courses</b> › <b>Fetch from aXcelerate</b>.</li>' +
-      '<li>Filter your programs, or select them one by one by ticking the box before each program code.</li>' +
-      '<li>Choose which units to import from each course.</li>' +
-      '<li>In the <b>Import Summary</b>, select <b>Import Selected Courses</b>.</li>' +
-      '<li>Find your imported programs in <b>Program Management</b>.</li>' +
+      '<li>Under <b>aXcelerate Integration</b>, go to <b>Import Courses</b> › <b>Fetch from aXcelerate</b>.' +
+        '<figure class="shot" data-marks="44.6,39.3,10.6,5.4,oval,#1; 17.6,57.2,15.4,6.6,oval,right,#2"><img src="assets/img/gs-ax-import-courses.png" alt="The aXcelerate Integration panel on the Import Courses tab. Connection Status shows a green tick and says the integration is configured and ready to use. Marker 1 circles the Import Courses tab, and marker 2 circles the Fetch from aXcelerate button." loading="lazy"><figcaption>Select Import Courses (1), then Fetch from aXcelerate (2).</figcaption></figure></li>' +
+      '<li>Filter your programs, or select them one by one by ticking the box before each program code.' +
+        '<figure class="shot" data-marks="9.4,37.4,5.2,27,oval,#"><img src="assets/img/gs-ax-select-courses.png" alt="Three courses fetched from aXcelerate, each with a ticked box before its program code: BSB30120 Certificate III in Business, CHC30121 Certificate III in Early Childhood Education and Care, and CHC33021 Certificate III in Individual Support. Each shows how many of its units are selected and is marked New. The ticked boxes are circled." loading="lazy"><figcaption>Tick the box before each course you want to import.</figcaption></figure></li>' +
+      '<li>Choose which units to import from each course. Select the arrow before a course’s program code to show its units.' +
+        '<figure class="shot" data-marks="20.7,1,3.4,6.6,oval,#; 25.4,18.6,arrow-down,small"><img src="assets/img/gs-ax-select-units.png" alt="CHC30121 Certificate III in Early Childhood Education and Care, expanded to show its units. The arrow before the program code is circled, and an arrow points down from it to the list of 17 units, each with a ticked box, its unit code and title, and an Active status. A Deselect All option sits at the top right." loading="lazy"><figcaption>Expand a course to see its units, then untick any you don’t want to import.</figcaption></figure></li>' +
+      '<li>Scroll up to find your <b>Import Summary</b>, then select <b>Import Selected Courses</b>.' +
+        '<figure class="shot" data-marks="71.2,70.4,21.6,9,oval,#"><img src="assets/img/gs-ax-import-summary.png" alt="The Import Summary, listing three courses by code with an editable program title for each and its default title underneath. It shows 3 courses selected and 77 units, and the Import Selected Courses button at the bottom right is circled." loading="lazy"><figcaption>Check or rename the program titles, then select Import Selected Courses.</figcaption></figure></li>' +
+      '<li>Find your imported programs in <b>Program Management</b> in your navigation bar.</li>' +
     '</ol>' +
     '<h2>Import Trainers</h2>' +
     '<ol class="steps-list">' +
-      '<li>Go to <b>Import Trainers</b>.</li>' +
-      '<li>Filter your trainers, or select them one by one by ticking the box before each contact ID.</li>' +
-      '<li>In the <b>Import Summary</b>, select <b>Import &amp; Invite</b>.</li>' +
-      '<li>Find your imported trainers in <b>Workforce Management</b>.</li>' +
+      '<li>Under <b>aXcelerate Integration</b>, go to <b>Import Trainers</b> › <b>Fetch Trainers from aXcelerate</b>.' +
+        '<figure class="shot" data-marks="66,38.2,11,5.6,oval,#1; 18.4,58.6,21.6,7.8,oval,right,#2"><img src="assets/img/gs-ax-import-trainers.png" alt="The aXcelerate Integration panel on the Import Trainers tab. Connection Status shows a green tick and says the integration is ready to sync trainers. Marker 1 circles the Import Trainers tab, and marker 2 circles the Fetch Trainers from aXcelerate button." loading="lazy"><figcaption>Select Import Trainers (1), then Fetch Trainers from aXcelerate (2).</figcaption></figure></li>' +
+      '<li>Filter your trainers, or select them one by one by ticking the box before each contact ID.' +
+        '<figure class="shot" data-marks="7.4,27,4.2,35.4,oval,#"><img src="assets/img/gs-ax-select-trainers.png" alt="Three trainers fetched from aXcelerate, each with a ticked box and marked Contact Active. Their contact IDs, names and email addresses are blurred. The ticked boxes are circled." loading="lazy"><figcaption>Tick the box before each trainer you want to import.</figcaption></figure></li>' +
+      '<li>Scroll up to find your <b>Import Summary</b>, then select <b>Import &amp; Invite</b>.' +
+        '<figure class="shot" data-marks="77.8,39,20,31.6,oval,#"><img src="assets/img/gs-ax-trainer-summary.png" alt="The Import Summary for 3 selected trainers, with Import Silently and Import and Invite buttons. The Import and Invite button is circled. A note says silent import creates profiles without sending sign-in invitations, and that they can be invited later from Staff Management." loading="lazy"><figcaption>Select Import &amp; Invite to send each trainer a sign-in invitation.</figcaption></figure>' +
+        '<div class="callout tip"><b>Tip</b><span>Not ready to invite them yet? Choose <b>Import Silently</b> to create their profiles without sending invitations. You can invite them later from Staff Management.</span></div></li>' +
+      '<li>Find your imported trainers in <b>Workforce Management</b> in your navigation bar.</li>' +
     '</ol>';
 
   var ARTICLES = {}, ORDER = [];

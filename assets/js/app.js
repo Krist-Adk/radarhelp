@@ -20,8 +20,8 @@
   function $(sel) { return document.querySelector(sel); }
   function param(k) { var m = new RegExp('[?&]' + k + '=([^&#]*)').exec(location.search); return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : null; }
   function artUrl(id, wf) {
-    // Series guides (Getting Started) live as sections of one page
-    if (!wf && A[id] && MOD[A[id].module].series) return 'feature.html?m=' + encodeURIComponent(A[id].module) + '#' + encodeURIComponent(id);
+    // Series guides (Getting Started) are pages of the series
+    if (!wf && A[id] && MOD[A[id].module].series) return 'feature.html?m=' + encodeURIComponent(A[id].module) + '&s=' + encodeURIComponent(id);
     return 'article.html?id=' + encodeURIComponent(id) + (wf ? '&wf=' + encodeURIComponent(wf) : '');
   }
   function wfUrl(id) { return 'workflow.html?id=' + encodeURIComponent(id); }
@@ -138,6 +138,54 @@
     });
   }
 
+  // Screenshot markers. A figure can point at the buttons to press, in order, without editing the image:
+  //   <figure class="shot" data-marks="x,y; x,y,w,h; …">
+  // Each entry is a position in percent of the picture: "x,y" draws a numbered dot at that point, and
+  // "x,y,w,h" marks an area (x,y = its top-left corner) with the number just outside its left edge. Numbers count
+  // 1, 2, 3… in the order listed; add "#label" as the last value (e.g. "40,20,#3") to show that instead,
+  // such as the number of the step the button belongs to. Add "oval" to circle the area with an oval as well; a bare "#" leaves an oval without a number. Add "right" or "above" to put the number on that side instead, "underline" to underline the area instead, or "zone" to outline a whole area of the screen (number inside its top-right corner).
+  // "x,y,arrow" draws an arrow whose tip touches x,y, pointing up; use "arrow-down", "arrow-left" or "arrow-right"
+  // for other directions. Arrows stand out on busy or coloured backgrounds where an oval would blend in.
+  // An arrow shows a number at its tail only when given one, e.g. "60,40,arrow-left,#4". Add "small" or "tiny" for a shorter arrow in tight gaps.
+  function wireMarks() {
+    document.querySelectorAll('.shot[data-marks]').forEach(function (f) {
+      var img = f.querySelector('img'); if (!img || img.parentNode.classList.contains('shot-frame')) return;
+      var frame = document.createElement('span');
+      frame.className = 'shot-frame';
+      img.parentNode.insertBefore(frame, img);
+      frame.appendChild(img);
+      f.getAttribute('data-marks').split(';').forEach(function (entry, i) {
+        var tokens = entry.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+        var label = String(i + 1), labelled = false, oval = false, right = false, above = false, zone = false, small = false, arrow = null, v = [];
+        tokens.forEach(function (t) {
+          if (t.charAt(0) === '#') { label = t.slice(1); labelled = true; } else if (t === 'oval') oval = true; else if (t === 'right') right = true;
+          else if (t === 'above') above = true; else if (t === 'zone') zone = true; else if (t === 'underline') zone = 'underline'; else if (t === 'small') small = 'small'; else if (t === 'tiny') small = 'tiny';
+          else if (/^arrow(-(up|down|left|right))?$/.test(t)) arrow = t.split('-')[1] || 'up';
+          else v.push(t);
+        });
+        if (v.length < 2) return;
+        var x = parseFloat(v[0]), y = parseFloat(v[1]), el = document.createElement('span');
+        el.setAttribute('aria-hidden', 'true');
+        if (arrow) {
+          // Arrow with its tip on x,y, pointing the way named (up by default, i.e. coming from below)
+          el.className = 'mark-arrow to-' + arrow + (small ? ' ' + small : '');
+          el.style.cssText = 'left:' + x + '%;top:' + y + '%';
+          el.innerHTML = '<svg viewBox="0 0 40 72" width="40" height="72"><path d="M20 2 L37 26 L26 26 L26 70 L14 70 L14 26 L3 26 Z"/></svg>' +
+            (labelled && label ? '<span class="mark">' + esc(label) + '</span>' : ''); // number at the tail, only when one is given
+        } else if (v.length >= 4) {
+          el.className = 'mark-box' + (oval ? ' oval' : '') + (right ? ' num-right' : '') + (above ? ' num-above' : '') + (zone === 'underline' ? ' underline' : zone ? ' zone' : '');
+          el.style.cssText = 'left:' + x + '%;top:' + y + '%;width:' + parseFloat(v[2]) + '%;height:' + parseFloat(v[3]) + '%';
+          if (label) el.innerHTML = '<span class="mark">' + esc(label) + '</span>';
+        } else {
+          el.className = 'mark mark-dot';
+          el.style.cssText = 'left:' + x + '%;top:' + y + '%';
+          el.textContent = label;
+        }
+        frame.appendChild(el);
+      });
+    });
+  }
+
   // Screenshot zoom. Clicking a .shot picture (or Enter/Space on it) opens it full-screen, fitted to the
   // window. Clicking the enlarged picture toggles actual size (scroll to pan).
   // The viewer is created on open and removed on close, so nothing sits over the page in between.
@@ -158,9 +206,14 @@
     var v = document.createElement('div');
     v.className = 'zoom-view';
     v.setAttribute('role', 'dialog'); v.setAttribute('aria-modal', 'true'); v.setAttribute('aria-label', 'Enlarged image');
-    v.innerHTML = '<div class="zoom-stage"><img alt=""></div><button type="button" class="zoom-close" aria-label="Close">×</button>';
-    var big = v.querySelector('img'), stage = v.querySelector('.zoom-stage');
-    big.src = img.currentSrc || img.src; big.alt = img.alt;
+    v.innerHTML = '<div class="zoom-stage"></div><button type="button" class="zoom-close" aria-label="Close">×</button>';
+    var stage = v.querySelector('.zoom-stage');
+    // Bring the picture's markers along: copy its marker frame if it has one
+    var frame = img.parentNode.classList.contains('shot-frame') ? img.parentNode : null;
+    var copy = (frame || img).cloneNode(true);
+    stage.appendChild(copy);
+    var big = copy.tagName === 'IMG' ? copy : copy.querySelector('img');
+    big.removeAttribute('tabindex'); big.removeAttribute('role'); big.removeAttribute('aria-label');
     document.body.appendChild(v);
     document.documentElement.classList.add('zoom-open');
     v.querySelector('.zoom-close').focus();
@@ -288,105 +341,116 @@
     $('#cfg-grid').innerHTML = RH.MODULES.filter(function (m) { return m.cat === 'configuration'; }).map(tile).join('');
   };
 
-  // Getting Started: every step on one page, a scroll-tracking step list, related articles at the end
+  // Getting Started: one page per step (feature.html?m=getting-started&s=<step id>). A fixed, scrollable
+  // step list on the left; on each page the step's instructions as numbered steps with screenshots,
+  // then previous/next, feedback and the Ideas Forum. The FAQs get a page of their own at the end.
+  function seriesUrl(m, s) { return 'feature.html?m=' + encodeURIComponent(m.id) + (s ? '&s=' + encodeURIComponent(s) : ''); }
   function seriesPage(m) {
-    var steps = moduleArticles(m.id), subs = {};
-    // Trial layout: light breadcrumb bar with search, document-style body, "On this page" rail
-    crumbBar([['RadarHelp', 'index.html'], ['Help Guides', 'guides.html'], [m.name]]);
-    var sections = steps.map(function (a) {
-      // The guide's own h2s become sub-headings of the step, with ids unique to the step
-      var n = 0; subs[a.id] = [];
-      // <h2 class="ghost"> sub-headings are listed in the sidebar but hidden in the guide itself
-      var body = a.body ? a.body.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/g, function (x, attrs, t) {
-        var id = a.id + '-' + (++n); subs[a.id].push([id, t]);
-        return '<h3 id="' + id + '"' + (/class="ghost"/.test(attrs) ? ' class="gs-ghost"' : '') + '>' + t + '</h3>';
-      }) :
+    var steps = moduleArticles(m.id), faqs = m.faqs || [];
+    // Links from the old one-page layout (#gs-…) go to that step's own page
+    var hashId = location.hash.slice(1);
+    if (!param('s') && A[hashId] && A[hashId].module === m.id) { location.replace(seriesUrl(m, hashId)); return; }
+
+    var list = steps.map(function (a, i) { return { id: a.id, t: a.t, a: a, n: i + 1 }; });
+    if (faqs.length) list.push({ id: 'faq', t: 'Frequently asked questions' });
+    var idx = 0;
+    list.forEach(function (p, i) { if (p.id === param('s')) idx = i; });
+    var cur = list[idx], prev = list[idx - 1], next = list[idx + 1];
+    document.title = cur.t + ' · ' + m.name + ' · RadarHelp';
+    // Reaching the last step's page completes the series (the landing page shows a check)
+    if (cur.a && cur.n === steps.length && !gsComplete()) store('gs.complete', true);
+
+    crumbBar([['RadarHelp', 'index.html'], ['Help Guides', 'guides.html'], [m.name, seriesUrl(m)], [cur.t]]);
+    $('#body').classList.remove('wrap'); // the step list sits against the left edge of the page
+
+    var nav = '<button type="button" class="gs2-toggle" aria-expanded="false" aria-controls="gs2-nav">' +
+        '<span>' + (cur.a ? 'Step ' + cur.n + ' of ' + steps.length + ': ' : '') + esc(cur.t) + '</span><span class="chev" aria-hidden="true">▾</span></button>' +
+      '<nav class="gs2-nav" id="gs2-nav" aria-label="' + esc(m.name) + '"><span class="gs2-group">' + esc(m.name) + '</span><ol>' +
+      list.map(function (p, i) {
+        return '<li><a href="' + seriesUrl(m, p.id) + '"' + (i === idx ? ' aria-current="page"' : '') + '>' +
+          '<span class="n">' + (p.a ? p.n : '?') + '</span><span>' + esc(p.t) + '</span></a></li>';
+      }).join('') + '</ol></nav>';
+
+    var content, afterPager = ''; // afterPager: shown below Previous/Next (related articles on the FAQ page)
+    if (cur.a) {
+      var a = cur.a;
+      // Ghost sub-headings belonged to the old one-page sidebar; on a page of its own they aren't needed
+      var body = a.body ? a.body.replace(/<h2 class="ghost">[\s\S]*?<\/h2>/g, '').replace(/<h2[^>]*>([\s\S]*?)<\/h2>/g, '<h3>$1</h3>') :
         '<div class="draft"><b>This step is being written.</b><span class="muted">Instructions for “' + esc(a.t) + '” are on their way.</span><a href="page.html?p=contact" style="font-weight:700">Ask the support team →</a></div>';
-      // Wrap each sub-heading with the content under it, so that content can sit one indent further in
-      body = body.split(/(?=<h3 id=)/).map(function (part) {
-        var mm = /^(<h3 id=[^>]*>[\s\S]*?<\/h3>)([\s\S]*)$/.exec(part);
+      // Content under a sub-heading sits one indent further in
+      body = body.split(/(?=<h3>)/).map(function (part) {
+        var mm = /^(<h3>[\s\S]*?<\/h3>)([\s\S]*)$/.exec(part);
         return mm ? '<div class="gs-sub">' + mm[1] + '<div class="gs-sub-body">' + mm[2] + '</div></div>' : part;
       }).join('');
-      return '<section class="gs-step" id="' + a.id + '"><h2>' + esc(a.t) + '</h2><div class="prose">' + body + '</div></section>';
-    }).join('');
-    // Ideas Forum box: in the sidebar on wide screens; after the FAQs when the sidebar stacks above the guide
+      content = '<header class="gs2-head"><span class="eyebrow">' + esc(m.name) + ' · Step ' + cur.n + ' of ' + steps.length + '</span>' +
+        '<h1>' + esc(a.t) + '</h1>' + (cur.n === 1 ? '<p class="gs2-lede">' + esc(m.blurb) + '</p>' : '') +
+        '<div class="gs-meta"><span class="role">' + ICON.user + 'Admin</span><a class="updated" id="gs-updated" href="page.html?p=whats-new">Updated <time></time></a></div></header>' +
+        '<section class="gs-step gs2-body"><div class="prose">' + body + '</div></section>';
+    } else {
+      var related = (m.related || []).filter(function (id) { return A[id]; }).map(function (id) {
+        var r = A[id];
+        return '<a class="card" href="' + artUrl(id) + '"><span class="eyebrow">' + esc(MOD[r.module].name) + '</span><span class="title" style="font-size:1.1rem">' + esc(r.t) + '</span><span class="foot"><span>' + esc(r.type) + '</span><span>' + r.mins + ' min</span></span></a>';
+      }).join('');
+      content = '<header class="gs2-head"><span class="eyebrow">' + esc(m.name) + '</span><h1>Frequently asked questions</h1></header>' +
+        '<section class="gs-faq">' + faqs.map(function (f) {
+          return '<details><summary>' + esc(f[0]) + '</summary><div class="prose">' + f[1] + '</div></details>';
+        }).join('') + '</section>' + feedbackBlock(); // rates the whole guide, so it appears once, on the last page
+      afterPager = (related ? '<section class="gs2-related"><h2>Related articles</h2><div class="grid grid-2">' + related + '</div></section>' : '');
+    }
+
+    var pager = '<nav class="pager gs2-pager" aria-label="Previous and next">' +
+      (prev ? '<a href="' + seriesUrl(m, prev.id) + '"><small>← Previous</small><b>' + esc(prev.t) + '</b></a>' : '<span></span>') +
+      (next ? '<a class="next" href="' + seriesUrl(m, next.id) + '"><small>Next →</small><b>' + esc(next.t) + '</b></a>' :
+        '<a class="next" href="index.html"><small>All done →</small><b>Back to RadarHelp</b></a>') + '</nav>';
     var ideasBox = '<div class="gs-help"><b>Have an idea?</b><span>Suggest improvements and vote on what we build next.</span><a class="btn btn-primary" href="page.html?p=ideas">Discuss in the Ideas Forum</a></div>';
-    var nav = '<nav class="gs-nav" aria-label="On this page"><span class="panel-label">On this page</span><ol>' + steps.map(function (a) {
-      return '<li><a href="#' + a.id + '" data-step="' + a.id + '">' + esc(a.t) + '</a>' +
-        (subs[a.id].length ? '<ol>' + subs[a.id].map(function (s, i) { return '<li><a class="sub" href="#' + s[0] + '" data-sub="' + s[0] + '">' + (i + 1) + '. ' + s[1] + '</a></li>'; }).join('') + '</ol>' : '') + '</li>';
-    }).join('') + '</ol></nav>' +
-      ideasBox;
-    var related = (m.related || []).filter(function (id) { return A[id]; }).map(function (id) {
-      var r = A[id];
-      return '<a class="card" href="' + artUrl(id) + '"><span class="eyebrow">' + esc(MOD[r.module].name) + '</span><span class="title" style="font-size:1.15rem">' + esc(r.t) + '</span><span class="foot"><span>' + esc(r.type) + '</span><span>' + r.mins + ' min</span></span></a>';
-    }).join('');
-    $('#body').innerHTML = '<div class="gs-layout"><div class="gs-doc">' +
-      '<header class="gs-intro"><h1>' + esc(m.name) + '</h1><p>' + esc(m.blurb) + '</p>' +
-      '<div class="gs-meta"><span class="role">' + ICON.user + 'Admin</span>' +
-      '<a class="updated" id="gs-updated" href="page.html?p=whats-new">Updated <time></time></a></div></header>' +
-      sections +
-      ((m.faqs || []).length ? '<section class="gs-faq"><h2>Frequently asked questions</h2>' + m.faqs.map(function (f) {
-        return '<details><summary>' + esc(f[0]) + '</summary><div class="prose">' + f[1] + '</div></details>';
-      }).join('') + '</section>' : '') +
-      feedbackBlock() +
-      ideasBox.replace('class="gs-help"', 'class="gs-help gs-help-inline"') +
-      '</div><aside class="gs-side">' + nav + '</aside></div>' +
-      (related ? '<section class="section"><h2>Related articles</h2><div class="grid grid-3">' + related + '</div></section>' : '');
 
+    $('#body').innerHTML = '<div class="gs2"><aside class="gs2-side">' + nav + ideasBox.replace('gs-help', 'gs-help gs2-side-help') + '</aside>' +
+      '<div class="gs2-main">' + content + pager + afterPager + ideasBox.replace('gs-help', 'gs-help gs2-main-help') + '</div></div>';
 
-    showUpdated($('#gs-updated time'), m.updated);
+    if ($('#gs-updated')) showUpdated($('#gs-updated time'), m.updated);
+    wireMarks();
     wireZoom();
     wireFeedback(m.id);
+
+    // Small screens: the step list folds into a "Step 3 of 10" button above the page
+    var tg = $('.gs2-toggle');
+    tg.addEventListener('click', function () { var o = $('.gs2-side').classList.toggle('open'); tg.setAttribute('aria-expanded', String(o)); });
+    // Ideas Forum box: under the step list when the list still fits the screen with it (no scrolling),
+    // otherwise at the end of the page. Rechecked when the window is resized.
+    var grid = $('.gs2');
+    function placeIdeas() {
+      grid.classList.add('ideas-side');
+      var sideEl = $('.gs2-side');
+      if (window.innerWidth <= 1000 || sideEl.scrollHeight > sideEl.clientHeight + 1) grid.classList.remove('ideas-side');
+    }
+    placeIdeas();
+    window.addEventListener('resize', placeIdeas);
+
+    // Keep the current step in view in the step list
+    var on = $('.gs2-nav [aria-current]'), side = $('.gs2-side');
+    if (on && side.scrollHeight > side.clientHeight) side.scrollTop = on.offsetTop - side.clientHeight / 3;
 
     // FAQs slide open and closed. <details> can't animate on its own in every browser, so the
     // answer's height is animated here; with reduced motion the default instant toggle is kept.
     var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     document.querySelectorAll('.gs-faq details').forEach(function (d) {
-      var body = d.querySelector('.prose'), busy = false;
+      var fb = d.querySelector('.prose'), busy = false;
       d.querySelector('summary').addEventListener('click', function (e) {
-        if (still || !body.animate) return;
+        if (still || !fb.animate) return;
         e.preventDefault();
         if (busy) return;
         busy = true;
         var opening = !d.open;
         if (opening) d.open = true; else d.classList.add('closing');
-        var shut = { height: '0px', paddingBottom: '0px', opacity: 0 }, full = { height: body.offsetHeight + 'px', paddingBottom: '16px', opacity: 1 };
-        body.style.overflow = 'hidden';
-        var a = body.animate(opening ? [shut, full] : [full, shut], { duration: 260, easing: 'cubic-bezier(.2,.7,.3,1)' });
-        a.onfinish = function () {
+        var shut = { height: '0px', paddingBottom: '0px', opacity: 0 }, full = { height: fb.offsetHeight + 'px', paddingBottom: '16px', opacity: 1 };
+        fb.style.overflow = 'hidden';
+        var an = fb.animate(opening ? [shut, full] : [full, shut], { duration: 260, easing: 'cubic-bezier(.2,.7,.3,1)' });
+        an.onfinish = function () {
           if (!opening) { d.open = false; d.classList.remove('closing'); }
-          body.style.overflow = ''; busy = false;
+          fb.style.overflow = ''; busy = false;
         };
       });
     });
-
-    // Highlight the step, and the sub-heading within it, that is under the header
-    var navEl = $('.gs-nav'), links = navEl.querySelectorAll('[data-step]'), subLinks = navEl.querySelectorAll('[data-sub]'),
-      secs = document.querySelectorAll('.gs-step'), current = null, ticking = false;
-    function spy() {
-      ticking = false;
-      var active = secs[0], sub = null;
-      secs.forEach(function (s) { if (s.getBoundingClientRect().top <= 140) active = s; });
-      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
-        // At the very bottom, the last step can't reach the top; pick the last one on screen
-        secs.forEach(function (s) { if (s.getBoundingClientRect().top < window.innerHeight) active = s; });
-      }
-      active.querySelectorAll('h3[id]').forEach(function (h) { if (h.getBoundingClientRect().top <= 140) sub = h.id; });
-      var key = active.id + '|' + sub;
-      if (key === current) return;
-      current = key;
-      if (active === secs[secs.length - 1] && !gsComplete()) store('gs.complete', true);
-      links.forEach(function (l) {
-        var on = l.getAttribute('data-step') === active.id;
-        l.classList.toggle('active', on);
-        l.parentNode.classList.toggle('open', on); // only the active step shows its sub-headings
-        if (on) l.setAttribute('aria-current', 'step'); else l.removeAttribute('aria-current');
-      });
-      subLinks.forEach(function (l) { l.classList.toggle('active', l.getAttribute('data-sub') === sub); });
-    }
-    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(spy); } }, { passive: true });
-    window.addEventListener('resize', spy);
-    spy();
   }
 
   pages.feature = function () {
