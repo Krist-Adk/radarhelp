@@ -613,3 +613,19 @@ mark { background: var(--tip-bg); color: inherit; padding: 0 2px; border-radius:
 /* Two screenshots side by side (stacked on narrow screens) */
 .shot-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
 @media (max-width: 760px) { .shot-pair { grid-template-columns: minmax(0, 1fr); } }
+/* Non-working examples of the guide's own controls (How to Use This Guide) */
+.demo { position: relative; padding: 32px 18px 18px; border: 1.5px dashed var(--rto-light-grey); border-radius: 12px; background: var(--rto-off-white); }
+.demo-label { position: absolute; top: 9px; left: 14px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rto-grey-blue); }
+.demo a { cursor: default; }
+.demo-steps { max-width: 380px; }
+.gs-step .prose ol.demo-nav { list-style: none; margin: 0; padding: 10px; display: grid; gap: 2px; background: #fff; border: 1px solid var(--rto-light-grey); border-radius: 10px; }
+.demo-nav a { display: flex; align-items: flex-start; gap: 12px; padding: 9px 12px; border-radius: 8px; color: var(--rto-grey-blue); text-decoration: none; font-size: 0.95rem; line-height: 1.35; }
+.demo-nav .n { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; background: var(--rto-light-grey); color: var(--rto-grey-blue); }
+.demo-nav a.on { background: #eaf3fa; color: var(--rto-navy); font-weight: 700; box-shadow: inset 3px 0 0 var(--rto-boston-blue); }
+.demo-nav a.on .n { background: var(--rto-navy); color: #fff; }
+.gs-step .prose h4 { font-family: var(--font-display); font-size: 1.05rem; margin: 6px 0 -8px; }
+/* Pointing hand before each "Moving through the guide" item */
+.gs-step .prose h4.point { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.gs-step .prose h4.point::before { content: "\261E"; flex-shrink: 0; font-family: "Segoe UI Symbol", "Apple Symbols", "Noto Sans Symbols 2", sans-serif;
+  font-size: 1.9rem; font-weight: 400; line-height: 1; color: var(--rto-navy); }
+.demo-faq { padding-top: 0; border-top: 0; }

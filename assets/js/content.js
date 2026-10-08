@@ -218,12 +218,34 @@
       '<p class="lead">This guide follows your RTO Radar onboarding session. Nine short steps take you from a new account to a dashboard filling up with your RTO’s work. Each step builds on the one before, so work through them in order.</p>' +
 
       '<h2>Moving through the guide</h2>' +
+      '<p>Each step of this guide has its own page. There are two ways to move between them.</p>' +
+      '<h4 class="point">Previous and Next</h4>' +
+      '<p>At the bottom of every page there are two buttons like these. <b>Next</b> takes you to the following step, and <b>Previous</b> takes you back one. The button tells you which step you’ll go to.</p>' +
+      '<div class="demo" aria-hidden="true"><span class="demo-label">Example</span>' +
+        '<div class="pager"><a><small>← Previous</small><b>How to Use This Guide</b></a><a class="next"><small>Next →</small><b>Set Up Your Organisation</b></a></div>' +
+      '</div>' +
+      '<h4 class="point">The step list</h4>' +
+      '<p>The step list shows every step in the guide, with the one you’re on highlighted in blue. Select any step to jump straight to it.</p>' +
       '<ul>' +
-        '<li><b>Previous and Next.</b> Use the buttons at the bottom of each page to go through the steps in order.</li>' +
-        '<li><b>The step list.</b> The list on the left of this guide shows every step, with the one you’re on highlighted. Select any step to jump straight to it.</li>' +
-        '<li><b>Notes and tips.</b> Read these as you go. Notes explain how something works, and tips point to shortcuts and more detail.</li>' +
-        '<li><b>FAQs.</b> The last page answers common questions, such as how risk scores are worked out and when to use a silent user.</li>' +
+        '<li><b>On a computer</b>, it runs down the left-hand side of the page, beside what you’re reading now.</li>' +
+        '<li><b>On a phone or tablet</b>, open it from the step button at the top of the page.</li>' +
       '</ul>' +
+      '<div class="demo demo-steps" aria-hidden="true"><span class="demo-label">Example</span>' +
+        '<ol class="demo-nav">' +
+          '<li><a><span class="n">i</span><span>How to Use This Guide</span></a></li>' +
+          '<li><a class="on"><span class="n">1</span><span>Set Up Your Organisation</span></a></li>' +
+          '<li><a><span class="n">2</span><span>Set Up Your Organisational Risks</span></a></li>' +
+          '<li><a><span class="n">3</span><span>Visit the Continuous Improvement Register</span></a></li>' +
+        '</ol>' +
+      '</div>' +
+      '<h4 class="point">Notes, tips and warnings</h4>' +
+      '<p>Read these as you go. Each has its own colour and icon:</p>' +
+      '<div class="callout note"><b>Note</b><span>Explains how something works.</span></div>' +
+      '<div class="callout tip"><b>Tip</b><span>Points you to a shortcut or more detail.</span></div>' +
+      '<div class="callout warn"><b>Warning</b><span>Flags something to take care with, such as a setting only Admins can change.</span></div>' +
+      '<h4 class="point">Frequently asked questions</h4>' +
+      '<p>The last page answers common questions, such as how risk scores are worked out and when to use a silent user. Select a question to open its answer, like this one:</p>' +
+      '<section class="gs-faq demo-faq"><details><summary>Where can I find the answers to common questions?</summary><div class="prose"><p>On the last page of this guide, <b>Frequently asked questions</b>. Select it in the step list, or keep selecting <b>Next</b> until you reach it.</p></div></details></section>' +
 
       '<h2>The RTO Radar screen</h2>' +
       '<p>Every screen in RTO Radar has two parts:</p>' +
