@@ -16,7 +16,7 @@
   // cat: which Help Guides category the module sits under
   var MODULES = [
     { id: 'getting-started', cat: 'getting-started', name: 'Getting Started', series: true,
-      blurb: 'A 10-step series that takes you from a new account to filling up your dashboard. Work through it in order.',
+      blurb: 'A 9-step series that takes you from a new account to filling up your dashboard. Work through it in order.',
       // FAQs shown at the end of the page: [question, answer HTML]
       faqs: [
         ['What’s the difference between the person responsible for proposed treatment of risks and the Escalation Manager?',
@@ -40,14 +40,16 @@
             '<li><b>Verify</b> sends it to another person in your RTO to check first. They confirm the right steps were taken and the updated risk level is correct. The item is only marked complete across your organisation once they’ve verified it. If they think it needs more scrutiny, the verifier can escalate it to someone more senior to verify as well.</li>' +
           '</ul>' +
           '<p>Use Verify when an item needs a second set of eyes, such as one tied to a high or extreme risk.</p>'],
-        ['When should I use Silent User?',
-          '<p>Silent User adds someone to RTO Radar without emailing them an invitation. It’s useful when you want to:</p>' +
+        ['What’s the difference between a silent user and a regular user?',
+          '<p>A <b>regular user</b> is emailed an invitation, signs in to RTO Radar and works in it themselves, for example uploading their own documents and mapping their evidence.</p>' +
+          '<p>A <b>silent user</b> has a profile but no sign-in access, and isn’t emailed an invitation. You manage their records for them. Silent users are useful when you want to:</p>' +
           '<ul>' +
             '<li><b>Set up an account before inviting someone</b>: add their documents, courses and units first, so everything’s ready when they first sign in.</li>' +
             '<li><b>Keep compliance records</b> for staff who don’t need to sign in themselves, such as their credentials and document expiry dates.</li>' +
             '<li><b>Test</b> roles, checklists and settings without emailing real people.</li>' +
-          '</ul>' +
-          '<p>When you’re ready, you can send them the invitation.</p>']
+          '</ul>'],
+        ['Can I convert a silent user to a regular user?',
+          '<p>Yes. When you’re ready for them to sign in, send them an invitation from <b>Settings</b> › <b>User Management</b> › <b>Staff</b>. Their profile, documents and assignments stay as they are, so everything you set up is waiting for them when they first sign in.</p>']
       ],
       updated: '2026-10-05', // shown when the site is opened from disk; on a web server the files' own dates are used
 
@@ -86,14 +88,14 @@
 
   // [module, id, type, title, roles, minutes]
   var LIST = [
-    ['getting-started', 'gs-welcome', 'Overview', 'Welcome to RTO Radar', ADM, 5],
+    ['getting-started', 'gs-welcome', 'Overview', 'How to Use This Guide', ADM, 5],
     ['getting-started', 'gs-organisation', 'How-to', 'Set Up Your Organisation', ADM, 10],
     ['getting-started', 'gs-risks', 'How-to', 'Set Up Your Organisational Risks', ADM, 10],
     ['getting-started', 'gs-cir', 'How-to', 'Visit the Continuous Improvement Register', ADM, 5],
     ['getting-started', 'gs-documents', 'How-to', 'Start Adding Your Documents and View Compliance Dashboard', ADM, 10],
     ['getting-started', 'gs-connect-axcelerate', 'How-to', 'Import via aXcelerate (optional)', ADM, 10],
     ['getting-started', 'gs-programs', 'How-to', 'Add Your Programs', ADM, 10],
-    ['getting-started', 'gs-workforce', 'How-to', 'Invite a Trainer', ADM, 5],
+    ['getting-started', 'gs-workforce', 'How-to', 'Add a Trainer', ADM, 5],
     ['getting-started', 'gs-training', 'How-to', 'Assign Training', ADM, 10],
     ['getting-started', 'gs-dashboard', 'How-to', 'View Your Dashboard', ADM, 5],
 
@@ -213,46 +215,25 @@
       '<p>The heatmap places every risk on a five-by-five grid using the ratings you gave it: likelihood runs across, from Rare to Almost Certain, and consequence runs down, from Insignificant to Catastrophic. Each square shows how many risks share that rating.</p>' +
       '<p>A risk’s score is its likelihood multiplied by its consequence, and the colour shows its level: <b>Low</b> (1–4) in green, <b>Medium</b> (5–9) in yellow, <b>High</b> (10–16) in orange and <b>Extreme</b> (17–25) in red. Risks gather towards the top right as they get more serious, so you can see at a glance where to act first.</p>',
     'gs-welcome':
-      '<p class="lead">RTO Radar is compliance software built for Australian Registered Training Organisations. It brings the work that keeps your RTO compliant with the Standards for RTOs 2025 into one connected platform: risk, validation, policies and procedures, trainer competency, professional development, feedback and continuous improvement.</p>' +
+      '<p class="lead">This guide follows your RTO Radar onboarding session. Nine short steps take you from a new account to a dashboard filling up with your RTO’s work. Each step builds on the one before, so work through them in order.</p>' +
 
-      '<h2>Find your way around</h2>' +
+      '<h2>Moving through the guide</h2>' +
+      '<ul>' +
+        '<li><b>Previous and Next.</b> Use the buttons at the bottom of each page to go through the steps in order.</li>' +
+        '<li><b>The step list.</b> The list on the left of this guide shows every step, with the one you’re on highlighted. Select any step to jump straight to it.</li>' +
+        '<li><b>Notes and tips.</b> Read these as you go. Notes explain how something works, and tips point to shortcuts and more detail.</li>' +
+        '<li><b>FAQs.</b> The last page answers common questions, such as how risk scores are worked out and when to use a silent user.</li>' +
+      '</ul>' +
+
+      '<h2>The RTO Radar screen</h2>' +
       '<p>Every screen in RTO Radar has two parts:</p>' +
       '<ul>' +
         '<li><b>The navigation bar (1)</b> on the left lists every part of RTO Radar, from Dashboard and Document Management through to Risk Assessment, Events and Settings. Select one to open it. The navigation bar stays in place wherever you go.</li>' +
         '<li><b>The content area (2)</b> on the right shows whatever you’ve opened, and changes as you move around.</li>' +
       '</ul>' +
       '<figure class="shot" data-marks="0.3,9,15.5,90.5,zone,#1; 17.2,6.4,81.6,93.2,zone,#2"><img src="assets/img/gs-welcome-dashboard.png" alt="RTO Radar after signing in. Marker 1 points to the navigation bar on the left, listing Dashboard, Document Management, Program Management, Continuous Improvement, Workforce Management, Risk Assessment, Complaints and Suggestions, Events and Settings. Marker 2 points to the content area on the right, showing the Admin Dashboard: a Risk Register Overview with 1 missing treatment, 1 responsibility gap and 12 overdue or missing dates, a Risk Level Breakdown bar chart and a Treatment Status Overview pie chart." loading="lazy"><figcaption>The navigation bar (1) and the content area (2), showing your dashboard.</figcaption></figure>' +
-      '<p>When you sign in, the content area opens on your <b>dashboard</b>. It brings forward everything across RTO Radar that needs your immediate attention, from risks and improvement items to documents, staff and upcoming events, so you can see what to act on first without opening every module. Select any item to go straight to it. The last step in this series shows you how to tailor it.</p>' +
-
-      '<h2>How it fits together</h2>' +
-      '<p>RTO Radar runs on a quality cycle. Each part feeds the next:</p>' +
-      '<ol class="rr-cycle">' +
-        '<li><b>Risk sets the pace</b><span>Your RTO profile produces an organisational risk score, which sets a baseline validation frequency for every course. Each course’s own risk factors can shorten it further.</span></li>' +
-        '<li><b>Validation checks quality</b><span>Units are validated through a four-phase process, with AI reading your assessment tools and evidence to point out gaps.</span></li>' +
-        '<li><b>Findings become actions</b><span>Validation findings, feedback, complaints, risk treatments and audit outcomes land in one improvement register, each with an owner and a due date.</span></li>' +
-        '<li><b>Your people stay ready</b><span>Trainer profiles, evidence maps and professional development close the gaps that findings and expiring documents reveal.</span></li>' +
-        '<li><b>Improvements feed back</b><span>Completed actions update your risks, documents and PD plans, and the cycle starts again.</span></li>' +
-      '</ol>' +
-      '<p>Along the way, every document, version, decision and action is recorded, so you can export audit-ready evidence whenever you need it.</p>' +
-
-      '<h2>Who uses RTO Radar</h2>' +
-      '<p>Everyone in your RTO signs in to the same platform, and what they see depends on their role:</p>' +
-      '<ul>' +
-        '<li><a href="roles.html?r=admin"><b>Admins</b></a> set up the organisation, manage users and own the settings. Compliance managers usually hold this role.</li>' +
-        '<li><a href="roles.html?r=coord"><b>Training Coordinators</b></a> manage courses, trainer assignments and delivery.</li>' +
-        '<li><a href="roles.html?r=trainer"><b>Trainers and Assessors</b></a> keep their own documents current, take part in validation and enrol in PD.</li>' +
-        '<li><a href="roles.html?r=auditor"><b>Quality Auditors</b></a> get read-only access for internal reviews and external audits.</li>' +
-      '</ul>' +
-      '<p>Admins can also create custom roles with their own permissions.</p>' +
-
-      '<h2>Where AI helps</h2>' +
-      '<p>RTO Radar uses AI to take on the slowest parts of compliance work:</p>' +
-      '<ul>' +
-        '<li><b>Unit validation</b>: reads your assessment tools, mapping documents and student evidence against the unit of competency and points out gaps.</li>' +
-        '<li><b>Assessment judgement</b>: summarises findings and turns them into improvement items.</li>' +
-        '<li><b>Evidence maps</b>: drafts each trainer’s vocational competency and industry currency from their qualifications, work history and uploaded evidence.</li>' +
-      '</ul>' +
-      '<div class="callout tip"><b>Tip</b><span>Treat AI output as a strong first draft. Review it before you rely on it as evidence.</span></div>',
+      '<p>When you sign in, the content area opens on your <b>dashboard</b>. It brings forward everything across RTO Radar that needs your immediate attention, from risks and improvement items to documents, staff and upcoming events.</p>' +
+      '<p>If you’re new to RTO Radar, your dashboard will be mostly empty. That’s expected: it fills up as you work through this guide. Your organisational risks, improvement items, documents, courses and trainer each appear on it as you add them, and the last step shows you how to tailor it.</p>',
     'upload-and-map-a-document':
       '<p>Mapping a document tells RTO Radar which standards it evidences. Mapped documents count towards your coverage on the Compliance Dashboard, and AI-assisted unit validation can read them as evidence.</p>' +
       '<h2 id="steps">Upload and map a document</h2>' +
@@ -343,7 +324,7 @@
           '<div class="callout note"><b>Note</b><span>The responsible person gets an improvement item in the <a href="feature.html?m=cir">Continuous Improvement Register (CIR)</a> with the proposed treatment.</span></div>' +
           '<figure class="shot"><img src="assets/img/gs-risk-treatment.png" alt="A treatment plan being added to a risk: title Monthly Cash-Flow Monitoring, a description, a proposed treatment, responsible person Compliance Manager, due date 30/10/2026 and status Not started. A bar along the bottom shows the save status, 1 item queued for CI Register and a Complete Risk Assessment button." loading="lazy"><figcaption>Fill in the treatment plan. Use the calendar icon to pick a due date.</figcaption></figure></li>' +
         '<li>Repeat steps 4 to 8 to add more risks, then select <b>Complete Risk Assessment</b>.' +
-          '<figure class="shot" data-marks="8.4,54.2,17.6,10,oval,#; 49,16.4,arrow-down; 88.1,92.6,arrow-down"><img src="assets/img/gs-risk-repeat.png" alt="Risk Assessment by Category with a second category selected. ICT and Cyber-Security Risk is circled in the category list, and an arrow points down at its content on the right: its description, an example, and a risk being entered, Staff Awareness of Cyber Risks, rated Medium Risk with a score of 9. A second arrow points down at the Complete Risk Assessment button in the save bar along the bottom, which shows 2 items queued for CI Register." loading="lazy"><figcaption>Choose another category, such as ICT and Cyber-Security Risk, and add its risks the same way.</figcaption></figure></li>' +
+          '<figure class="shot" data-marks="8.4,54.2,17.6,10,oval,#1; 49,16.4,arrow-down,#2; 88.1,92.6,arrow-down,#3"><img src="assets/img/gs-risk-repeat.png" alt="Risk Assessment by Category with a second category selected. Marker 1 circles ICT and Cyber-Security Risk in the category list, and marker 2 is an arrow pointing down at its content on the right: its description, an example, and a risk being entered, Staff Awareness of Cyber Risks, rated Medium Risk with a score of 9. Marker 3 is an arrow pointing down at the Complete Risk Assessment button in the save bar along the bottom, which shows 2 items queued for CI Register." loading="lazy"><figcaption>Choose another category (1), add its risks the same way (2), then select Complete Risk Assessment (3).</figcaption></figure></li>' +
         '<li>Review your changes, then select <b>Complete Risk Assessment</b>.' +
           '<figure class="shot" data-marks="54.4,69.8,17.6,11.4,oval,#"><img src="assets/img/gs-risk-review.png" alt="The review shown before completing the assessment, headed New Risks Added (2). It lists both new risks with their category, likelihood and consequence, and treatment plan: Cash-flow pressure from delayed student payments, rated Medium with a score of 9, and Staff Awareness of Cyber Risks, rated Low with a score of 4. The Complete Risk Assessment button, between Discard and Exit and Cancel, is circled." loading="lazy"><figcaption>Review the new risks and their treatment plans, then select Complete Risk Assessment.</figcaption></figure>' +
           '<div class="callout note"><b>Note</b><span>You can add more risks later from Risk Assessment › Actions › Edit Comprehensive Assessment.</span></div></li>' +
@@ -391,6 +372,8 @@
       '</ol>' +
       '<h2>Compliance Dashboard</h2>' +
       '<p>The Compliance Dashboard shows how well your documents cover each framework, using the standards you mapped them to. As you upload and map more documents, it fills in.</p>' +
+      '<p>To open it, go to <b>Document Management</b> and select the <b>Compliance Dashboard</b> tab.</p>' +
+      '<figure class="shot" data-marks="21.2,43.2,9.8,6.6,oval,#"><img src="assets/img/gs-cd-tab.png" alt="Document Management (QMS), showing totals for documents, approved, review due and drafts, and the Document Repository. The Compliance Dashboard tab, beside Documents, is circled." loading="lazy"><figcaption>Select the Compliance Dashboard tab in Document Management.</figcaption></figure>' +
       '<p><b>Standards coverage</b> shows how many standards have at least one mapped document. <b>Policy Compliance Health</b> is a score out of 100 that combines standards coverage, review timeliness and document freshness.</p>' +
       '<figure class="shot"><img src="assets/img/gs-cd-coverage.png" alt="The top of the Compliance Dashboard for the Standards for RTOs 2025: 23 total standards, 9 covered and 14 missing. A Standards Coverage chart shows 39 percent coverage, and a Policy Compliance Health gauge shows 52, rated Fair, on a scale of 0 to 39, 40 to 69 and 70 to 100." loading="lazy"><figcaption>Standards coverage and Policy Compliance Health.</figcaption></figure>' +
       '<p><b>Upcoming reviews</b> shows documents that are overdue, or due for review in the next 30 or 90 days.</p>' +
@@ -435,16 +418,16 @@
           '<figure class="shot" data-marks="82.6,18.4,12.6,8.6,oval,#"><img src="assets/img/gs-prog-save.png" alt="Manage Course Units for BSB50120 Diploma of Business, marked Unsaved Changes. The Save Changes button at the top right is circled. Below, the added units are marked Added in the unit list." loading="lazy"><figcaption>Select Save Changes. Until you do, the page shows Unsaved Changes.</figcaption></figure></li>' +
       '</ol>',
     'gs-workforce':
-      '<p>Each staff member gets their own RTO Radar account, and their role decides what they can see and do. Start with a trainer to see how it works.</p>' +
+      '<p>Add your trainer as a <b>silent user</b> first. A silent user has a profile but can’t sign in and isn’t emailed an invitation, so you can set up their courses, units and documents before they ever see RTO Radar. Most RTOs add their trainers this way, then invite them once everything’s ready.</p>' +
       '<ol class="steps-list">' +
         '<li>On your navigation bar, go to <b>Settings</b> › <b>User Management</b> › <b>Staff</b>, then select <b>Add New User</b>.' +
           '<figure class="shot" data-marks="0.5,80.4,8.2,6.2,oval,right,#1; 39.2,43.2,14.6,7.6,oval,above,#2; 35.1,77.3,7.7,5.8,oval,right,#3; 28.6,87.6,13.8,10.8,oval,right,#4"><img src="assets/img/gs-trainer-add.png" alt="Organisation Settings on the User Management tab. Marker 1 circles Settings in the navigation bar, marker 2 the User Management tab, marker 3 the Staff tab, and marker 4 the Add New User button." loading="lazy"><figcaption>Select Settings (1), User Management (2) and Staff (3), then Add New User (4).</figcaption></figure></li>' +
         '<li>Choose a trainer who will deliver a course you’ve added to RTO Radar. You’ll assign that course to them in the next step.</li>' +
-        '<li>Enter their name and email, select the <b>Trainer/Assessor</b> role, leave the team as <b>System Default</b>, and leave <b>Silent User</b> off.' +
-          '<figure class="shot" data-marks="52.2,88.4,11.6,7.8,oval,#"><img src="assets/img/gs-trainer-form.png" alt="The Create New User form, filled in with a first and last name, an email address, the Trainer/Assessor role, the team left as System Default (no team), and Silent user switched off. The Send Invitation button at the bottom is circled." loading="lazy"><figcaption>Fill in their details, then select Send Invitation.</figcaption></figure>' +
-          '<div class="callout note"><b>Note</b><span>Silent User stops RTO Radar from emailing an invitation straight away.</span></div>' +
+        '<li>Enter their name and email, select the <b>Trainer/Assessor</b> role, leave the team as <b>System Default</b>, and turn on <b>Silent user</b>.' +
+          '<figure class="shot" data-marks="57.7,69.6,4.4,5.8,oval,#; 51.6,93.6,9.8,6.6,oval,#"><img src="assets/img/gs-trainer-silent.png" alt="The Create New User form, filled in with a first and last name, an email address, the Trainer/Assessor role and the team left as System Default (no team). The Silent user (no login access) switch is turned on and circled, and a note says the user will be created for compliance tracking only and won’t receive an invitation email or be able to log in. The Create Profile button is circled." loading="lazy"><figcaption>Turn on Silent user, then select Create Profile.</figcaption></figure>' +
           '<div class="callout tip"><b>Tip</b><span>For more on roles, permissions and teams, see <a href="feature.html?m=users">Users, Roles &amp; Teams</a> in Features.</span></div></li>' +
-        '<li>Select <b>Send Invitation</b>. They’ll get an email to set up their account.</li>' +
+        '<li>Select <b>Create Profile</b>. Their profile is created without sending an invitation.' +
+          '<div class="callout note"><b>Note</b><span>When they’re ready to sign in, you can send them an invitation. See <a href="feature.html?m=getting-started&amp;s=faq">the FAQs</a> for the difference between silent and regular users, and how to convert one to the other.</span></div></li>' +
       '</ol>',
     'gs-dashboard':
       '<p>Your dashboard is a live snapshot of your whole RTO. Risk, improvement items, workforce readiness, documents and upcoming events each have their own widget, and each one brings forward only the items that need your immediate attention. No digging through every module: what’s overdue, due soon or at risk is right in front of you.</p>' +
@@ -480,15 +463,27 @@
       '<h2>Create a Document Checklist</h2>' +
       '<ol class="steps-list">' +
         '<li>In <b>Workforce Management</b>, go to the <b>Document Checklist</b> tab.' +
-          '<figure class="shot" data-marks="35.3,41,14.1,4.6,oval,above,#1; 64.5,75.6,11.9,4.8,oval,#2"><img src="assets/img/gs-checklist-role.png" alt="The Document Checklist tab in Workforce Management, asking you to select a role. Roles shown are Administrator and Trainer/Assessor, with a Display all documents option. Marker 1 circles the Document Checklist tab, and marker 2 circles the Trainer/Assessor role." loading="lazy"><figcaption>Open Document Checklist (1), then choose the Trainer/Assessor role (2).</figcaption></figure></li>' +
+          '<figure class="shot" data-marks="34.6,39.4,15.6,7.6,oval,above,#1; 63.8,73.8,13.4,8.6,oval,#2"><img src="assets/img/gs-checklist-role.png" alt="The Document Checklist tab in Workforce Management, asking you to select a role. Roles shown are Administrator and Trainer/Assessor, with a Display all documents option. Marker 1 circles the Document Checklist tab, and marker 2 circles the Trainer/Assessor role." loading="lazy"><figcaption>Open Document Checklist (1), then choose the Trainer/Assessor role (2).</figcaption></figure></li>' +
         '<li>Select the <b>Trainer/Assessor</b> role.</li>' +
         '<li>Select <b>Add Document Type</b> and add each document trainers need, such as a Working With Children Check or White Card.' +
-          '<figure class="shot" data-marks="83.3,66.6,12.2,6.4,oval,#3"><img src="assets/img/gs-checklist-add.png" alt="The document checklist for the Trainer/Assessor role. Document Expiry Health shows 10 current documents and 1 expired, and Role coverage shows how many trainers have submitted each required document. The table lists White Card and Working With Children Check with how many have been received. Marker 3 circles the Add document type button." loading="lazy"><figcaption>Select Add document type (3) to add each document trainers need.</figcaption></figure></li>' +
+          '<figure class="shot" data-marks="82.6,65.2,13.6,9.2,oval,#"><img src="assets/img/gs-checklist-add.png" alt="The document checklist for the Trainer/Assessor role. Document Expiry Health shows 10 current documents and 1 expired, and Role coverage shows how many trainers have submitted each required document. The table lists White Card and Working With Children Check with how many have been received. The Add document type button is circled." loading="lazy"><figcaption>Select Add document type to add each document trainers need.</figcaption></figure></li>' +
       '</ol>' +
       '<h2>Staff Documents</h2>' +
-      '<p>Once the trainer accepts the invitation and signs in, they can upload the documents on their checklist and send them for review, see the courses and units assigned to them, and use AI to map their evidence against those units.</p>' +
-      '<p>You can also upload documents for them from their profile: <b>Documents</b> › <b>Upload Document</b>.</p>' +
-      '<figure class="shot"><img src="assets/img/gs-staff-profile.png" alt="A trainer’s staff profile. It shows their role, last login, team and manager; a delivery competency chart with 6 units assigned, 3 approved, 2 draft and 1 pending; their most recently issued credentials, including an expired Working With Children Check; their most recent evidence map; their document checklist with 1 of 2 documents provided; and upcoming staff document expiry." loading="lazy"><figcaption>A trainer’s profile brings together their units, credentials, evidence map, checklist and document expiry.</figcaption></figure>'
+      '<p>Your trainer is a silent user, so you upload their documents for them.</p>' +
+      '<p>Would you rather the trainer upload their own documents? Send them an invitation to RTO Radar. Once they sign in, they can upload documents from their checklist and send them for review, see their assigned courses and units, and use AI to map their evidence against those units.</p>' +
+      '<p>To upload a document for them, open their staff profile, then:</p>' +
+      '<ol class="steps-list">' +
+        '<li>Select the <b>Documents</b> tab.</li>' +
+        '<li>Select <b>Upload Document</b>, then add each document on their checklist.' +
+          '<figure class="shot" data-marks="4.5,24.9,6.7,4.6,oval,#1; 86.9,34.4,12.4,6.2,oval,above,#2"><img src="assets/img/gs-staff-docs.png" alt="The Documents tab of the Staff Demo profile, listing 11 documents with their category, document checklist item, status and expiry, such as a Working With Children Check marked Approved. Marker 1 circles the Documents tab, and marker 2 circles the Upload Document button." loading="lazy"><figcaption>Open the Documents tab (1), then select Upload Document (2).</figcaption></figure></li>' +
+        '<li>Select the file box and choose the document from your computer.' +
+          '<figure class="shot" data-marks="51,72,arrow-down,small"><img src="assets/img/gs-staff-file.png" alt="The Upload Qualifications window, for uploading certificates, diplomas, degrees and other formal qualifications. An arrow points down at the Select File box, which shows a chosen file, Diploma of Community Services.docx." loading="lazy"><figcaption>Select the file box to choose a document.</figcaption></figure></li>' +
+        '<li>Enter the document details, then select <b>Upload Document</b>.' +
+          '<figure class="shot" data-marks="82.4,93.3,15.4,6.6,oval,#"><img src="assets/img/gs-staff-upload.png" alt="The document details form for a qualification: category Qualifications, the document name, course code CHC52025, course name Diploma of Community Services, a description listing the units completed, a completion date of 14/06/2026, and This document does not expire ticked. The Upload Document button at the bottom right is circled." loading="lazy"><figcaption>Fill in the details, then select Upload Document.</figcaption></figure></li>' +
+        '<li>Find the document you uploaded on the <b>Documents</b> tab.</li>' +
+        '<li>Open the <b>Profile</b> tab to see how it all comes together: their role and team, delivery competency, most recent credentials and evidence map, document checklist and upcoming document expiry.' +
+          '<figure class="shot" data-marks="3.4,12.3,4.7,4.2,oval,#"><img src="assets/img/gs-staff-profile.png" alt="The Profile tab of the Staff Demo profile, circled. It shows their role, last login, team and manager; a delivery competency chart of 16 units assigned; their most recently issued credentials, including the Diploma of Community Services and an expired Working With Children Check; their most recent evidence map; their document checklist with 1 of 2 provided; and upcoming staff document expiry." loading="lazy"><figcaption>A trainer’s profile brings together their units, credentials, evidence map, checklist and document expiry.</figcaption></figure></li>' +
+      '</ol>'
   };
 
   // Getting Started steps that share a written guide with their module

@@ -275,7 +275,7 @@
     var cfg = RH.MODULES.filter(function (m) { return m.cat === 'configuration'; });
     var cfgCount = cfg.reduce(function (n, m) { return n + moduleArticles(m.id).length; }, 0);
     var cats = [
-      { lens: 'Start here', goal: 1, n: moduleArticles('getting-started').length + ' guides', name: 'Getting Started', href: modUrl('getting-started'), desc: 'A 10-step series from a new account to filling up your dashboard.', items: moduleArticles('getting-started').slice(0, 4).map(function (a) { return [a.t, artUrl(a.id)]; }), cta: 'Start the series' },
+      { lens: 'Start here', goal: 1, n: moduleArticles('getting-started').length + ' guides', name: 'Getting Started', href: modUrl('getting-started'), desc: 'A 9-step series from a new account to filling up your dashboard.', items: moduleArticles('getting-started').slice(0, 4).map(function (a) { return [a.t, artUrl(a.id)]; }), cta: 'Start the series' },
       { lens: 'By goal', goal: 1, n: RH.WORKFLOWS.length + ' workflows', name: 'Workflows', href: 'workflows.html', desc: 'Tell us what you’re trying to accomplish. We’ll walk you across every module it touches.', items: ['prepare-for-an-audit', 'prepare-a-trainer-for-delivery', 'validate-a-unit', 'complaint-to-improvement'].map(function (id) { return [WF[id].t, wfUrl(id)]; }), cta: 'See all ' + RH.WORKFLOWS.length + ' workflows' },
       { lens: 'By screen', n: feats.length + ' modules', name: 'Features', href: 'features.html', desc: 'How each part of RTO Radar works, and where its data shows up elsewhere.', items: ['qms', 'cir', 'workforce', 'risk'].map(function (id) { return [MOD[id].name, modUrl(id)]; }), cta: 'See all ' + feats.length + ' modules' },
       { lens: 'By role', n: '4 roles', name: 'Roles', href: 'roles.html', desc: 'Where to start based on what your role can see and do.', items: Object.keys(RH.ROLES).map(function (r) { return [RH.ROLES[r].name, 'roles.html?r=' + r]; }), cta: 'Find your role' },
@@ -351,24 +351,26 @@
     var hashId = location.hash.slice(1);
     if (!param('s') && A[hashId] && A[hashId].module === m.id) { location.replace(seriesUrl(m, hashId)); return; }
 
-    var list = steps.map(function (a, i) { return { id: a.id, t: a.t, a: a, n: i + 1 }; });
+    // An Overview step (How to Use This Guide) is an unnumbered introduction; numbering starts after it
+    var total = steps.filter(function (a) { return a.type !== 'Overview'; }).length, k = 0;
+    var list = steps.map(function (a) { var intro = a.type === 'Overview'; return { id: a.id, t: a.t, a: a, intro: intro, n: intro ? 0 : ++k }; });
     if (faqs.length) list.push({ id: 'faq', t: 'Frequently asked questions' });
     var idx = 0;
     list.forEach(function (p, i) { if (p.id === param('s')) idx = i; });
     var cur = list[idx], prev = list[idx - 1], next = list[idx + 1];
     document.title = cur.t + ' · ' + m.name + ' · RadarHelp';
     // Reaching the last step's page completes the series (the landing page shows a check)
-    if (cur.a && cur.n === steps.length && !gsComplete()) store('gs.complete', true);
+    if (cur.a && cur.n === total && !gsComplete()) store('gs.complete', true);
 
     crumbBar([['RadarHelp', 'index.html'], ['Help Guides', 'guides.html'], [m.name, seriesUrl(m)], [cur.t]]);
     $('#body').classList.remove('wrap'); // the step list sits against the left edge of the page
 
     var nav = '<button type="button" class="gs2-toggle" aria-expanded="false" aria-controls="gs2-nav">' +
-        '<span>' + (cur.a ? 'Step ' + cur.n + ' of ' + steps.length + ': ' : '') + esc(cur.t) + '</span><span class="chev" aria-hidden="true">▾</span></button>' +
+        '<span>' + (cur.a && !cur.intro ? 'Step ' + cur.n + ' of ' + total + ': ' : '') + esc(cur.t) + '</span><span class="chev" aria-hidden="true">▾</span></button>' +
       '<nav class="gs2-nav" id="gs2-nav" aria-label="' + esc(m.name) + '"><span class="gs2-group">' + esc(m.name) + '</span><ol>' +
       list.map(function (p, i) {
         return '<li><a href="' + seriesUrl(m, p.id) + '"' + (i === idx ? ' aria-current="page"' : '') + '>' +
-          '<span class="n">' + (p.a ? p.n : '?') + '</span><span>' + esc(p.t) + '</span></a></li>';
+          '<span class="n">' + (p.intro ? 'i' : p.a ? p.n : '?') + '</span><span>' + esc(p.t) + '</span></a></li>';
       }).join('') + '</ol></nav>';
 
     var content, afterPager = ''; // afterPager: shown below Previous/Next (related articles on the FAQ page)
@@ -382,8 +384,8 @@
         var mm = /^(<h3>[\s\S]*?<\/h3>)([\s\S]*)$/.exec(part);
         return mm ? '<div class="gs-sub">' + mm[1] + '<div class="gs-sub-body">' + mm[2] + '</div></div>' : part;
       }).join('');
-      content = '<header class="gs2-head"><span class="eyebrow">' + esc(m.name) + ' · Step ' + cur.n + ' of ' + steps.length + '</span>' +
-        '<h1>' + esc(a.t) + '</h1>' + (cur.n === 1 ? '<p class="gs2-lede">' + esc(m.blurb) + '</p>' : '') +
+      content = '<header class="gs2-head"><span class="eyebrow">' + esc(m.name) + (cur.intro ? '' : ' · Step ' + cur.n + ' of ' + total) + '</span>' +
+        '<h1>' + esc(a.t) + '</h1>' + (cur.intro ? '<p class="gs2-lede">' + esc(m.blurb) + '</p>' : '') +
         '<div class="gs-meta"><span class="role">' + ICON.user + 'Admin</span><a class="updated" id="gs-updated" href="page.html?p=whats-new">Updated <time></time></a></div></header>' +
         '<section class="gs-step gs2-body"><div class="prose">' + body + '</div></section>';
     } else {
