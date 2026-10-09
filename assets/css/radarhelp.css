@@ -629,3 +629,5 @@ mark { background: var(--tip-bg); color: inherit; padding: 0 2px; border-radius:
 .gs-step .prose h4.point::before { content: "\261E"; flex-shrink: 0; font-family: "Segoe UI Symbol", "Apple Symbols", "Noto Sans Symbols 2", sans-serif;
   font-size: 1.9rem; font-weight: 400; line-height: 1; color: var(--rto-navy); }
 .demo-faq { padding-top: 0; border-top: 0; }
+.demo-text { display: grid; gap: 10px; font-size: 0.95rem; background: #fff; }
+.gs-step ol.steps-list > li > p, .gs-step ol.steps-list > li > ul, .gs-step ol.steps-list > li > .demo { margin-top: 12px; }

@@ -48,6 +48,17 @@
             '<li><b>Keep compliance records</b> for staff who don’t need to sign in themselves, such as their credentials and document expiry dates.</li>' +
             '<li><b>Test</b> roles, checklists and settings without emailing real people.</li>' +
           '</ul>'],
+        ['Why is a document’s description important, and how should I write it?',
+          '<p>When you create a trainer’s evidence map, RTO Radar’s AI uses each document’s description to write evidence statements for their vocational competency and industry currency. To protect personally identifiable information, the AI reads <b>only the description</b>, never the file itself. A vague description gives the AI little to work with, while a detailed one produces stronger, more accurate evidence.</p>' +
+          '<p>A good description covers:</p>' +
+          '<ul>' +
+            '<li>what the document is, and when it was completed or issued</li>' +
+            '<li>the skills or knowledge it demonstrates</li>' +
+            '<li>for a qualification, the units it covers, with their codes and titles</li>' +
+            '<li>how it connects to the units the trainer delivers, and any systems or processes they manage</li>' +
+            '<li>how it reflects current industry practice.</li>' +
+          '</ul>' +
+          '<p>For example: “Certificate II in Community Services, completed on 18 November 2025. Units completed include CHCCOM005 Communicate and work in health or community services, CHCDIV001 Work with diverse people, HLTWHS001 Participate in workplace health and safety, CHCCCS015 Provide individualised support and CHCVOL002 Lead volunteer teams. Developed communication skills, awareness of diversity, safe work practices and introductory client support skills.”</p>'],
         ['Can I convert a silent user to a regular user?',
           '<p>Yes. When you’re ready for them to sign in, send them an invitation from <b>Settings</b> › <b>User Management</b> › <b>Staff</b>. Their profile, documents and assignments stay as they are, so everything you set up is waiting for them when they first sign in.</p>']
       ],
@@ -500,8 +511,24 @@
           '<figure class="shot" data-marks="4.5,24.9,6.7,4.6,oval,#1; 86.9,34.4,12.4,6.2,oval,above,#2"><img src="assets/img/gs-staff-docs.png" alt="The Documents tab of the Staff Demo profile, listing 11 documents with their category, document checklist item, status and expiry, such as a Working With Children Check marked Approved. Marker 1 circles the Documents tab, and marker 2 circles the Upload Document button." loading="lazy"><figcaption>Open the Documents tab (1), then select Upload Document (2).</figcaption></figure></li>' +
         '<li>Select the file box and choose the document from your computer.' +
           '<figure class="shot" data-marks="51,72,arrow-down,small"><img src="assets/img/gs-staff-file.png" alt="The Upload Qualifications window, for uploading certificates, diplomas, degrees and other formal qualifications. An arrow points down at the Select File box, which shows a chosen file, Diploma of Community Services.docx." loading="lazy"><figcaption>Select the file box to choose a document.</figcaption></figure></li>' +
-        '<li>Enter the document details, then select <b>Upload Document</b>.' +
-          '<figure class="shot" data-marks="82.4,93.3,15.4,6.6,oval,#"><img src="assets/img/gs-staff-upload.png" alt="The document details form for a qualification: category Qualifications, the document name, course code CHC52025, course name Diploma of Community Services, a description listing the units completed, a completion date of 14/06/2026, and This document does not expire ticked. The Upload Document button at the bottom right is circled." loading="lazy"><figcaption>Fill in the details, then select Upload Document.</figcaption></figure></li>' +
+        '<li>Write a detailed <b>Description</b>. This is the most important field in the form.' +
+          '<p>When you later create the trainer’s evidence map, RTO Radar’s AI reads each document’s description to write evidence statements for their vocational competency and industry currency. To protect personal information, the AI reads <b>only the description</b>, not the file itself, so the more detail you give, the stronger the evidence it can write.</p>' +
+          '<p>Describe how the document supports the trainer’s competency or currency, including:</p>' +
+          '<ul>' +
+            '<li>the skills or knowledge it demonstrates</li>' +
+            '<li>for a qualification, the units it covers, with their codes and titles</li>' +
+            '<li>how it connects to the units they deliver</li>' +
+            '<li>any systems or processes they manage</li>' +
+            '<li>how it reflects current industry practice.</li>' +
+          '</ul>' +
+          '<div class="demo demo-text"><span class="demo-label">Example description</span>' +
+            '<p>Certificate II in Community Services, completed on 18 November 2025.</p>' +
+            '<p>Units completed include:<br>CHCCOM005 Communicate and work in health or community services<br>CHCDIV001 Work with diverse people<br>HLTWHS001 Participate in workplace health and safety<br>CHCCCS015 Provide individualised support<br>CHCVOL002 Lead volunteer teams</p>' +
+            '<p>Developed communication skills, awareness of diversity, safe work practices and introductory client support skills.</p>' +
+          '</div>' +
+          '<div class="callout note"><b>Note</b><span>Learn how descriptions become evidence statements in <a href="feature.html?m=workforce">Workforce Management</a>, under evidence maps.</span></div></li>' +
+        '<li>Fill in the remaining details, then select <b>Upload Document</b>.' +
+          '<figure class="shot" data-marks="45.5,45.8,arrow-down,small; 82.4,93.3,15.4,6.6,oval,#"><img src="assets/img/gs-staff-upload.png" alt="The document details form for a qualification: category Qualifications, the document name, course code CHC52025, course name Diploma of Community Services, a description listing the units completed, a completion date of 14/06/2026, and This document does not expire ticked. An arrow points down at the Description field, and the Upload Document button at the bottom right is circled." loading="lazy"><figcaption>Fill in the details, then select Upload Document.</figcaption></figure></li>' +
         '<li>Find the document you uploaded on the <b>Documents</b> tab.</li>' +
         '<li>Open the <b>Profile</b> tab to see how it all comes together: their role and team, delivery competency, most recent credentials and evidence map, document checklist and upcoming document expiry.' +
           '<figure class="shot" data-marks="3.4,12.3,4.7,4.2,oval,#"><img src="assets/img/gs-staff-profile.png" alt="The Profile tab of the Staff Demo profile, circled. It shows their role, last login, team and manager; a delivery competency chart of 16 units assigned; their most recently issued credentials, including the Diploma of Community Services and an expired Working With Children Check; their most recent evidence map; their document checklist with 1 of 2 provided; and upcoming staff document expiry." loading="lazy"><figcaption>A trainer’s profile brings together their units, credentials, evidence map, checklist and document expiry.</figcaption></figure></li>' +
