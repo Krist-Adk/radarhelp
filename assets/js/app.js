@@ -56,16 +56,37 @@
   };
 
   // ---------- shell ----------
+  // Features-only build (RH.ONLY lists the published module categories): the published content.js
+  // holds only those guides, so links to anything else (Getting Started, workflows, roles, other
+  // pages) are turned into plain text and the header shows only Features.
+  var ONLY = RH.ONLY || null;
   function header(active) {
-    var nav = [['guides', 'guides.html', 'Help Guides'], ['videos', 'page.html?p=videos', 'Video Library'], ['webinars', 'page.html?p=webinars', 'Webinars'], ['ideas', 'page.html?p=ideas', 'Ideas Forum'], ['new', 'page.html?p=whats-new', 'What’s New']];
+    var nav = ONLY ? [['guides', 'index.html', 'Features']] :
+      [['guides', 'guides.html', 'Help Guides'], ['videos', 'page.html?p=videos', 'Video Library'], ['webinars', 'page.html?p=webinars', 'Webinars'], ['ideas', 'page.html?p=ideas', 'Ideas Forum'], ['new', 'page.html?p=whats-new', 'What’s New']];
     return '<a class="skip" href="#main">Skip to content</a>' +
       '<header class="site-header"><div class="wrap bar">' +
       '<a class="brand" href="index.html"><img src="assets/img/logo.png" alt="RTO Radar"><span>Help</span></a>' +
       '<button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">' + ICON.menu + '</button>' +
       '<nav class="main-nav" id="main-nav" aria-label="Main">' + nav.map(function (n) { return '<a href="' + n[1] + '"' + (n[0] === active ? ' aria-current="page"' : '') + '>' + n[2] + '</a>'; }).join('') + '</nav>' +
       (active === 'home' ? '' : '<form class="header-search" action="search.html" role="search"><label for="hs" class="visually-hidden">Search help</label>' + ICON.search + '<input id="hs" name="q" type="search" placeholder="Search help"></form>') +
-      '<a class="btn btn-primary contact" href="page.html?p=contact">Contact us</a>' +
+      (ONLY ? '' : '<a class="btn btn-primary contact" href="page.html?p=contact">Contact us</a>') +
       '</div></header>';
+  }
+  // In the features-only build, unwrap links to pages and guides that weren't published, and
+  // drop the boxes whose only purpose is such a link (Ideas Forum, Submit a request)
+  function pruneUnpublished() {
+    if (!ONLY) return;
+    [].forEach.call(document.querySelectorAll('a[href]'), function (a) {
+      var h = a.getAttribute('href'), m, ok = true;
+      if (!h || h.charAt(0) === '#' || /^(https?:|mailto:)/.test(h)) return;
+      if (/^(page|guides|workflows?|roles)\.html/.test(h)) ok = false;
+      else if ((m = /^article\.html\?id=([^&#]*)/.exec(h))) ok = !!A[decodeURIComponent(m[1])];
+      else if ((m = /^feature\.html\?m=([^&#]*)/.exec(h))) ok = !!MOD[decodeURIComponent(m[1])];
+      if (ok) return;
+      var box = /^page\.html/.test(h) && a.closest('.gs-help, .rail .box');
+      if (box) { box.remove(); return; }
+      var s = document.createElement('span'); s.innerHTML = a.innerHTML; a.replaceWith(s);
+    });
   }
   function footer() {
     return '<footer class="site-footer"><div class="wrap">' +
@@ -73,6 +94,8 @@
       '</div></footer>';
   }
   function crumbs(parts) {
+    // Features-only: Features is the home page, so the RadarHelp and Help Guides levels go
+    if (ONLY) parts = parts.filter(function (p) { return p[1] !== 'index.html' && p[1] !== 'guides.html'; });
     return '<nav class="crumbs" aria-label="Breadcrumb">' + parts.map(function (p, i) {
       return (i ? '<span aria-hidden="true">›</span>' : '') + (p[1] ? '<a href="' + p[1] + '">' + esc(p[0]) + '</a>' : '<span aria-current="page">' + esc(p[0]) + '</span>');
     }).join('') + '</nav>';
@@ -147,6 +170,8 @@
   // "x,y,arrow" draws an arrow whose tip touches x,y, pointing up; use "arrow-down", "arrow-left" or "arrow-right"
   // for other directions. Arrows stand out on busy or coloured backgrounds where an oval would blend in.
   // An arrow shows a number at its tail only when given one, e.g. "60,40,arrow-left,#4". Add "small" or "tiny" for a shorter arrow in tight gaps.
+  // "x,y,hand" draws a pointing-hand cursor with its fingertip on x,y, to show something that can be clicked.
+  // "x,y,h,caret" draws a text cursor h% tall, its top at x,y, to show where text is being typed.
   function wireMarks() {
     document.querySelectorAll('.shot[data-marks]').forEach(function (f) {
       var img = f.querySelector('img'); if (!img || img.parentNode.classList.contains('shot-frame')) return;
@@ -156,17 +181,27 @@
       frame.appendChild(img);
       f.getAttribute('data-marks').split(';').forEach(function (entry, i) {
         var tokens = entry.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
-        var label = String(i + 1), labelled = false, oval = false, right = false, above = false, zone = false, small = false, arrow = null, v = [];
+        var label = String(i + 1), labelled = false, oval = false, right = false, above = false, zone = false, small = false, arrow = null, hand = false, caret = false, v = [];
         tokens.forEach(function (t) {
           if (t.charAt(0) === '#') { label = t.slice(1); labelled = true; } else if (t === 'oval') oval = true; else if (t === 'right') right = true;
           else if (t === 'above') above = true; else if (t === 'zone') zone = true; else if (t === 'underline') zone = 'underline'; else if (t === 'small') small = 'small'; else if (t === 'tiny') small = 'tiny';
           else if (/^arrow(-(up|down|left|right))?$/.test(t)) arrow = t.split('-')[1] || 'up';
+          else if (t === 'hand') hand = true;
+          else if (t === 'caret') caret = true;
           else v.push(t);
         });
         if (v.length < 2) return;
         var x = parseFloat(v[0]), y = parseFloat(v[1]), el = document.createElement('span');
         el.setAttribute('aria-hidden', 'true');
-        if (arrow) {
+        if (caret) {
+          el.className = 'mark-caret';
+          el.style.cssText = 'left:' + x + '%;top:' + y + '%;height:' + (parseFloat(v[2]) || 3) + '%';
+        } else if (hand) {
+          // Pointing-hand cursor, fingertip on x,y
+          el.className = 'mark-hand';
+          el.style.cssText = 'left:' + x + '%;top:' + y + '%';
+          el.innerHTML = '<svg viewBox="0 0 26 30" width="30" height="35"><path d="M8 3a2 2 0 0 1 4 0v9a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v7c0 4-3 7-7 7h-4c-3 0-5-2-7-5l-4.5-6a2 2 0 0 1 3-2.5L8 18z"/></svg>';
+        } else if (arrow) {
           // Arrow with its tip on x,y, pointing the way named (up by default, i.e. coming from below)
           el.className = 'mark-arrow to-' + arrow + (small ? ' ' + small : '');
           el.style.cssText = 'left:' + x + '%;top:' + y + '%';
@@ -245,13 +280,6 @@
   }
   function articleRow(a, side) {
     return '<a href="' + artUrl(a.id) + '">' + typeChip(a.type) + '<span class="grow">' + esc(a.t) + '</span><span class="side">' + esc(side || (a.mins + ' min')) + '</span></a>';
-  }
-  function flowCards(mid) {
-    var outs = RH.LINKS.filter(function (l) { return l[0] === mid; }), ins = RH.LINKS.filter(function (l) { return l[1] === mid; });
-    return {
-      outs: outs.map(function (l) { return '<a class="flow-card" href="' + modUrl(l[1]) + '"><b>' + esc(MOD[l[1]].name) + '</b><span>' + esc(l[2]) + '</span></a>'; }).join(''),
-      ins: ins.map(function (l) { return '<a class="flow-card in" href="' + modUrl(l[0]) + '"><b>' + esc(MOD[l[0]].name) + '</b><span>' + esc(l[2]) + '</span></a>'; }).join('')
-    };
   }
 
   // ---------- pages ----------
@@ -413,23 +441,160 @@
     wireMarks();
     wireZoom();
     wireFeedback(m.id);
+    wireSide();
+    wireToc();
+  }
 
+  // Workbook sheets: tabs styled like Excel's sheet tabs. Selecting one shows its sheet.
+  function wireSheetTabs() {
+    document.querySelectorAll('.xl-book').forEach(function (book) {
+      var tabs = book.querySelectorAll('.xl-bar [role="tab"]'), sheets = book.querySelectorAll('.xl-sheet');
+      function show(i) {
+        tabs.forEach(function (t, j) { t.setAttribute('aria-selected', String(i === j)); t.tabIndex = i === j ? 0 : -1; });
+        sheets.forEach(function (s, j) { s.hidden = i !== j; });
+      }
+      // data-hint="n": a "Click here" arrow above tab n until any tab is selected
+      var hint = null, hi = book.getAttribute('data-hint');
+      if (hi !== null && tabs[+hi]) {
+        hint = document.createElement('div');
+        hint.className = 'xl-hint'; hint.setAttribute('aria-hidden', 'true');
+        hint.innerHTML = '<span class="hs-hint-text">Click here</span><svg viewBox="0 0 72 40"><path d="M2 20 L26 3 L26 14 L70 14 L70 26 L26 26 L26 37 Z"/></svg>';
+        book.parentNode.insertBefore(hint, book);
+        var place = function () { var t = tabs[+hi]; var r = t.getBoundingClientRect(); hint.style.paddingLeft = Math.max(0, r.left - book.getBoundingClientRect().left + r.width / 2 - 40) + 'px'; };
+        place(); window.addEventListener('resize', place);
+      }
+      tabs.forEach(function (t, i) {
+        t.addEventListener('click', function () { show(i); if (hint) { hint.remove(); hint = null; } });
+        t.addEventListener('keydown', function (e) { // arrow keys move between tabs
+          var k = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+          if (k) { var n = (i + k + tabs.length) % tabs.length; show(n); tabs[n].focus(); }
+        });
+      });
+      show(0);
+    });
+  }
+
+  // Clickable picture: underlined parts of a screenshot (.hs) each open a panel below it, like tabs.
+  // Several parts can open the same panel (data-panel).
+  function wireHotspots() {
+    document.querySelectorAll('.hotspots').forEach(function (box) {
+      var spots = box.querySelectorAll('.hs, .hs-link'), panels = box.querySelectorAll('.hs-panel');
+      function show(n) {
+        panels.forEach(function (p, j) { p.hidden = j !== n; });
+        spots.forEach(function (s) { s.setAttribute('aria-pressed', String(+s.getAttribute('data-panel') === n)); });
+        box.classList.toggle('has-open', n >= 0); // hides the starting arrow
+        box.setAttribute('data-open', n); // after verifying, a second arrow points to the next part
+        open = n;
+      }
+      // Selecting the part that's already open closes it again, back to nothing open
+      var open = -1, row = box.querySelector('.doc-row'), run = 0;
+      var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // An underlined heading in the list shows how it's done: scroll to the example row, a hand
+      // presses the matching part of the row, then its panel opens.
+      function replay(n) {
+        var part = row && row.querySelector('.hs[data-panel="' + n + '"]'), me = ++run;
+        if (!part || still) { if (row) row.scrollIntoView({ block: 'start' }); show(n); return; }
+        var settled = false, timer;
+        function go() {
+          if (settled) return; settled = true;
+          window.removeEventListener('scrollend', go); clearTimeout(timer);
+          setTimeout(function () {
+            if (me !== run) return;
+            var r = part.getBoundingClientRect(), o = row.getBoundingClientRect(), hand = document.createElement('span');
+            hand.className = 'hs-cursor'; hand.setAttribute('aria-hidden', 'true');
+            hand.innerHTML = '<svg viewBox="0 0 26 30" width="30" height="35"><path d="M8 3a2 2 0 0 1 4 0v9a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v7c0 4-3 7-7 7h-4c-3 0-5-2-7-5l-4.5-6a2 2 0 0 1 3-2.5L8 18z"/></svg>';
+            hand.style.left = (r.left - o.left - row.clientLeft + r.width / 2) + 'px';
+            hand.style.top = (r.top - o.top - row.clientTop + r.height / 2) + 'px';
+            row.appendChild(hand);
+            void hand.offsetWidth; // lay it out at its starting point first, so it slides in
+            hand.classList.add('in');
+            setTimeout(function () { hand.classList.add('press'); part.classList.add('hs-tap'); }, 500);
+            setTimeout(function () { if (me === run) show(n); }, 750);
+            setTimeout(function () { hand.remove(); part.classList.remove('hs-tap'); }, 1100);
+          }, 150);
+        }
+        var gap = Math.abs(row.getBoundingClientRect().top - parseFloat(getComputedStyle(row).scrollMarginTop || 0));
+        row.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (gap < 4) go(); else { window.addEventListener('scrollend', go); timer = setTimeout(go, 1000); }
+      }
+      spots.forEach(function (s) {
+        s.addEventListener('click', function () {
+          var n = +s.getAttribute('data-panel');
+          if (s.classList.contains('hs-link')) replay(n); else { run++; show(n === open ? -1 : n); }
+        });
+      });
+      // Nothing is open until a part is selected, unless a link points at one of the panels (…#verify)
+      var linked = -1;
+      panels.forEach(function (p, j) { if (location.hash && p.id === location.hash.slice(1)) linked = j; });
+      show(linked);
+    });
+  }
+
+  // Right-hand list of the page's sections (h3) and their sub-headings (h4 that start a block),
+  // highlighting the one being read. Shown on wide screens only, and only when there are two or more.
+  function wireToc() {
+    var grid = $('.gs2'), body = $('.gs2-body .prose');
+    if (!grid || !body) return;
+    var heads = [].filter.call(body.querySelectorAll('h3, .gs-sub-body > h4, .hs-link'), function (h) { return h.textContent.trim(); });
+    if (heads.length < 2) return;
+    var used = {};
+    var links = heads.map(function (h) {
+      if (!h.id) {
+        var base = h.textContent.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section', id = base, n = 2;
+        while (used[id] || document.getElementById(id)) id = base + '-' + n++;
+        h.id = id;
+      }
+      used[h.id] = true;
+      return '<a href="#' + h.id + '"' + (h.tagName === 'H3' ? '' : ' class="sub"') + '>' + esc(h.textContent.trim()) + '</a>';
+    });
+    var toc = document.createElement('aside');
+    toc.className = 'gs2-toc';
+    toc.setAttribute('aria-label', 'On this page');
+    toc.innerHTML = links.join('');
+    grid.appendChild(toc);
+    grid.classList.add('has-toc');
+    var as = toc.querySelectorAll('a');
+    // The parts listed under Work with a document open their panel as well as scrolling to it
+    as.forEach(function (a, i) { if (heads[i].classList.contains('hs-link')) a.addEventListener('click', function (e) { e.preventDefault(); heads[i].click(); }); });
+    function spy() {
+      var cur = 0;
+      heads.forEach(function (h, i) { if (h.getBoundingClientRect().top < 140 && !h.classList.contains('hs-link')) cur = i; });
+      // Inside Work with a document, the highlighted part follows whichever panel is open
+      var box = heads[cur] && heads[cur].parentNode.querySelector('.hotspots');
+      if (box) heads.forEach(function (h, i) { if (h.classList.contains('hs-link') && h.getAttribute('aria-pressed') === 'true') cur = i; });
+      as.forEach(function (a, i) { a.classList.toggle('on', i === cur); });
+    }
+    window.addEventListener('scroll', spy, { passive: true });
+    document.querySelectorAll('.hs, .hs-link').forEach(function (s) { s.addEventListener('click', function () { setTimeout(spy, 0); }); });
+    spy();
+  }
+
+  // Shared by the Getting Started series and feature guides: the left step list and the Ideas Forum box
+  function wireSide() {
     // Small screens: the step list folds into a "Step 3 of 10" button above the page
     var tg = $('.gs2-toggle');
     tg.addEventListener('click', function () { var o = $('.gs2-side').classList.toggle('open'); tg.setAttribute('aria-expanded', String(o)); });
-    // Ideas Forum box: under the step list when the list still fits the screen with it (no scrolling),
-    // otherwise at the end of the page. Rechecked when the window is resized.
+    // Ideas Forum box: under the step list on wide screens. The list scrolls on its own when it's long,
+    // so the box stays in view. On small screens it goes at the end of the page. Rechecked on resize.
     var grid = $('.gs2');
     function placeIdeas() {
       grid.classList.add('ideas-side');
-      var sideEl = $('.gs2-side');
-      if (window.innerWidth <= 1000 || sideEl.scrollHeight > sideEl.clientHeight + 1) grid.classList.remove('ideas-side');
+      if (window.innerWidth <= 1000) grid.classList.remove('ideas-side');
     }
     placeIdeas();
     window.addEventListener('resize', placeIdeas);
+    // Fit the step list to the visible part of the window, so the Ideas Forum box below it is never cut off
+    var sideBox = $('.gs2-side');
+    function fitSide() {
+      if (window.innerWidth <= 1000) { sideBox.style.height = ''; return; }
+      sideBox.style.height = (window.innerHeight - Math.max(73, sideBox.getBoundingClientRect().top)) + 'px';
+    }
+    fitSide();
+    window.addEventListener('scroll', fitSide, { passive: true });
+    window.addEventListener('resize', fitSide);
 
     // Keep the current step in view in the step list
-    var on = $('.gs2-nav [aria-current]'), side = $('.gs2-side');
+    var on = $('.gs2-nav [aria-current]'), side = $('.gs2-nav');
     if (on && side.scrollHeight > side.clientHeight) side.scrollTop = on.offsetTop - side.clientHeight / 3;
 
     // FAQs slide open and closed. <details> can't animate on its own in every browser, so the
@@ -459,19 +624,18 @@
     var m = MOD[param('m')] || MOD.qms;
     document.title = m.name + ' · RadarHelp';
     if (m.series) return seriesPage(m);
-    var cat = CATS[m.cat], arts = moduleArticles(m.id), fc = flowCards(m.id);
+    var cat = CATS[m.cat], arts = moduleArticles(m.id);
     var usedIn = RH.WORKFLOWS.filter(function (w) { return w.steps.some(function (s) { return A[s[0]].module === m.id; }); });
     $('#head').innerHTML = '<div class="wrap">' + crumbs([['RadarHelp', 'index.html'], ['Help Guides', 'guides.html']].concat(m.cat === 'features' || m.cat === 'configuration' ? [[cat.name, cat.href], [m.name]] : [[m.name]])) +
       '<h1>' + esc(m.name) + (m.ai ? ' <span class="badge-ai" style="vertical-align:middle;font-size:.9rem">AI</span>' : '') + '</h1><p>' + esc(m.blurb) + '</p></div>';
     var list = '<div class="list">' + arts.map(function (a) { return articleRow(a); }).join('') + '</div>';
     var rail = '';
-    if (fc.outs) rail += '<div class="box"><h3>Feeds into</h3>' + fc.outs + '</div>';
-    if (fc.ins) rail += '<div class="box"><h3>Fed by</h3>' + fc.ins + '</div>';
     if (usedIn.length) rail += '<div class="box"><h3>Workflows that use this</h3>' + usedIn.map(function (w) { return '<a href="' + wfUrl(w.id) + '">' + esc(w.t) + '</a>'; }).join('') + '</div>';
     if (m.cfg) rail += '<div class="box"><h3>Configured in</h3>' + m.cfg.map(function (id) { return '<a href="' + artUrl(id) + '">' + esc(A[id].t) + '</a>'; }).join('') + '</div>';
-    $('#body').innerHTML = '<div class="layout"><div style="display:grid;gap:18px;min-width:0"><h2>Guides in this module</h2>' + list +
-      '<div class="band" style="margin-top:12px"><div class="txt"><b>Have an idea for ' + esc(m.name) + '?</b><span class="muted">Suggest it in the Ideas Forum and vote on what we build next.</span></div><a class="btn btn-outline" href="page.html?p=ideas">Ideas Forum</a></div>' +
-      '</div><aside class="rail">' + (rail || '<div class="box"><h3>Need a hand?</h3><a href="page.html?p=request">Submit a request</a></div>') + '</aside></div>';
+    var ideas = '<div class="gs-help"><b>Have an idea for ' + esc(m.name) + '?</b><span>Suggest it in the Ideas Forum and vote on what we build next.</span><a class="btn btn-primary" href="page.html?p=ideas">Ideas Forum</a></div>';
+    var faq = m.faqHtml ? '<h2 id="faq" style="margin-top:20px">Frequently asked questions</h2><div class="prose module-faq">' + m.faqHtml + '</div>' : '';
+    $('#body').innerHTML = '<div class="layout"><div style="display:grid;gap:18px;min-width:0"><h2>Guides in this module</h2>' + list + faq +
+      '</div><aside class="rail">' + (rail || '<div class="box"><h3>Need a hand?</h3><a href="page.html?p=request">Submit a request</a></div>') + ideas + '</aside></div>';
   };
 
   pages.article = function () {
@@ -491,34 +655,71 @@
     }
     var trail = [['RadarHelp', 'index.html'], ['Help Guides', 'guides.html']];
     if (m.cat === 'features' || m.cat === 'configuration') trail.push([cat.name, cat.href]);
-    trail.push([m.name, modUrl(m.id)]);
-    $('#head').innerHTML = '<div class="wrap">' + crumbs(trail) +
-      '<div class="eyebrow" style="margin-top:14px">' + esc(a.type) + ' · ' + esc(m.name) + '</div><h1>' + esc(a.t) + '</h1>' +
-      '<div class="meta muted"><span>' + ICON.clock + a.mins + ' min</span><span>' + ICON.user + 'For ' + esc(roleNames(a.roles)) + '</span>' + (m.ai ? '<span class="badge-ai">AI-assisted</span>' : '') + '<span>Updated [DATE]</span></div></div>';
+    trail.push([m.name, modUrl(m.id)], [a.t]);
+    crumbBar(trail);
+    $('#body').classList.remove('wrap'); // the guide list sits against the left edge of the page, as in Getting Started
 
     var arts = moduleArticles(m.id), idx = arts.indexOf(a), prev = arts[idx - 1], next = arts[idx + 1];
-    var body = a.body || '<div class="draft"><b>This guide is being written.</b><span class="muted">The steps for “' + esc(a.t) + '” are on their way. Everything around it already works: see where it fits below, or ask us directly.</span><a href="page.html?p=request&amp;from=' + encodeURIComponent(a.id) + '" style="font-weight:700">Ask the support team →</a></div>';
-    var fixes = a.fixes ? '<h2 id="fix">How to fix it</h2><div class="list">' + a.fixes.map(function (id) { return articleRow(A[id], MOD[A[id].module].name); }).join('') + '</div>' : '';
-    var fc = flowCards(m.id);
-    var shows = fc.outs ? '<h2 id="where">Where this shows up</h2><div class="grid grid-2" style="gap:12px">' + fc.outs + '</div>' : '';
-    var cfg = (m.cfg || []).filter(function (id) { return id !== a.id; });
-    var cfgHtml = cfg.length ? '<div class="chips" style="align-items:center"><b style="margin-right:4px">Configured in</b>' + cfg.map(function (id) { return '<a class="chip" href="' + artUrl(id) + '">' + esc(A[id].t) + '</a>'; }).join('') + '</div>' : '';
-    var used = workflowsUsing(a.id);
-    var pager = '<div class="pager">' + (prev ? '<a href="' + artUrl(prev.id) + '"><small>← Previous in ' + esc(m.name) + '</small><b>' + esc(prev.t) + '</b></a>' : '<span></span>') +
-      (next ? '<a class="next" href="' + artUrl(next.id) + '"><small>Next in ' + esc(m.name) + ' →</small><b>' + esc(next.t) + '</b></a>' : '<a class="next" href="' + modUrl(m.id) + '"><small>Back to →</small><b>' + esc(m.name) + '</b></a>') + '</div>';
 
-    var toc = [];
-    var tmp = document.createElement('div'); tmp.innerHTML = body;
-    tmp.querySelectorAll('h2[id]').forEach(function (h) { toc.push([h.id, h.textContent]); });
-    if (a.fixes) toc.push(['fix', 'How to fix it']);
-    if (fc.outs) toc.push(['where', 'Where this shows up']);
-    var rail = (toc.length ? '<nav class="toc" aria-label="On this page"><span class="panel-label">On this page</span>' + toc.map(function (t) { return '<a href="#' + t[0] + '">' + esc(t[1]) + '</a>'; }).join('') + '</nav>' : '') +
-      (used.length ? '<div class="box"><h3>Part of these workflows</h3>' + used.map(function (u) { return '<a href="' + artUrl(a.id, u.w.id) + '">' + esc(u.w.t) + ' · step ' + (u.i + 1) + '</a>'; }).join('') + '</div>' : '') +
-      '<div class="box"><h3>Related guides</h3>' + arts.filter(function (x) { return x !== a; }).slice(0, 4).map(function (x) { return '<a href="' + artUrl(x.id) + '">' + esc(x.t) + '</a>'; }).join('') + '</div>' +
-      '<a href="page.html?p=ideas" style="font-weight:700;text-decoration:none">Discuss this in the Ideas Forum →</a>';
+    // Left: every guide in this module, the current one highlighted
+    var nav = '<button type="button" class="gs2-toggle" aria-expanded="false" aria-controls="gs2-nav">' +
+        '<span>Guide ' + (idx + 1) + ' of ' + arts.length + ': ' + esc(a.t) + '</span><span class="chev" aria-hidden="true">▾</span></button>' +
+      '<nav class="gs2-nav" id="gs2-nav" aria-label="' + esc(m.name) + ' guides"><a class="gs2-group" href="' + modUrl(m.id) + '">' + esc(m.name) + '</a><ol>' +
+      arts.map(function (x, i) {
+        return '<li><a href="' + artUrl(x.id) + '"' + (x === a ? ' aria-current="page"' : '') + '><span class="n">' + (x.type === 'FAQ' ? '?' : i + 1) + '</span><span>' + esc(x.t) + '</span></a></li>';
+      }).join('') + '</ol></nav>';
 
-    $('#body').innerHTML = '<div class="layout"><article class="prose">' + body + fixes + shows + cfgHtml +
-      pager + '</article><aside class="rail">' + rail + '</aside></div>';
+    // Sections keep their ids so links such as article.html?id=…#treatment land on them
+    var body = a.body ? a.body.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/g, '<h3$1>$2</h3>') :
+      '<div class="draft"><b>This guide is being written.</b><span class="muted">The steps for “' + esc(a.t) + '” are on their way.</span><a href="page.html?p=request&amp;from=' + encodeURIComponent(a.id) + '" style="font-weight:700">Ask the support team →</a></div>';
+    if (a.fixes) body += '<h3>How to fix it</h3><div class="list">' + a.fixes.map(function (id) { return articleRow(A[id], MOD[A[id].module].name); }).join('') + '</div>';
+    // Content under a sub-heading sits one indent further in
+    body = body.split(/(?=<h3[\s>])/).map(function (part) {
+      var mm = /^(<h3[^>]*>[\s\S]*?<\/h3>)([\s\S]*)$/.exec(part);
+      return mm ? '<div class="gs-sub">' + mm[1] + '<div class="gs-sub-body">' + mm[2] + '</div></div>' : part;
+    }).join('');
+
+    var content = '<header class="gs2-head"><span class="eyebrow">' + esc(m.name) + ' · ' + esc(a.type) + '</span><h1>' + esc(a.t) + '</h1>' +
+      '<div class="gs-meta"><span class="role">' + ICON.user + esc(roleNames(a.roles)) + '</span><a class="updated" id="gs-updated" href="page.html?p=whats-new">Updated <time></time></a></div></header>' +
+      '<section class="gs-step gs2-body"><div class="prose">' + body + '</div></section>';
+
+    var pager = '<nav class="pager gs2-pager" aria-label="Previous and next">' +
+      (prev ? '<a href="' + artUrl(prev.id) + '"><small>← Previous</small><b>' + esc(prev.t) + '</b></a>' : '<span></span>') +
+      (next ? '<a class="next" href="' + artUrl(next.id) + '"><small>Next →</small><b>' + esc(next.t) + '</b></a>' :
+        '<a class="next" href="' + modUrl(m.id) + '"><small>Back to →</small><b>' + esc(m.name) + '</b></a>') + '</nav>';
+
+    // Related guides: chosen per guide in content.js, otherwise its settings guides and workflow neighbours from other modules
+    var rel = a.related || [];
+    if (!rel.length) {
+      rel = (m.cfg || []).slice();
+      workflowsUsing(a.id).forEach(function (u) { u.w.steps.forEach(function (s) { if (A[s[0]].module !== m.id && rel.indexOf(s[0]) < 0) rel.push(s[0]); }); });
+    }
+    rel = rel.filter(function (id) { return A[id] && id !== a.id; }).slice(0, 4);
+    var related = rel.length ? '<section class="gs2-related"><h2>Related guides</h2><ul class="rel-list">' + rel.map(function (id) {
+      var r = A[id];
+      return '<li><a href="' + artUrl(id) + '"><span class="rel-t">' + esc(r.t) + '</span><span class="rel-m">' + esc(MOD[r.module].name) + '</span><span class="rel-go" aria-hidden="true">→</span></a></li>';
+    }).join('') + '</ul></section>' : '';
+
+    var ideasBox = '<div class="gs-help"><b>Have an idea?</b><span>Suggest improvements and vote on what we build next.</span><a class="btn btn-primary" href="page.html?p=ideas">Discuss in the Ideas Forum</a></div>';
+    $('#body').innerHTML = '<div class="gs2"><aside class="gs2-side">' + nav + ideasBox.replace('gs-help', 'gs-help gs2-side-help') + '</aside>' +
+      '<div class="gs2-main">' + content + pager + related + ideasBox.replace('gs-help', 'gs-help gs2-main-help') + '</div></div>';
+
+    showUpdated($('#gs-updated time'), m.updated);
+    wireMarks();
+    wireZoom();
+    wireSide();
+    wireToc();
+    wireSheetTabs();
+    wireHotspots();
+    // The page is built after load, so jump to a linked section (…#treatment) once it exists
+    // Pictures above it load first, otherwise they push the section down as they appear
+    var target = location.hash && document.getElementById(location.hash.slice(1));
+    if (target) {
+      var above = [].filter.call(document.querySelectorAll('.gs2-main img'), function (img) { return target.compareDocumentPosition(img) & Node.DOCUMENT_POSITION_PRECEDING; });
+      above.forEach(function (img) { img.loading = 'eager'; });
+      Promise.all(above.map(function (img) { return img.complete ? 0 : new Promise(function (done) { img.addEventListener('load', done); img.addEventListener('error', done); }); }))
+        .then(function () { target.scrollIntoView(); });
+    }
   };
 
   pages.workflow = function () {
@@ -652,6 +853,7 @@
     mb.addEventListener('click', function () { var n = $('#main-nav'); var o = n.classList.toggle('open'); mb.setAttribute('aria-expanded', String(o)); });
     if ($('#news-form')) $('#news-form').addEventListener('submit', function (e) { e.preventDefault(); toast('Prototype: newsletter sign-up isn’t connected yet.'); });
     if (pages[page]) pages[page]();
+    pruneUnpublished();
     if (location.hash) { var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
   });
 })();
