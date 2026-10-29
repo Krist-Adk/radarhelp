@@ -68,8 +68,7 @@
     ['qms', 'qms-health', 'Concept', 'How Policy Compliance Health is calculated', RISK, 3],
     ['qms', 'qms-export', 'How-to', 'Export the audit trail and documents', RISK, 3],
 
-    ['programs', 'prog-overview', 'Overview', 'The Program Management page', ALL, 5],
-    ['programs', 'prog-courses-tab', 'Concept', 'The Courses tab', ALL, 4],
+    ['programs', 'prog-overview', 'Overview', 'The Program Management page', ALL, 8],
     ['programs', 'prog-add-course', 'How-to', 'Add a course', MGR, 5],
     ['programs', 'prog-course-risk', 'Concept', 'Course risk and validation frequency', MGR, 5],
     ['programs', 'prog-add-units', 'How-to', 'Add and manage a course’s units', MGR, 6],
@@ -165,7 +164,6 @@
   // module's settings guides and workflow neighbours.
   var RELATED = {
     'prog-overview': ['prog-add-course', 'prog-add-units', 'prog-validate-unit', 'prog-master-tas'],
-    'prog-courses-tab': ['prog-add-course', 'prog-add-units', 'prog-archive'],
     'prog-add-course': ['prog-course-risk', 'prog-add-units'],
     'prog-course-risk': ['risk-provider-factors', 'cust-frequency-bands', 'cust-course-risk-weights', 'prog-schedule-validation'],
     'prog-add-units': ['prog-course-risk', 'prog-validate-unit', 'wf-assign-units'],
@@ -799,15 +797,8 @@
         '<li><b>View Archived</b> shows archived courses and validations. See <a href="article.html?id=prog-archive">Archive and restore courses</a>.</li>' +
         '<li><b>Add Course</b> adds a course from training.gov.au, or a custom program. See <a href="article.html?id=prog-add-course">Add a course</a>.</li>' +
       '</ul>' +
-      '<h2 id="tabs">Program Management tabs</h2>' +
-      '<figure class="shot shot-narrow"><img src="assets/img/prog-tabs.png" alt="The Program Management tabs: Courses, which is selected, and TAS Builder." loading="lazy"></figure>' +
-      '<ol class="ov-list">' +
-        '<li><h4>Courses</h4><p>Every course, with its team, units, risk status and when it was created. See <a href="article.html?id=prog-courses-tab">The Courses tab</a>.</p></li>' +
-        '<li><h4>TAS Builder</h4><p>Your Master TAS and Cohort TAS documents, and their review submissions. See <a href="article.html?id=prog-master-tas">Build a Master TAS</a>.</p></li>' +
-      '</ol>',
-
-    'prog-courses-tab':
-      '<p class="lead">The Courses tab is the landing page in Program Management. It lists every course, with its team, units, risk status and when it was created, and it’s where you find a course and open it.</p>' +
+      '<h2 id="courses">The Courses tab</h2>' +
+      '<p>The <b>Courses</b> tab is the landing page in Program Management. It lists every course, with its team, units, risk status and when it was created, and it’s where you find a course and open it.</p>' +
       '<figure class="shot"><img src="assets/img/prog-courses-tab.png" alt="The Courses tab, with a search box, Filters and Team. Seven courses are listed, each with a tick box, program code, title, team, number of units, a Manage button, risk status and when it was created: BSB50420 Diploma of Leadership and Management, BSB40320 Certificate IV in Entrepreneurship and New Business and BSB50120 Diploma of Business in the Business Faculty, CHC50121 Diploma of Early Childhood Education and Care in Community and Health, CPC30220 Certificate III in Carpentry in Construction, and ACM40122 and BSB20120 in System Default. Risk statuses range from Medium to Very High, and ACM40122 shows Risk Assessment Pending." loading="lazy"><figcaption>The Courses tab.</figcaption></figure>' +
       '<h2 id="find">Find a course</h2>' +
       '<figure class="shot" data-marks="1.4,55,79.6,38,zone,#; 41,32,#1; 81,55,9,38,zone,#; 85.5,32,#2; 89.9,55,8.8,38,zone,#; 94.3,32,#3"><img src="assets/img/prog-find.png" alt="The top of the Courses tab. Marker 1 outlines the Search programs or units box, marker 2 the Filters button and marker 3 the Team button." loading="lazy"><figcaption>Search (1), Filters (2) and Team (3).</figcaption></figure>' +
@@ -855,7 +846,7 @@
           '<figure class="shot shot-medium"><img src="assets/img/prog-team-ownership.png" alt="Course Information for BSB50120 Diploma of Business. The Team ownership list is open, marked required, with Business and IT ticked. Other teams include System Default (visible to everyone), Administration and Finance, Community and Health, Construction, Executive and Governance, Horticulture, Hospitality and Student Services." loading="lazy"><figcaption>Choose the team that owns the course.</figcaption></figure></li>' +
       '</ol>' +
       '<h2 id="risk">Course Risk Assessment</h2>' +
-      '<p>We recommend assessing a course’s risk straight after you add it. The result sets how often the course is validated. To do it later, select <b>⋮</b> › <b>Risk Assessment</b> on the course’s row. See <a href="article.html?id=prog-courses-tab#row">Course actions</a>.</p>' +
+      '<p>We recommend assessing a course’s risk straight after you add it. The result sets how often the course is validated. To do it later, select <b>⋮</b> › <b>Risk Assessment</b> on the course’s row. See <a href="article.html?id=prog-overview#row">Course actions</a>.</p>' +
       '<ol class="steps-list">' +
         '<li>Under <b>Course-Specific Risk Factors</b>, answer each question. They’re all required.' +
           '<figure class="shot shot-medium"><img src="assets/img/prog-risk-factors.png" alt="Course-Specific Risk Factors: Primary Delivery Mode set to Blended (+1 point), Use of Recognition of Prior Learning set to Minimal use (0 points), Use of unsupervised assessments set to Extensive use (+2 points), a student enrolment volume of 180, where 101 to 200 adds 1 point, and a course completion rate of 72%, where 50% to 74% adds 1 point." loading="lazy"><figcaption>The required course-specific risk factors.</figcaption></figure></li>' +
@@ -864,7 +855,7 @@
         '<li>Review the course risk assessment result and the recommended validation frequency, then select <b>Complete Course Assessment</b>.' +
           '<figure class="shot" data-marks="61.3,86.5,35.2,8.1,oval,#"><img src="assets/img/gs-prog-result.png" alt="The Course Risk Assessment Result: provider risk 3.6 out of 6, course risk 7 out of 24, and a total risk score of 5.2 out of 10, rated Medium Risk. The recommended validation frequency is every 18 months, based on combined provider and course-specific risk factors. The Complete Course Assessment button is circled." loading="lazy"><figcaption>Your course’s risk score and recommended validation frequency.</figcaption></figure>' +
           '<div class="callout note"><b>Note</b><span>You can change how risk scores map to validation frequencies in <a href="feature.html?m=custom">Customisation</a>.</span></div></li>' +
-        '<li>Find your course on the <b>Courses</b> tab in <b>Program Management</b>. See <a href="article.html?id=prog-courses-tab">The Courses tab</a>.' +
+        '<li>Find your course on the <b>Courses</b> tab in <b>Program Management</b>. See <a href="article.html?id=prog-overview#courses">The Courses tab</a>.' +
           '<figure class="shot"><img src="assets/img/gs-courses-list.png" alt="The Courses list in Program Management, showing three courses with their program code, title, team, number of units, a Manage button for units, risk status from Low to High, and when each was created." loading="lazy"><figcaption>Each course shows its team, number of units and risk status.</figcaption></figure></li>' +
       '</ol>' +
       '<p>Next, add the course’s units. See <a href="article.html?id=prog-add-units">Add and manage a course’s units</a>.</p>' +
@@ -901,7 +892,7 @@
         '<li><b>Additional risk factors</b>: such as delivery below nominal hours, work placement, new assessment tools, a course new to the RTO, CRICOS students, government funding, or apprenticeships and traineeships. Each adds 1 point. Offshore delivery and a history of complaints, validation issues or non-compliance for the course each add 2.</li>' +
       '</ul>' +
       '<figure class="shot shot-medium"><img src="assets/img/prog-risk-all.png" alt="Course-Specific Risk Factors: Primary Delivery Mode Blended (+1 point), Use of RPL Minimal use (0 points), Use of unsupervised assessments Extensive use (+2 points), an enrolment volume of 180, where 101 to 200 adds 1 point, and a completion rate of 72%, where 50% to 74% adds 1 point. Below, Additional Risk Factors, each worth 1 or 2 points, with structured work placement and delivery to international CRICOS students ticked." loading="lazy"><figcaption>The course-specific and additional risk factors, each with the points it adds.</figcaption></figure>' +
-      '<p>To view or change a course’s risk assessment, select <b>⋮</b> › <b>Risk Assessment</b> on its row. See <a href="article.html?id=prog-courses-tab#row">Course actions</a>.</p>' +
+      '<p>To view or change a course’s risk assessment, select <b>⋮</b> › <b>Risk Assessment</b> on its row. See <a href="article.html?id=prog-overview#row">Course actions</a>.</p>' +
       '<div class="callout tip"><b>Tip</b><span>A course’s validation frequency can be shorter than your organisational one, never longer. If a course is validated more often than you expect, check its course-specific risk factors.</span></div>' +
       '<h2 id="unit">Unit-specific risk factors</h2>' +
       '<p>Every unit follows its course’s validation frequency, unless its own risks shorten it further: its <b>Physical Risk</b>, any <b>Sensitive Content</b> and its <b>Completion Rate (%)</b>. Each unit shows its own recommended validation frequency.</p>' +
@@ -1471,7 +1462,7 @@
         '</div></details>' +
         '<details><summary>Why is a course in System Default, and why can my team see it?</summary><div class="prose">' +
           '<p>A course in <b>System Default</b> hasn’t been assigned to a team yet. Until it is, every team can see it.</p>' +
-          '<p>To give it to a team, tick it on the <b>Courses</b> tab and select <b>Assign Team</b>. See <a href="article.html?id=prog-courses-tab#bulk">Course actions</a> and <a href="article.html?id=users-teams">Create teams and set parent teams</a>.</p>' +
+          '<p>To give it to a team, tick it on the <b>Courses</b> tab and select <b>Assign Team</b>. See <a href="article.html?id=prog-overview#bulk">Course actions</a> and <a href="article.html?id=users-teams">Create teams and set parent teams</a>.</p>' +
         '</div></details>' +
         '<details><summary>Why can’t I generate evidence in Phase 2?</summary><div class="prose">' +
           '<p>Generate Evidence reads the files you uploaded and processed for the unit. If you skipped files, or none were processed, upload and process your assessment documents first. See <a href="article.html?id=prog-validate-unit">Upload files and navigate the unit validation</a>.</p>' +
@@ -1621,39 +1612,53 @@
       '<p>The chart decides what each person can see and work on in RTO Radar. Where someone sits in it controls which people, courses, TAS and submissions they can reach. It’s a compliance-focused chart, not an organisational chart.</p>' +
       '<h4>System Default</h4>' +
       '<p><b>System Default</b> sits at the top of the chart and oversees everything in your RTO. Its manager is usually your RTO’s Compliance Manager, who is often also the Escalation Manager.</p>' +
+      '<p>Anything not assigned to a team when it’s created goes into System Default, such as a new member, course, TAS or form. Everyone in the organisation can see it until it’s assigned to a team.</p>' +
       '<figure class="shot"><img src="assets/img/wf-gov-default.png" alt="The top of the compliance governance chart. System Default, with the Compliance Manager at the top. Beneath them are Governance Lead, Admin Demo and Quality Assurance Manager, and the Design Manager, who heads the Learning Design team." loading="lazy"><figcaption>System Default, with the Compliance Manager at the top.</figcaption></figure>' +
+      '<h4>How teams limit what people see</h4>' +
+      '<p>Create a team for each area whose records should stay within it. People see the documents, courses, TAS, staff, forms and improvement items of their own team, not those of teams on other branches of the chart. For example:</p>' +
+      '<figure class="shot" data-marks="68.4,18.9,16.4,4.7,oval,#A; 3,18.9,16.4,4.7,oval,right,#B"><img src="assets/img/wf-gov-teams.png" alt="Part of the compliance governance chart. Beneath the Executive Team are Learning Design, managed by Design Manager, circled as B, with three teams beneath it: Business Faculty with Member Demo 1, Hospitality Faculty with Member Demo 2, and IT Faculty, managed by IT Faculty Manager, with Staff Demo; Compliance and Validation, managed by Compliance Manager, circled as A, with Compliance Officer and Compliance Specialist; and Student Services and Administration." loading="lazy"><figcaption>Compliance &amp; Validation (A) and Learning Design (B), each with its own manager and members.</figcaption></figure>' +
+      '<div class="sub-steps">' +
+        '<div><h4><span class="sn">A</span>Compliance &amp; Validation</h4><p>Compliance documents belong to the Compliance &amp; Validation team, so only its manager, the Compliance Manager, and its members, the Compliance Officer and Compliance Specialist, can see them.</p></div>' +
+        '<div><h4><span class="sn">B</span>Learning Design</h4><p>This team manages the training and courses assigned to it, but can’t see administrative documents or the workforce of other teams. Beneath it, the <b>Business Faculty</b>, <b>Hospitality Faculty</b> and <b>IT Faculty</b> teams each see only their own courses, TAS, workforce, forms and improvement items. A Business Faculty trainer never sees a Hospitality Faculty course.</p></div>' +
+      '</div>' +
+      '<h4>Managers and their members</h4>' +
+      '<p>A team’s members report to its manager. The manager can assign them work and review how they’re tracking, such as their delivery readiness, evidence maps and improvement items. A team without a manager reports to the manager of the team above it.</p>' +
       '<div class="sub-steps">' +
         '<div><h4><span class="sn">1</span>A team sees its own work</h4><p>A team’s manager can see the members of their team and the manager they report to, and can assign work to their members. Teams on other branches stay out of view.</p></div>' +
         '<div><h4><span class="sn">2</span>System Default sees everything</h4><p>Anyone in <b>System Default</b> bypasses teams: they can see everyone in the organisation and every team’s work.</p></div>' +
-        '<div><h4><span class="sn">3</span>System Default work is shared</h4><p>A course in System Default is unassigned, so every team can see and use it until it’s assigned to a team.</p></div>' +
+        '<div><h4><span class="sn">3</span>System Default work is shared</h4><p>Anything in System Default is unassigned, so every team can see and use it until it’s assigned to a team.</p></div>' +
       '</div>' +
       '<h4>An example</h4>' +
-      '<p>Design Manager, who is in System Default, also manages the <b>Learning Design</b> team. Learning Design has three teams beneath it: the <b>Business Faculty</b> and <b>Hospitality Faculty</b>, each with one member and no manager, and the <b>RTO Radar</b> team, managed by Radar Manager with Staff Demo as its member. Radar Manager isn’t in System Default.</p>' +
-      '<figure class="shot" data-marks="67.9,40.8,28.5,24.8,zone,#"><img src="assets/img/wf-gov-chart.png" alt="Part of the compliance governance chart. Learning Design, managed by Design Manager, has three teams beneath it: Business Faculty, with Member Demo 1, and Hospitality Faculty, with Member Demo 2, neither with a manager; and the RTO Radar team, outlined, managed by Radar Manager, an Administrator, with Staff Demo, a Trainer/Assessor, beneath." loading="lazy"><figcaption>Learning Design and the three teams beneath it. The RTO Radar team (outlined) is managed by Radar Manager.</figcaption></figure>' +
+      '<p>Design Manager, who is in System Default, also manages the <b>Learning Design</b> team. Learning Design has three teams beneath it:</p>' +
+      '<ul>' +
+        '<li>The <b>Business Faculty</b> and <b>Hospitality Faculty</b>, each with one member and no manager. Their members report to Design Manager, the manager of the team above.</li>' +
+        '<li>The <b>IT Faculty</b>, managed by IT Faculty Manager, with Staff Demo as its member. Staff Demo reports only to IT Faculty Manager. IT Faculty Manager isn’t in System Default.</li>' +
+      '</ul>' +
+      '<figure class="shot" data-marks="67.9,40.8,28.5,24.8,zone,#"><img src="assets/img/wf-gov-chart.png" alt="Part of the compliance governance chart. Learning Design, managed by Design Manager, has three teams beneath it: Business Faculty, with Member Demo 1, and Hospitality Faculty, with Member Demo 2, neither with a manager; and the IT Faculty, outlined, managed by IT Faculty Manager, an Administrator, with Staff Demo, a Trainer/Assessor, beneath." loading="lazy"><figcaption>Learning Design and the three teams beneath it. The IT Faculty (outlined) is managed by IT Faculty Manager.</figcaption></figure>' +
       '<div class="xl-book" data-hint="1">' +
-        '<div class="xl-bar" role="tablist" aria-label="What Radar Manager sees">' +
-          '<button type="button" role="tab" aria-selected="true">RTO Radar Manager</button>' +
-          '<button type="button" role="tab" aria-selected="false">RTO Radar Manager and System Default member</button>' +
+        '<div class="xl-bar" role="tablist" aria-label="What the IT Faculty Manager sees">' +
+          '<button type="button" role="tab" aria-selected="true">IT Faculty Manager</button>' +
+          '<button type="button" role="tab" aria-selected="false">IT Faculty Manager and System Default member</button>' +
         '</div>' +
         '<div class="xl-sheet" role="tabpanel">' +
-        '<p>In <b>Program Management</b>, Radar Manager sees only the courses assigned to RTO Radar and the unassigned courses in System Default:</p>' +
-        '<figure class="shot" data-marks="37.8,32.2,12.6,64,zone,#"><img src="assets/img/wf-gov-courses-team.png" alt="The Courses list as Radar Manager sees it. The Team column, outlined, shows only System Default and RTO Radar courses, such as Diploma of Hospitality Management and Digital Literacy course wrapper in System Default, and Certificate III in Business, Diploma of Business and Certificate I in Engineering in RTO Radar." loading="lazy"><figcaption>As a manager of RTO Radar only: RTO Radar and System Default courses.</figcaption></figure>' +
-        '<p>If Radar Manager managed the Business Faculty instead, they would see only the Business Faculty’s courses and any System Default courses. A member, such as Staff Demo, sees only the courses and units assigned to them.</p>' +
+        '<p>In <b>Program Management</b>, IT Faculty Manager sees only the courses assigned to the IT Faculty and the unassigned courses in System Default:</p>' +
+        '<figure class="shot" data-marks="37.8,32.2,12.6,64,zone,#"><img src="assets/img/wf-gov-courses-team.png" alt="The Courses list as IT Faculty Manager sees it. The Team column, outlined, shows only System Default and IT Faculty courses, such as Diploma of Hospitality Management and Digital Literacy course wrapper in System Default, and Certificate III in Business, Diploma of Business and Certificate I in Engineering in the IT Faculty." loading="lazy"><figcaption>As a manager of the IT Faculty only: IT Faculty and System Default courses.</figcaption></figure>' +
+        '<p>If IT Faculty Manager managed the Business Faculty instead, they would see only the Business Faculty’s courses and any System Default courses. A member, such as Staff Demo, sees only the courses and units assigned to them.</p>' +
         '</div>' +
         '<div class="xl-sheet" role="tabpanel" hidden>' +
-        '<p>Once Radar Manager is added to <b>System Default</b>, every course in the organisation appears, including Learning Design’s courses and those of the Business Faculty and Hospitality Faculty:</p>' +
-        '<figure class="shot" data-marks="34.4,23.6,16.6,76.4,zone,#"><img src="assets/img/wf-gov-courses-all.png" alt="The Courses list after Radar Manager joins System Default. The Team column, outlined, now shows courses from every team, including System Default, RTO Radar, Learning Design, Business Faculty, with the Diploma of Business, and Hospitality Faculty, with the Diploma of Hospitality Management." loading="lazy"><figcaption>In System Default: every team’s courses.</figcaption></figure>' +
+        '<p>Once IT Faculty Manager is added to <b>System Default</b>, every course in the organisation appears, including Learning Design’s courses and those of the Business Faculty and Hospitality Faculty:</p>' +
+        '<figure class="shot" data-marks="34.4,23.6,16.6,76.4,zone,#"><img src="assets/img/wf-gov-courses-all.png" alt="The Courses list after IT Faculty Manager joins System Default. The Team column, outlined, now shows courses from every team, including System Default, IT Faculty, Learning Design, Business Faculty, with the Diploma of Business, and Hospitality Faculty, with the Diploma of Hospitality Management." loading="lazy"><figcaption>In System Default: every team’s courses.</figcaption></figure>' +
         '</div>' +
       '</div>' +
-      '<p>The <b>TAS Builder</b> works the same way. Radar Manager can only build and manage TAS for courses their team can see:</p>' +
-      '<figure class="shot" data-marks="55.2,58.4,10.4,30.6,zone,#"><img src="assets/img/wf-gov-tas.png" alt="The TAS Builder on the Master TAS tab, listing two draft TAS, Advanced Diploma of Cyber Security and Diploma of Business, both in the RTO Radar team, outlined." loading="lazy"><figcaption>The TAS Builder shows only RTO Radar’s TAS.</figcaption></figure>' +
+      '<p>The <b>TAS Builder</b> works the same way. IT Faculty Manager can only build and manage TAS for courses their team can see:</p>' +
+      '<figure class="shot" data-marks="55.2,58.4,10.4,30.6,zone,#"><img src="assets/img/wf-gov-tas.png" alt="The TAS Builder on the Master TAS tab, listing two draft TAS, Advanced Diploma of Cyber Security and Diploma of Business, both in the IT Faculty, outlined." loading="lazy"><figcaption>The TAS Builder shows only the IT Faculty’s TAS.</figcaption></figure>' +
       '<h4>Where else this applies</h4>' +
       '<ul>' +
         '<li><b>Workforce Management</b>: a manager sees only their own members and the manager they report to. Someone in System Default sees everyone in the organisation.</li>' +
         '<li><b>Continuous Improvement</b>: improvement items can only be assigned to people you can see.</li>' +
         '<li><b>Complaints &amp; Suggestions</b>: a form submitted to a team can only be viewed by that team’s managers and members with the right permissions.</li>' +
       '</ul>' +
-      '<p>This keeps each team’s work to itself. A Business team doesn’t receive a Construction team’s courses, TAS, improvement items or complaints.</p>' +
+      '<p>This keeps each team’s work to itself. The Business Faculty doesn’t receive the IT Faculty’s courses, TAS, improvement items or complaints.</p>' +
       '<div class="callout tip"><b>Tip</b><span>Can’t find someone or something? Check the compliance governance chart to see whether it belongs to your team. If you need to oversee the whole organisation, ask an Admin to add you to <b>System Default</b> in <b>Settings</b> › <b>User Management</b>.</span></div>' +
       '<h2 id="team">Open a team</h2>' +
       '<p>Select a team in the list, such as Compliance &amp; Validation, to open it. You’ll see its analytics, such as how its improvement items are progressing and how many members it has, and its <b>Member Permissions Overview</b>: what members in each role can view, create, edit and delete in each feature.</p>' +
