@@ -991,8 +991,23 @@
       rel.sort(function (x, y) { return (y.s - x.s) || (KIND[x.d.kind] - KIND[y.d.kind]) || (x.d.text.length - y.d.text.length); });
       var used = {}; out.best.forEach(function (r) { used[r.d.key] = 1; });
       rel.forEach(function (r) { if (!used[r.d.key] && out.related.length < 8) { used[r.d.key] = 1; out.related.push(r); } });
+      pin(q, out);
       out.best = out.best.slice(0, 8);
       return out;
+    }
+    // Answers pinned to the top for a kind of question. Something that’s gone missing is nearly always
+    // in a team the person isn’t in, so that FAQ leads whenever a search is about losing or not seeing something.
+    var PINS = [{ faq: 'I can’t find a person, program or item. Why?',
+      when: function (w) { return w.some(function (x) { return /^(lost|missing|disappear|gone|hidden|vanish)/.test(x); }) ||
+        (w.some(function (x) { return /^(can[’']?t|cannot)$/.test(x); }) && w.some(function (x) { return /^(find|see|locate)/.test(x); })); } }];
+    function pin(q, out) {
+      var w = words(q);
+      PINS.forEach(function (p) {
+        if (!p.when(w)) return;
+        var d = build().filter(function (x) { return x.kind === 'faq' && x.text === p.faq; })[0]; if (!d) return;
+        out.best = out.best.filter(function (r) { return r.d !== d; }); out.related = out.related.filter(function (r) { return r.d !== d; });
+        out.best.unshift({ d: d, cov: 1 });
+      });
     }
 
     function rx(terms) {
