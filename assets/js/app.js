@@ -875,7 +875,9 @@
       trainer: ['staff', 'assessor'], user: ['staff'], complaint: ['feedback', 'submission'], feedback: ['complaint', 'submission'],
       suggestion: ['feedback'], login: ['sign'], password: ['reset'], reset: ['change'], change: ['reset', 'edit', 'update'], update: ['change', 'edit'], edit: ['change', 'update'], team: ['governance'], approve: ['approval', 'verify'],
       overdue: ['due'], schedule: ['calendar'], calendar: ['event'], risk: ['treatment'], audit: ['auditor', 'export'],
-      evidence: ['document'], certificate: ['evidence'], consultation: ['industry'], validation: ['validate'], validate: ['validation']
+      evidence: ['document'], certificate: ['evidence'], consultation: ['industry'], validation: ['validate'], validate: ['validation'],
+      lost: ['find', 'missing', 'see'], missing: ['find', 'see'], disappear: ['find', 'missing', 'see'], gone: ['find', 'missing'], hidden: ['find', 'see'],
+      program: ['course'], course: ['program']
     };
     function stem(w) {
       if (w.length > 5 && /ies$/.test(w)) return w.slice(0, -3) + 'y';

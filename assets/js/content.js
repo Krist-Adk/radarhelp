@@ -2560,6 +2560,7 @@
 
     'prog-master-tas':
       '<p class="lead">A Master TAS is the Training and Assessment Strategy for a qualification. RTO Radar builds the first draft from training.gov.au and your boilerplate. You then complete and edit each section.</p>' +
+      '<div class="callout warn"><b>Important</b><span>Treat your Master TAS as a first draft, not a finished document. RTO Radar lays down your boilerplate and the training.gov.au details for you, but every section still needs to be reviewed and tailored to how your RTO delivers and assesses this qualification before it’s submitted for approval.</span></div>' +
       '<div class="callout tip"><b>Before you start</b><span>Check or customise your RTO’s TAS boilerplate in <b>Settings</b>, so every new Master TAS starts with your own wording. See <a href="article.html?id=cust-tas-templates">Customise TAS templates</a>.</span></div>' +
       '<h2 id="create">Create a Master TAS</h2>' +
       '<ol class="steps-list">' +
@@ -3042,8 +3043,8 @@
         '<details><summary>What is System Default?</summary><div class="prose">' +
           '<p>System Default sits at the top of the compliance governance chart and oversees everything in your RTO. Anything not assigned to a team, such as a new member, course, TAS or form, goes into System Default, and everyone can see it until it’s assigned. Anyone in System Default can see everyone and every team’s work. See <a href="article.html?id=users-governance#system-default">System Default</a>.</p>' +
         '</div></details>' +
-        '<details><summary>I can’t find a person or item. Why?</summary><div class="prose">' +
-          '<p>It probably belongs to a team you’re not in. Check the compliance governance chart to see which team it belongs to. If you need to oversee the whole organisation, ask an Admin to add you to System Default in <b>Settings</b> › <b>User Management</b>. See <a href="article.html?id=users-governance#visibility">How teams limit what people see</a>.</p>' +
+        '<details><summary>I can’t find a person, program or item. Why?</summary><div class="prose">' +
+          '<p>If a staff member, program or improvement item seems to be missing, it probably belongs to a team you’re not in. You only see your own teams’ people and work. Check the compliance governance chart to see which team it belongs to. If you need to oversee the whole organisation, ask an Admin to add you to System Default in <b>Settings</b> › <b>User Management</b>. See <a href="article.html?id=users-governance#visibility">How teams limit what people see</a>.</p>' +
         '</div></details>' +
         '<details><summary>Can someone belong to more than one team?</summary><div class="prose">' +
           '<p>Yes. Tick them in each team’s members. On the chart, a dotted line links them to their second team. For example, a trainer who teaches in both the Business Faculty and the IT Faculty can belong to both. See <a href="article.html?id=users-teams#create">Create a team</a>.</p>' +
@@ -3315,6 +3316,10 @@
         '</div></details>' +
         '<details><summary>Does Refresh from TGA overwrite my TAS?</summary><div class="prose">' +
           '<p>You choose. <b>Refresh from TGA</b> can replace the training.gov.au content entirely with the latest, or append the new TGA additions below your current content, keeping your edits.</p>' +
+        '</div></details>' +
+        '<details><summary>Why does Refresh from TGA fail for my program?</summary><div class="prose">' +
+          '<p><b>Refresh from TGA</b> only works for qualifications accredited on training.gov.au. If the TAS is for a custom program, there’s nothing on training.gov.au to import, so the refresh fails, even when the program’s units are themselves on training.gov.au.</p>' +
+          '<p>This often happens when an RTO delivers a single unit, rather than a full qualification. In that case, the unit is added to a custom program so it can be managed in RTO Radar. Its TAS can’t be refreshed from training.gov.au, so complete those sections yourself.</p>' +
         '</div></details>' +
         '<details><summary>What is an imported unit?</summary><div class="prose">' +
           '<p>A unit from outside the qualification’s own training package, such as a first aid unit in an aviation qualification. It’s usually counted as an elective, under the packaging rules for imported units, and is marked <b>Imported</b> in 1.5 Units of Competency.</p>' +
