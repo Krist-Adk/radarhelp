@@ -61,19 +61,28 @@
   // pages) are turned into plain text and the header shows only Features.
   var ONLY = RH.ONLY || null;
   function header(active) {
-    var nav = ONLY ? [['guides', 'index.html', 'Features']] :
+    var nav = ONLY ? [['guides', 'index.html', 'Help Guides']] :
       [['guides', 'guides.html', 'Help Guides'], ['videos', 'page.html?p=videos', 'Video Library'], ['webinars', 'page.html?p=webinars', 'Webinars'], ['ideas', 'page.html?p=ideas', 'Ideas Forum'], ['new', 'page.html?p=whats-new', 'What’s New']];
     return '<a class="skip" href="#main">Skip to content</a>' +
       '<header class="site-header"><div class="wrap bar">' +
       '<a class="brand" href="index.html"><img src="assets/img/logo.png" alt="RTO Radar"><span>Help</span></a>' +
       '<button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">' + ICON.menu + '</button>' +
       '<nav class="main-nav" id="main-nav" aria-label="Main">' + nav.map(function (n) { return '<a href="' + n[1] + '"' + (n[0] === active ? ' aria-current="page"' : '') + '>' + n[2] + '</a>'; }).join('') + '</nav>' +
-      (active === 'home' ? '' : '<form class="header-search" action="search.html" role="search"><label for="hs" class="visually-hidden">Search help</label>' + ICON.search + '<input id="hs" name="q" type="search" placeholder="Search help"></form>') +
+      (active === 'home' || document.body.getAttribute('data-page') === 'features' ? '' : '<form class="header-search" action="search.html" role="search"><label for="hs" class="visually-hidden">Search help</label>' + ICON.search + '<input id="hs" name="q" type="search" placeholder="Search help"></form>') +
       (ONLY ? '' : '<a class="btn btn-primary contact" href="page.html?p=contact">Contact us</a>') +
       '</div></header>';
   }
   // In the features-only build, unwrap links to pages and guides that weren't published, and
   // drop the boxes whose only purpose is such a link (Ideas Forum, Submit a request)
+  // Links inside guide text open in a new tab, so readers keep their place in the guide.
+  // Links to a section of the same page (#…) still jump within it.
+  function openLinksInNewTab() {
+    [].forEach.call(document.querySelectorAll('.prose a[href]'), function (a) {
+      if (a.getAttribute('href').charAt(0) === '#') return;
+      a.target = '_blank';
+      a.rel = 'noopener';
+    });
+  }
   function pruneUnpublished() {
     if (!ONLY) return;
     [].forEach.call(document.querySelectorAll('a[href]'), function (a) {
@@ -95,7 +104,7 @@
   }
   function crumbs(parts) {
     // Features-only: Features is the home page, so the RadarHelp and Help Guides levels go
-    if (ONLY) parts = parts.filter(function (p) { return p[1] !== 'index.html' && p[1] !== 'guides.html'; });
+    if (ONLY) parts = parts.filter(function (p) { return p[1] !== 'index.html' && p[1] !== 'guides.html'; }).map(function (p) { return p[0] === 'Features' ? ['Help Guides', p[1]] : p; });
     return '<nav class="crumbs" aria-label="Breadcrumb">' + parts.map(function (p, i) {
       return (i ? '<span aria-hidden="true">›</span>' : '') + (p[1] ? '<a href="' + p[1] + '">' + esc(p[0]) + '</a>' : '<span aria-current="page">' + esc(p[0]) + '</span>');
     }).join('') + '</nav>';
@@ -265,15 +274,11 @@
     stage.addEventListener('click', function (e) { if (e.target === stage) close(); });
   }
 
-  // Light page head: breadcrumbs on the left, article search on the right
+  // Light page head: breadcrumbs only. Search stays in the header, beside Contact us, as on every other page.
   function crumbBar(parts) {
-    // This bar has its own search, so drop the header's to avoid two search boxes
-    var hs = $('.header-search'); if (hs) hs.remove();
     var h = $('#head');
     h.className = 'gs-crumbbar';
-    h.innerHTML = '<div class="wrap bar">' + crumbs(parts) +
-      '<form class="gs-search" action="search.html" role="search"><label for="gs-q" class="visually-hidden">Search articles</label>' + ICON.search +
-      '<input id="gs-q" name="q" type="search" placeholder="Search articles…"></form></div>';
+    h.innerHTML = '<div class="wrap bar">' + crumbs(parts) + '</div>';
   }
   function workflowCard(w) {
     return '<a class="card" href="' + wfUrl(w.id) + '"><span class="eyebrow goal">' + esc(w.group) + '</span><span class="title">' + esc(w.t) + '</span><span class="foot"><span>⏱ ' + esc(w.time) + '</span><span>' + esc(RH.ROLES[w.role].name) + '</span><span>' + w.steps.length + ' steps</span></span></a>';
@@ -288,6 +293,11 @@
   pages.home = function () {
     $('#hub-guide-count').textContent = RH.ORDER.length + ' guides';
     $('#home-faqs').innerHTML = RH.FAQS.map(function (f) { return '<a href="' + artUrl(f[1]) + '"><span class="grow">' + esc(f[0]) + '</span><span aria-hidden="true" style="color:#296794">→</span></a>'; }).join('');
+    startCard();
+  };
+  // The "Start here" card for the Getting Started series, on the home and Features pages
+  function startCard() {
+    if (!$('#gs-chips')) return;
     var gs = moduleArticles('getting-started');
     if (gsComplete()) {
       var st = $('#gs-status');
@@ -296,7 +306,7 @@
       $('#gs-go').textContent = 'Revisit the setup series →';
     }
     $('#gs-chips').innerHTML = gs.slice(1, 4).map(function (a) { return '<a class="chip" href="' + artUrl(a.id) + '">' + esc(a.t) + '</a>'; }).join('') + '<span class="chip">+' + (gs.length - 4) + ' more</span>';
-  };
+  }
 
   pages.guides = function () {
     var feats = RH.MODULES.filter(function (m) { return m.cat === 'features'; });
@@ -354,10 +364,11 @@
     lock: '<rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
     sliders: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>'
   };
-  var MODULE_ICON = { dashboard: 'grid', qms: 'file', programs: 'cap', cir: 'cycle', workforce: 'users', users: 'userplus', risk: 'alert', feedback: 'chat', events: 'calendar', pd: 'award', integrations: 'plug', security: 'lock', custom: 'sliders' };
+  var MODULE_ICON = { dashboard: 'grid', qms: 'file', programs: 'cap', cir: 'cycle', workforce: 'users', users: 'userplus', risk: 'alert', feedback: 'chat', events: 'calendar', pd: 'award', custom: 'sliders' };
 
+  // Features is the landing page: the search hero and Getting Started card sit above the module grid
   pages.features = function () {
-    crumbBar([['RadarHelp', 'index.html'], ['Help Guides', 'guides.html'], ['Features']]);
+    startCard();
     function tile(m) {
       var arts = moduleArticles(m.id), n = arts.length;
       return groupCard(MODULE_ICON[m.id], n + ' guide' + (n === 1 ? '' : 's'),
@@ -596,27 +607,31 @@
     // Keep the current step in view in the step list
     var on = $('.gs2-nav [aria-current]'), side = $('.gs2-nav');
     if (on && side.scrollHeight > side.clientHeight) side.scrollTop = on.offsetTop - side.clientHeight / 3;
+    wireFaqs();
+  }
 
-    // FAQs slide open and closed. <details> can't animate on its own in every browser, so the
-    // answer's height is animated here; with reduced motion the default instant toggle is kept.
-    var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // FAQs slide open and closed. <details> can't animate on its own in every browser, so the
+  // answer's height is animated here; with reduced motion the default instant toggle is kept.
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function toggleFaq(d, done) {
+    var fb = d.querySelector('.prose');
+    if (still || !fb || !fb.animate) { d.open = !d.open; if (done) done(); return; }
+    if (d.busy) return;
+    d.busy = true;
+    var opening = !d.open;
+    if (opening) d.open = true; else d.classList.add('closing');
+    var shut = { height: '0px', paddingBottom: '0px', opacity: 0 }, full = { height: fb.offsetHeight + 'px', paddingBottom: '16px', opacity: 1 };
+    fb.style.overflow = 'hidden';
+    var an = fb.animate(opening ? [shut, full] : [full, shut], { duration: 260, easing: 'cubic-bezier(.2,.7,.3,1)' });
+    an.onfinish = function () {
+      if (!opening) { d.open = false; d.classList.remove('closing'); }
+      fb.style.overflow = ''; d.busy = false;
+      if (done) done();
+    };
+  }
+  function wireFaqs() {
     document.querySelectorAll('.gs-faq details').forEach(function (d) {
-      var fb = d.querySelector('.prose'), busy = false;
-      d.querySelector('summary').addEventListener('click', function (e) {
-        if (still || !fb.animate) return;
-        e.preventDefault();
-        if (busy) return;
-        busy = true;
-        var opening = !d.open;
-        if (opening) d.open = true; else d.classList.add('closing');
-        var shut = { height: '0px', paddingBottom: '0px', opacity: 0 }, full = { height: fb.offsetHeight + 'px', paddingBottom: '16px', opacity: 1 };
-        fb.style.overflow = 'hidden';
-        var an = fb.animate(opening ? [shut, full] : [full, shut], { duration: 260, easing: 'cubic-bezier(.2,.7,.3,1)' });
-        an.onfinish = function () {
-          if (!opening) { d.open = false; d.classList.remove('closing'); }
-          fb.style.overflow = ''; busy = false;
-        };
-      });
+      d.querySelector('summary').addEventListener('click', function (e) { e.preventDefault(); toggleFaq(d); });
     });
   }
 
@@ -636,6 +651,7 @@
     var faq = m.faqHtml ? '<h2 id="faq" style="margin-top:20px">Frequently asked questions</h2><div class="prose module-faq">' + m.faqHtml + '</div>' : '';
     $('#body').innerHTML = '<div class="layout"><div style="display:grid;gap:18px;min-width:0"><h2>Guides in this module</h2>' + list + faq +
       '</div><aside class="rail">' + (rail || '<div class="box"><h3>Need a hand?</h3><a href="page.html?p=request">Submit a request</a></div>') + ideas + '</aside></div>';
+    wireFaqs();
   };
 
   pages.article = function () {
@@ -713,7 +729,7 @@
     wireHotspots();
     // The page is built after load, so jump to a linked section (…#treatment) once it exists
     // Pictures above it load first, otherwise they push the section down as they appear
-    var target = location.hash && document.getElementById(location.hash.slice(1));
+    var target = !param('find') && location.hash && document.getElementById(location.hash.slice(1));
     if (target) {
       var above = [].filter.call(document.querySelectorAll('.gs2-main img'), function (img) { return target.compareDocumentPosition(img) & Node.DOCUMENT_POSITION_PRECEDING; });
       above.forEach(function (img) { img.loading = 'eager'; });
@@ -790,11 +806,13 @@
       $('#s-title').textContent = 'Guides for ' + RH.ROLES[role].name + 's';
       RH.ORDER.forEach(function (id) { if (A[id].roles.indexOf(role) >= 0) results.push({ kind: 'a', a: A[id], s: 1 }); });
     } else if (words.length) {
-      RH.WORKFLOWS.forEach(function (w) { var s = score(w.t + ' ' + w.group) * 2; if (s) results.push({ kind: 'w', w: w, s: s + 1 }); });
-      RH.MODULES.forEach(function (m) { var s = score(m.name + ' ' + m.blurb); if (s) results.push({ kind: 'm', m: m, s: s }); });
-      RH.ORDER.forEach(function (id) { var a = A[id]; var s = score(a.t) * 2 + score(MOD[a.module].name); if (s) results.push({ kind: 'a', a: a, s: s }); });
-      results.sort(function (x, y) { return y.s - x.s; });
-      $('#s-title').textContent = results.length + ' result' + (results.length === 1 ? '' : 's') + ' for “' + q + '”';
+      // Same ranking as smart search, shown as a full page with snippets
+      var r = SS.search(q), re = SS.rx(r.terms), n = r.best.length + r.related.length, i = 0;
+      $('#s-title').textContent = n + ' result' + (n === 1 ? '' : 's') + ' for “' + q + '”';
+      $('#results').innerHTML = n ? '<div class="ss-page">' +
+        (r.best.length ? '<p class="ss-group">Best matches</p>' + r.best.map(function (x) { return SS.row(x, re, i++); }).join('') : '') +
+        (r.related.length ? '<p class="ss-group">Related</p>' + r.related.map(function (x) { return SS.row(x, re, i++); }).join('') : '') + '</div>' :'<div class="band" style="margin-top:0"><div class="txt"><b>No guides match “' + esc(q) + '” yet.</b><span class="muted">Try fewer or different words.</span></div></div>';
+      return;
     } else { $('#s-title').textContent = 'Search RadarHelp'; }
     $('#results').innerHTML = results.length ? '<div class="list">' + results.slice(0, 40).map(function (r) {
       if (r.kind === 'w') return '<a href="' + wfUrl(r.w.id) + '"><span class="chip type fix">Workflow</span><span class="grow">' + hi(r.w.t) + '</span><span class="side">' + r.w.steps.length + ' steps</span></a>';
@@ -842,6 +860,300 @@
     });
   };
 
+  // ---------- smart search ----------
+  // Searches guide names, their section and sub-heading titles, and FAQ questions, in the browser,
+  // so nothing typed leaves the device. Results drop down under the search bar being typed in.
+  // Best matches: every word appears as written. Related: matched through a typo, a synonym or
+  // only some of the words. Opens with a click in any search bar, Ctrl/⌘ K or /.
+  var SS = (function () {
+    var STOP = 'a an and are as at be by can do does for from how i if in is it its me my of on or our the their there this to was we what when where which who why will with you your'.split(' ');
+    var SYN = {
+      pd: ['professional', 'development'], cir: ['continuous', 'improvement'], ci: ['continuous', 'improvement'],
+      mfa: ['two-factor', 'authentication'], '2fa': ['two-factor', 'authentication'], tas: ['training', 'assessment', 'strategy'],
+      qms: ['document', 'management'], eoi: ['expression', 'interest'], delete: ['remove'], remove: ['delete'], add: ['create', 'new'],
+      create: ['add', 'new'], download: ['export'], export: ['download'], upload: ['attach'], attach: ['upload'], staff: ['trainer', 'user'],
+      trainer: ['staff', 'assessor'], user: ['staff'], complaint: ['feedback', 'submission'], feedback: ['complaint', 'submission'],
+      suggestion: ['feedback'], login: ['sign'], password: ['reset'], reset: ['change'], change: ['reset', 'edit', 'update'], update: ['change', 'edit'], edit: ['change', 'update'], team: ['governance'], approve: ['approval', 'verify'],
+      overdue: ['due'], schedule: ['calendar'], calendar: ['event'], risk: ['treatment'], audit: ['auditor', 'export'],
+      evidence: ['document'], certificate: ['evidence'], consultation: ['industry'], validation: ['validate'], validate: ['validation']
+    };
+    function stem(w) {
+      if (w.length > 5 && /ies$/.test(w)) return w.slice(0, -3) + 'y';
+      if (w.length > 5 && /(ing|ed)$/.test(w)) return w.replace(/(ing|ed)$/, '');
+      if (w.length > 4 && /es$/.test(w) && !/(ses|ues)$/.test(w)) return w.slice(0, -2);
+      if (w.length > 3 && /s$/.test(w) && !/ss$/.test(w)) return w.slice(0, -1);
+      return w;
+    }
+    function words(s) { return (s.toLowerCase().match(/[a-z0-9][a-z0-9'’-]*/g) || []).map(function (w) { return w.replace(/['’]s?$/, ''); }); }
+    function plain(html) {
+      return String(html || '').replace(/<img\b[^>]*\balt="([^"]*)"[^>]*>/g, ' $1 ').replace(/<svg[\s\S]*?<\/svg>/g, ' ').replace(/<span class="(sn|mark)">[\s\S]*?<\/span>/g, ' ')
+        .replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/&[a-z]+;/g, ' ').replace(/\s+/g, ' ').replace(/ ([,.;:)])/g, '$1').replace(/^[\s·:–-]+/, '').trim();
+    }
+    function norm(s) { return words(s).join(' '); }
+    // Close match for longer words, so “verfiy” still finds “verify”
+    function near(a, b) {
+      if (a.length < 5 || Math.abs(a.length - b.length) > 1) return false;
+      var i = 0, j = 0, e = 0;
+      while (i < a.length && j < b.length) {
+        if (a[i] === b[j]) { i++; j++; continue; }
+        if (++e > 1) return false;
+        if (a.length > b.length) i++; else if (b.length > a.length) j++; else { i++; j++; }
+      }
+      return e + (a.length - i) + (b.length - j) <= 1;
+    }
+
+    // Everything searchable: guide names, section and sub-heading titles and FAQ questions, each
+    // with the text under it (body) and the guide it sits in (ctx). Only names are shown in results.
+    var DOCS = null;
+    function wset(s) { return words(s).map(stem); }
+    // badge: what the result's tag says. A guide shows its type, with How-to guides as Workflow; a heading in a guide is How-to;
+    // anything from a Configuration module is Config; FAQs stay FAQ
+    var GUIDE_BADGE = { 'Overview': 'overview', 'Concept': 'concept', 'Reference': 'reference', 'Troubleshooting': 'trouble', 'How-to': 'workflow' };
+    function doc(kind, text, crumb, url, find, body, ctx, key, badge) { return { kind: kind, badge: badge || kind, text: text, n: norm(text), set: wset(text), body: wset(body), ctx: wset(ctx), crumb: crumb, url: url, find: find, key: key }; }
+    function build() {
+      if (DOCS) return DOCS;
+      DOCS = [];
+      RH.ORDER.forEach(function (id) {
+        var a = A[id], m = MOD[a.module], url = artUrl(a.id), html = String(a.body || ''), seen = {};
+        // Split the guide at each heading: [level, heading html, id, text up to the next heading]
+        var re = /<(h2|h3|h4)\b([^>]*)>([\s\S]*?)<\/\1>/g, h, heads = [], prev = 0, lead = '';
+        while ((h = re.exec(html))) {
+          if (!heads.length) lead = html.slice(0, h.index); else heads[heads.length - 1].text = html.slice(prev, h.index);
+          var hid = /id="([^"]+)"/.exec(h[2]);
+          heads.push({ lvl: h[1], t: plain(h[3]), id: hid ? hid[1] : '', text: '' });
+          prev = h.index + h[0].length;
+        }
+        if (heads.length) heads[heads.length - 1].text = html.slice(prev); else lead = html;
+        var leadText = plain(lead), ctx = a.t + ' ' + m.name + ' ' + leadText, cfg = m.cat === 'configuration', badge = cfg ? 'config' : GUIDE_BADGE[a.type] || 'workflow';
+        DOCS.push(doc('guide', a.t, m.name, url, '', leadText, m.name, a.id, badge));
+        var section = '', h2t = '', h3t = '';
+        heads.forEach(function (x, i) {
+          if (x.lvl === 'h2') { section = x.id ? '#' + x.id : ''; h2t = x.t; h3t = ''; } else if (x.lvl === 'h3') h3t = x.t;
+          // Full path: module › guide › the section and sub-heading it sits under
+          var path = [m.name, a.t].concat(x.lvl === 'h2' ? [] : x.lvl === 'h3' ? [h2t] : [h2t, h3t]).filter(Boolean).join(' › ');
+          // A section heading covers everything down to the next section; a sub-heading just its own part
+          var body = x.text;
+          if (x.lvl === 'h2') for (var j = i + 1; j < heads.length && heads[j].lvl !== 'h2'; j++) body += ' ' + heads[j].t + ' ' + heads[j].text;
+          if (!x.t || seen[x.t.toLowerCase()]) return; seen[x.t.toLowerCase()] = 1;
+          DOCS.push(doc('title', x.t, path, url + section, x.t, plain(body), ctx, a.id, cfg ? 'config' : 'title'));
+        });
+      });
+      RH.MODULES.forEach(function (m) {
+        if (!m.faqHtml) return;
+        var re = /<summary>([\s\S]*?)<\/summary>([\s\S]*?)<\/details>/g, f;
+        while ((f = re.exec(m.faqHtml))) { var q = plain(f[1]); DOCS.push(doc('faq', q, m.name, modUrl(m.id) + '#faq', q, plain(f[2]), m.name, 'faq:' + q)); }
+      });
+      return DOCS;
+    }
+
+    function parse(q) {
+      var raw = words(q).filter(function (w) { return STOP.indexOf(w) < 0; });
+      if (!raw.length) raw = words(q);
+      return raw.map(function (w, i) { var s = stem(w); return { w: w, s: s, alts: (SYN[w] || SYN[s] || []).map(stem), last: i === raw.length - 1 }; });
+    }
+    // 2 = as written (or the word being typed), 1 = typo or synonym, 0 = not there
+    function hit(t, set) {
+      var best = 0;
+      for (var k = 0; k < set.length; k++) {
+        var x = set[k];
+        if (x === t.s || (t.last && t.s.length >= 3 && x.indexOf(t.s) === 0)) return 2;
+        if (near(t.s, x) || t.alts.indexOf(x) >= 0) best = 1;
+      }
+      return best;
+    }
+    var KIND = { guide: 0, title: 1, faq: 2 };
+    // Weight of a word found in the name, in the text under it, or elsewhere in its guide
+    var WT = { name: [0, 1, 2], body: [0, 0.75, 1.5], ctx: [0, 0.4, 0.8] };
+    function search(q) {
+      var terms = parse(q), out = { terms: terms, best: [], related: [] };
+      if (!terms.length) return out;
+      var nq = norm(q), rel = [];
+      build().forEach(function (d) {
+        var exact = 0, covered = 0, s = 0, strong = false, inName = false, named = 0;
+        terms.forEach(function (t) {
+          var hn = hit(t, d.set), hb = hit(t, d.body), hc = hit(t, d.ctx); if (hn === 2) exact++;
+          if (hn || hb === 2 || hc === 2) strong = true; if (hn === 2) inName = true; if (hn) named++;
+          var w = Math.max(WT.name[hn], WT.body[hb], WT.ctx[hc]);
+          // A word counts fully if it’s in the name or written as typed in the text; a synonym or typo found only in the text counts half
+          if (w) covered += (hn || hb === 2 || hc === 2) ? 1 : 0.5; s += w;
+        });
+        // A synonym or typo found only in the text, with nothing else matching, is too weak to show
+        if (!covered || !strong) return;
+        var r = { d: d, full: d.n === nq, phrase: nq.length > 2 && d.n.indexOf(nq) >= 0, cov: covered / terms.length };
+        if (r.full || r.phrase || exact === terms.length) out.best.push(r);
+        // Only some of the words matched: show it only if at least one is in the name, as typed
+        else if (r.cov >= 0.8 || ((r.cov >= 0.5 || terms.length < 3) && inName)) { r.s = s * (0.25 + 0.75 * r.cov * r.cov) * (1 + named / terms.length) * (d.kind === 'faq' ? 0.6 : 1); rel.push(r); }
+      });
+      out.best.sort(function (x, y) { return (y.full - x.full) || (y.phrase - x.phrase) || (KIND[x.d.kind] - KIND[y.d.kind]) || (x.d.text.length - y.d.text.length); });
+      // Related: the best place in each guide, skipping guides already under Best matches
+      rel.sort(function (x, y) { return (y.s - x.s) || (KIND[x.d.kind] - KIND[y.d.kind]) || (x.d.text.length - y.d.text.length); });
+      var used = {}; out.best.forEach(function (r) { used[r.d.key] = 1; });
+      rel.forEach(function (r) { if (!used[r.d.key] && out.related.length < 8) { used[r.d.key] = 1; out.related.push(r); } });
+      out.best = out.best.slice(0, 8);
+      return out;
+    }
+
+    function rx(terms) {
+      var parts = [];
+      terms.forEach(function (t) { [t.w, t.s].forEach(function (w) { if (w.length > 1 && parts.indexOf(w) < 0) parts.push(w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')); }); });
+      return parts.length ? new RegExp('\\b(' + parts.join('|') + ')[a-z]*', 'ig') : null;
+    }
+    function hl(text, re) { var h = esc(text); return re ? h.replace(re, '<mark>$&</mark>') : h; }
+    var LABEL = { workflow: 'Workflow', overview: 'Overview', concept: 'Concept', reference: 'Reference', trouble: 'Troubleshoot', title: 'How-to', faq: 'FAQ', config: 'Config' };
+    var TIP = { workflow: 'A step-by-step guide', overview: 'A guide introducing a module', concept: 'A guide explaining how something works', reference: 'A guide to look things up in', trouble: 'A guide to fixing a problem', title: 'A section or step in a guide', faq: 'A frequently asked question', config: 'A guide or section on setting up RTO Radar' };
+    function link(d) {
+      if (!d.find) return d.url;
+      var h = d.url.indexOf('#'), base = h < 0 ? d.url : d.url.slice(0, h), hash = h < 0 ? '' : d.url.slice(h);
+      return base + (base.indexOf('?') < 0 ? '?' : '&') + 'find=' + encodeURIComponent(d.find) + hash;
+    }
+    function row(r, re, i) {
+      var d = r.d;
+      return '<a class="ss-item" role="option" id="ss-o' + i + '" href="' + link(d) + '" aria-selected="false">' +
+        '<span class="ss-src ss-src-' + d.badge + '" title="' + TIP[d.badge] + '">' + LABEL[d.badge] + '</span>' +
+        '<span class="ss-main"><span class="ss-t">' + esc(d.text) + '</span><span class="ss-crumb">' + esc(d.crumb) + '</span></span>' +
+        '<span class="ss-go" aria-hidden="true">›</span></a>';
+    }
+    function html(q) {
+      if (!q.trim()) return '<p class="ss-empty">Describe what you want to do, or ask a question.</p>';
+      var r = search(q), re = rx(r.terms), i = 0, out = '';
+      if (r.best.length) out += '<p class="ss-group">Best matches</p>' + r.best.map(function (x) { return row(x, re, i++); }).join('');
+      if (r.related.length) out += '<p class="ss-group">Related</p>' + r.related.map(function (x) { return row(x, re, i++); }).join('');
+      return out || '<p class="ss-empty">Nothing matches “' + esc(q) + '”. Try fewer or different words.</p>';
+    }
+
+    // The results panel under a search bar
+    var cur = null, sel = -1;
+    function items() { return cur ? [].slice.call(cur.panel.querySelectorAll('.ss-item')) : []; }
+    function pick(i) {
+      var list = items(); if (!list.length) { sel = -1; return; }
+      if (sel >= 0 && list[sel]) { list[sel].classList.remove('on'); list[sel].setAttribute('aria-selected', 'false'); }
+      sel = (i + list.length) % list.length;
+      list[sel].classList.add('on'); list[sel].setAttribute('aria-selected', 'true'); list[sel].scrollIntoView({ block: 'nearest' });
+      cur.input.setAttribute('aria-activedescendant', list[sel].id);
+    }
+    function update() {
+      if (!cur) return;
+      cur.panel.innerHTML = html(cur.input.value); sel = -1;
+      if (cur.input.value.trim() && items().length) pick(0);
+    }
+    function show(form) {
+      var input = form.querySelector('input'); if (!input) return;
+      if (cur && cur.form === form) return;
+      hide();
+      var panel = document.createElement('div'); panel.className = 'ss-panel'; panel.id = 'ss-panel'; panel.setAttribute('role', 'listbox'); panel.setAttribute('aria-label', 'Search results');
+      var r = form.getBoundingClientRect();
+      if (r.left + r.width / 2 > window.innerWidth / 2 && r.width < 520) panel.classList.add('right');
+      form.appendChild(panel); form.classList.add('ss-open');
+      input.setAttribute('role', 'combobox'); input.setAttribute('aria-controls', 'ss-panel'); input.setAttribute('aria-expanded', 'true'); input.setAttribute('autocomplete', 'off');
+      cur = { form: form, input: input, panel: panel };
+      update();
+    }
+    function hide() {
+      if (!cur) return;
+      cur.panel.remove(); cur.form.classList.remove('ss-open'); cur.input.setAttribute('aria-expanded', 'false'); cur.input.removeAttribute('aria-activedescendant');
+      cur = null; sel = -1;
+    }
+    function wire() {
+      [].forEach.call(document.querySelectorAll('form[role="search"]'), function (form) {
+        var input = form.querySelector('input'); if (!input) return;
+        if (!/Ctrl K/.test(input.placeholder)) input.placeholder = input.placeholder.replace(/…$/, '') + ' (Ctrl K)';
+        input.addEventListener('focus', function () { show(form); });
+        input.addEventListener('input', function () { show(form); update(); });
+        input.addEventListener('keydown', function (e) {
+          if (!cur || cur.form !== form) return;
+          if (e.key === 'ArrowDown') { e.preventDefault(); pick(sel + 1); }
+          else if (e.key === 'ArrowUp') { e.preventDefault(); pick(sel - 1); }
+          else if (e.key === 'Escape') { hide(); input.blur(); }
+        });
+        // The search button and Enter open the highlighted result here, rather than another page
+        form.addEventListener('submit', function (e) {
+          e.preventDefault(); show(form);
+          var on = cur && cur.panel.querySelector('.ss-item.on'); if (on) location.href = on.getAttribute('href');
+        });
+      });
+      document.addEventListener('mousedown', function (e) { if (cur && !cur.form.contains(e.target)) hide(); });
+      // "Try:" suggestions under the hero search type themselves into the search bar, letter by
+      // letter, and the results open in place rather than on another page
+      var typing = 0;
+      [].forEach.call(document.querySelectorAll('.try a'), function (a) {
+        a.addEventListener('click', function (e) {
+          var form = a.closest('.hero-inner') && a.closest('.hero-inner').querySelector('form[role="search"]'), input = form && form.querySelector('input');
+          if (!input) return;
+          e.preventDefault();
+          var text = a.textContent.trim(), run = ++typing, i = 0;
+          input.value = ''; input.focus(); show(form); update();
+          if (still) { input.value = text; update(); return; }
+          (function next() {
+            if (run !== typing) return;
+            input.value = text.slice(0, ++i); update();
+            if (i < text.length) setTimeout(next, 45);
+          })();
+        });
+      });
+      document.addEventListener('mousemove', function (e) {
+        var it = cur && e.target.closest && e.target.closest('.ss-item'); if (!it || it.classList.contains('on')) return;
+        pick(items().indexOf(it));
+      });
+      document.addEventListener('keydown', function (e) {
+        var typing = /input|textarea|select/i.test(e.target.tagName || '');
+        if (((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) || (e.key === '/' && !typing)) {
+          // Focus the first search bar that’s visible on this page
+          var bar = [].filter.call(document.querySelectorAll('form[role="search"] input'), function (i) { return i.offsetParent; })[0];
+          if (bar) { e.preventDefault(); bar.focus(); bar.select(); }
+        }
+      });
+    }
+    return { wire: wire, search: search, rx: rx, row: row };
+  })();
+
+  // Arriving from smart search (…&find=text): find that FAQ question, section or sub-heading,
+  // scroll to it and flash it coral for a moment, so the reader sees exactly where the answer is
+  function flashFind() {
+    var want = param('find'); if (!want) return;
+    var norm = function (s) { return s.replace(/\s+/g, ' ').trim().toLowerCase(); }, w = norm(want), hitEl = null;
+    [].some.call(document.querySelectorAll('#main summary, #main h2, #main h3, #main h4'), function (el) {
+      var c = el.cloneNode(true); [].forEach.call(c.querySelectorAll('.sn, svg'), function (x) { x.remove(); });
+      var t = norm(c.textContent);
+      if (t === w || (t.length > 3 && (t.indexOf(w) === 0 || w.indexOf(t) === 0))) { hitEl = el; return true; }
+    });
+    if (!hitEl) return;
+    var box = hitEl, faq = hitEl.tagName === 'SUMMARY';
+    if (faq) box = hitEl.parentNode;
+    else if (hitEl.tagName === 'H4') box = hitEl.closest('li, .sub-steps > div') || hitEl;
+    // Land at the top of the page first: drop the #faq jump, so the scroll down is seen
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    window.scrollTo(0, 0);
+    function flash() {
+      box.classList.remove('rh-flash'); void box.offsetWidth; box.classList.add('rh-flash');
+      setTimeout(function () { box.classList.remove('rh-flash'); }, 2400);
+    }
+    // Ease the page down so the target sits a third of the way down the screen, then call done
+    function glide(done) {
+      var from = window.scrollY, to = Math.max(0, box.getBoundingClientRect().top + from - window.innerHeight / 3), dist = to - from;
+      if (still || Math.abs(dist) < 2) { window.scrollTo(0, to); done(); return; }
+      var ms = Math.min(1200, 450 + Math.abs(dist) / 4), t0 = null;
+      (function step(now) {
+        if (t0 === null) t0 = now;
+        var p = Math.min(1, (now - t0) / ms), e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+        window.scrollTo(0, from + dist * e);
+        if (p < 1) requestAnimationFrame(step); else done();
+      })(performance.now());
+    }
+    function go() {
+      glide(function () {
+        if (faq && !box.open) setTimeout(function () { toggleFaq(box, flash); }, still ? 0 : 150);
+        else flash();
+      });
+    }
+    // Pictures above it load first, otherwise they push it down as they appear
+    var imgs = [].filter.call(document.querySelectorAll('#main img'), function (img) { return box.compareDocumentPosition(img) & Node.DOCUMENT_POSITION_PRECEDING; });
+    imgs.forEach(function (img) { img.loading = 'eager'; });
+    var loaded = new Promise(function (done) { if (document.readyState === 'complete') done(); else window.addEventListener('load', done); });
+    Promise.all([loaded].concat(imgs.map(function (img) { return img.complete ? 0 : new Promise(function (done) { img.addEventListener('load', done); img.addEventListener('error', done); }); })))
+      .then(function () { window.scrollTo(0, 0); setTimeout(go, still ? 0 : 500); });
+  }
+
   // ---------- boot ----------
   document.addEventListener('DOMContentLoaded', function () {
     var page = document.body.getAttribute('data-page');
@@ -854,6 +1166,9 @@
     if ($('#news-form')) $('#news-form').addEventListener('submit', function (e) { e.preventDefault(); toast('Prototype: newsletter sign-up isn’t connected yet.'); });
     if (pages[page]) pages[page]();
     pruneUnpublished();
+    openLinksInNewTab();
+    SS.wire();
+    flashFind();
     if (location.hash) { var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
   });
 })();

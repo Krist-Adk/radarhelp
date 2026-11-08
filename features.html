@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Features · RadarHelp</title>
+<title>RadarHelp · RTO Radar Help Centre</title>
+<meta name="description" content="Step-by-step guides for everything in RTO Radar.">
 <link rel="icon" href="assets/img/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
@@ -15,9 +16,51 @@
 <div id="site-header"></div>
 <main id="main">
   <section id="head"></section>
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"><svg class="arcs" viewBox="0 0 760 760" aria-hidden="true">
+      <circle cx="380" cy="380" r="90" fill="none" stroke="#4793c2" stroke-opacity="0.35" stroke-width="10" stroke-linecap="round" stroke-dasharray="180 60"/>
+      <circle cx="380" cy="380" r="160" fill="none" stroke="#3b82c2" stroke-opacity="0.28" stroke-width="10" stroke-linecap="round" stroke-dasharray="320 90 120 70"/>
+      <circle cx="380" cy="380" r="235" fill="none" stroke="#296794" stroke-opacity="0.4" stroke-width="10" stroke-linecap="round" stroke-dasharray="500 120 200 90"/>
+      <circle cx="380" cy="380" r="310" fill="none" stroke="#296794" stroke-opacity="0.25" stroke-width="10" stroke-linecap="round" stroke-dasharray="700 160 260 120"/>
+      <circle cx="380" cy="380" r="18" fill="#4793c2" fill-opacity="0.6"/>
+    </svg></div>
+    <div class="wrap">
+      <div class="hero-inner">
+        <h1>How can we help?</h1>
+        <p>Step-by-step guides for everything in RTO Radar.</p>
+        <form class="big-search" action="search.html" role="search">
+          <label for="home-search">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+            <span class="visually-hidden">Search help</span>
+            <input id="home-search" name="q" type="search" placeholder="Search guides and FAQs" autocomplete="off">
+          </label>
+          <button class="btn btn-accent" type="submit">Search</button>
+        </form>
+        <div class="try">
+          <span style="color:#c5dceb">Try:</span>
+          <a href="search.html?q=improvement+item">Add an improvement item</a>
+          <a href="search.html?q=evidence+map">Evidence map</a>
+          <a href="search.html?q=validation+frequency">Validation frequency</a>
+          <a href="search.html?q=MFA">Turn on MFA</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="start-card">
+      <div class="gs-status" id="gs-status" role="img" aria-label="Not started yet">!</div>
+      <div class="txt">
+        <h2 style="font-size:1.6rem" id="gs-heading">Start here</h2>
+        <span class="muted">Get to know RTO Radar in nine short steps, from setting up your organisation to a dashboard full of your RTO’s work.</span>
+      </div>
+      <div class="chips" id="gs-chips" style="max-width:420px"></div>
+      <a class="btn btn-primary" id="gs-go" href="feature.html?m=getting-started">Start the setup series →</a>
+    </div>
+  </div>
   <div class="wrap">
     <div class="wf-intro">
-      <h1>Features</h1>
+      <h1>Help Guides</h1>
       <p>How each part of RTO Radar works, and where its data shows up elsewhere.</p>
     </div>
     <div class="wf-groups three" id="feat-grid"></div>

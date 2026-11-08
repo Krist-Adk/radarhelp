@@ -15,8 +15,59 @@
 
   // cat: which Help Guides category the module sits under
   var MODULES = [
-    { id: 'dashboard', cat: 'features', name: 'Dashboard',
-      blurb: 'The landing page after login. Every widget is a doorway into another module.', cfg: ['cust-dashboard-widgets'] },
+    { id: 'getting-started', cat: 'getting-started', name: 'Getting Started', series: true,
+      blurb: 'A 9-step series that takes you from a new account to filling up your dashboard. Work through it in order.',
+      // FAQs shown at the end of the page: [question, answer HTML]
+      faqs: [
+        ['What’s the difference between the person responsible for proposed treatment of risks and the Escalation Manager?',
+          '<p>The <b>Escalation Manager</b> is nominated once for your whole RTO, in Update RTO Profile. They keep watch over all of your organisational risks and are notified whenever a risk is added to or removed from your register, at any risk level.</p>' +
+          '<p>The <b>person responsible for the proposed treatment</b> is nominated on each treatment plan. They get an improvement item in the Continuous Improvement Register with the proposed treatment to carry out.</p>'],
+        ['What happens when I complete a risk assessment?',
+          '<p>Completing a risk assessment saves a snapshot of your RTO’s risks at that point in time, and sends your Escalation Manager one email summarising the risks you’ve added.</p>' +
+          '<p>Because each completion sends a new email, complete your assessment once you’ve added all the risks you want to record, rather than after each one. You can always add more later from Risk Assessment › Actions › Edit Comprehensive Assessment.</p>'],
+        ['How are organisational, course and unit risk scores calculated?',
+          '<p>Risk is worked out in three tiers, and each builds on the one above it:</p>' +
+          '<ul class="formulas">' +
+            '<li><b>Organisational risk</b><code>Basic profile + Comprehensive risk assessment</code><span>Worked out from your basic and comprehensive risk profiles in Risk Assessment. This is the Risk Score on the Risk Register Overview.</span></li>' +
+            '<li><b>Course risk</b><code>Organisational risk score + Course risk assessment</code><span>Comes from the course’s risk assessment: its required course-specific risk factors and any additional ones. Combined with your organisational risk, it gives the course a total risk score out of 10, which sets how often the course is validated.</span></li>' +
+            '<li><b>Unit risk</b><code>Unit-specific risks + Course risk score, from 1 to 10</code><span>Every unit follows its course’s validation frequency, unless its own risks shorten it further: physical risk, sensitive content and completion rate.</span></li>' +
+          '</ul>' +
+          '<p>So a change to your organisational risk flows down to every course and unit, and a riskier course or unit is validated more often. Admins can customise these risks in <b>Settings</b> › <b>Customisation</b> › <b>Risk</b>.</p>'],
+        ['What’s the difference between Complete and Verify on an improvement item?',
+          '<p>Both close out an improvement item, and both ask you to record what was done: the actions taken, how they resolve the item, a follow-up or review date, and any updated risk level as a result.</p>' +
+          '<ul>' +
+            '<li><b>Complete</b> marks the item as complete straight away.</li>' +
+            '<li><b>Verify</b> sends it to another person in your RTO to check first. They confirm the right steps were taken and the updated risk level is correct. The item is only marked complete across your organisation once they’ve verified it. If they think it needs more scrutiny, the verifier can escalate it to someone more senior to verify as well.</li>' +
+          '</ul>' +
+          '<p>Use Verify when an item needs a second set of eyes, such as one tied to a high or extreme risk.</p>'],
+        ['What’s the difference between a silent user and a regular user?',
+          '<p>A <b>regular user</b> is emailed an invitation, signs in to RTO Radar and works in it themselves, for example uploading their own documents and mapping their evidence.</p>' +
+          '<p>A <b>silent user</b> has a profile but no sign-in access, and isn’t emailed an invitation. You manage their records for them. Silent users are useful when you want to:</p>' +
+          '<ul>' +
+            '<li><b>Set up an account before inviting someone</b>: add their documents, courses and units first, so everything’s ready when they first sign in.</li>' +
+            '<li><b>Keep compliance records</b> for staff who don’t need to sign in themselves, such as their credentials and document expiry dates.</li>' +
+            '<li><b>Test</b> roles, checklists and settings without emailing real people.</li>' +
+          '</ul>'],
+        ['Why is a document’s description important, and how should I write it?',
+          '<p>When you create a trainer’s evidence map, RTO Radar’s AI uses each document’s description to write evidence statements for their vocational competency and industry currency. To protect personally identifiable information, the AI reads <b>only the description</b>, never the file itself. A vague description gives the AI little to work with, while a detailed one produces stronger, more accurate evidence.</p>' +
+          '<p>A good description covers:</p>' +
+          '<ul>' +
+            '<li>what the document is, and when it was completed or issued</li>' +
+            '<li>the skills or knowledge it demonstrates</li>' +
+            '<li>for a qualification, the units it covers, with their codes and titles</li>' +
+            '<li>how it connects to the units the trainer delivers, and any systems or processes they manage</li>' +
+            '<li>how it reflects current industry practice.</li>' +
+          '</ul>' +
+          '<p>For example: “Certificate II in Community Services, completed on 18 November 2025. Units completed include CHCCOM005 Communicate and work in health or community services, CHCDIV001 Work with diverse people, HLTWHS001 Participate in workplace health and safety, CHCCCS015 Provide individualised support and CHCVOL002 Lead volunteer teams. Developed communication skills, awareness of diversity, safe work practices and introductory client support skills.”</p>'],
+        ['Can I convert a silent user to a regular user?',
+          '<p>Yes. When you’re ready for them to sign in, send them an invitation from <b>Settings</b> › <b>User Management</b> › <b>Staff</b>. Their profile, documents and assignments stay as they are, so everything you set up is waiting for them when they first sign in.</p>']
+      ],
+      updated: '2026-10-05', // shown when the site is opened from disk; on a web server the files' own dates are used
+
+      related: ['qms-frameworks', 'connect-axcelerate', 'users-roles', 'mfa-set-organisation', 'prog-course-risk', 'qms-health'] },
+    { id: 'dashboard', cat: 'features', name: 'Dashboard & Profile',
+      blurb: 'The landing page after login, with a widget for each module, and your own profile: your details, two-factor authentication and email notifications.', cfg: ['cust-dashboard-widgets'],
+      updated: '2026-11-05' },
     { id: 'qms', cat: 'features', name: 'Document Management (QMS)',
       blurb: 'Your quality management system: the Document Repository, uploading and mapping documents to standards, versions, compliance frameworks, the Compliance Dashboard and audit exports.', cfg: ['cust-compliance-health', 'cust-document-types'],
       updated: '2026-10-15' },
@@ -24,27 +75,29 @@
       blurb: 'Courses, units, AI-assisted validation and the TAS Builder.', cfg: ['cust-course-risk-weights', 'cust-frequency-bands', 'cust-tas-templates'],
       updated: '2026-10-21' },
     { id: 'cir', cat: 'features', name: 'Continuous Improvement Register',
-      blurb: 'The central register of improvement items. Most modules feed into it.', cfg: ['cust-cir-settings'] },
+      blurb: 'One register of every improvement action in your RTO. Risk treatments, validation findings, consultations, feedback and more feed into it automatically.', cfg: ['cust-cir-settings'],
+      updated: '2026-11-06' },
     { id: 'workforce', cat: 'features', name: 'Workforce Management', ai: true,
       blurb: 'Staff profiles, documents, course and unit assignments, evidence maps, PD, the Workforce Dashboard, Teams, Document Checklists, search and workforce reports.',
       updated: '2026-10-13' },
     { id: 'users', cat: 'features', name: 'Users, Roles & Teams',
-      blurb: 'Invitations, user roles and team configuration. Used together with Workforce Management.', cfg: ['mfa-set-organisation'] },
+      blurb: 'Invitations, user roles and team configuration. Used together with Workforce Management.', cfg: ['mfa-set-organisation'],
+      updated: '2026-11-02' },
     { id: 'risk', cat: 'features', name: 'Risk Assessment',
-      blurb: 'Your RTO profile, organisational risk score and validation frequency, the risk register with Likelihood × Consequence scoring, treatment plans, Escalation Manager reports, Excel exports and version history.', cfg: ['cust-risk-categories', 'cust-course-risk-weights'],
-      updated: '2026-10-12' },
+      blurb: 'Your RTO profile, organisational risk score and validation frequency, the risk register with Likelihood × Consequence scoring, treatment plans, Escalation Manager reports, Excel exports and version history.', cfg: ['cust-risk-categories', 'cust-course-risk-weights', 'cust-frequency-bands'],
+      updated: '2026-11-09' },
     { id: 'feedback', cat: 'features', name: 'Complaints & Suggestions',
-      blurb: 'Embeddable feedback, complaint and conflict of interest forms. Submissions become improvement items.' },
+      blurb: 'Feedback, suggestion and complaint forms you build, share or embed on your website, and the submissions they collect. Submissions can become improvement items.',
+      updated: '2026-11-05' },
     { id: 'events', cat: 'features', name: 'Events',
-      blurb: 'Your calendar, and the Scheduler for consultations and unit validations.' },
+      blurb: 'Your calendar of compliance dates, the schedulers for industry consultations and unit validations, and professional development.',
+      updated: '2026-11-02' },
     { id: 'pd', cat: 'features', name: 'Professional Development',
-      blurb: 'PD appears in Events, on each staff PD calendar and in PD settings. This hub brings it together.', cfg: ['pd-configure'] },
-    { id: 'integrations', cat: 'configuration', name: 'Integrations (aXcelerate)',
-      blurb: 'Import courses, units and staff from aXcelerate.' },
-    { id: 'security', cat: 'configuration', name: 'Security & MFA',
-      blurb: 'Organisation-wide MFA enforcement and each user’s MFA status.' },
+      blurb: 'PD providers and sessions, assigning PD to staff, enrolling and requesting approval for paid PD, completing PD with evidence, and approving that evidence for evidence maps.', cfg: ['pd-configure'],
+      updated: '2026-11-04' },
     { id: 'custom', cat: 'configuration', name: 'Customisation',
-      blurb: 'Organisation-wide settings that change how other modules score, display and remind.' },
+      blurb: 'Organisation settings: connect aXcelerate, set MFA, and change how other modules score, display and remind.',
+      updated: '2026-11-08' },
   ];
 
   var RISK = ['admin', 'auditor', 'coord']; // Trainer/Assessors have no access to the risk register or organisational documents (QMS)
@@ -52,11 +105,20 @@
 
   // [module, id, type, title, roles, minutes]
   var LIST = [
+    ['getting-started', 'gs-welcome', 'Overview', 'How to Use This Guide', ADM, 5],
+    ['getting-started', 'gs-organisation', 'How-to', 'Set Up Your Organisation', ADM, 10],
+    ['getting-started', 'gs-risks', 'How-to', 'Set Up Your Organisational Risks', ADM, 10],
+    ['getting-started', 'gs-cir', 'How-to', 'Visit the Continuous Improvement Register', ADM, 5],
+    ['getting-started', 'gs-documents', 'How-to', 'Start Adding Your Documents and View Compliance Dashboard', ADM, 10],
+    ['getting-started', 'gs-connect-axcelerate', 'How-to', 'Import via aXcelerate (optional)', ADM, 10],
+    ['getting-started', 'gs-programs', 'How-to', 'Add Your Programs', ADM, 10],
+    ['getting-started', 'gs-workforce', 'How-to', 'Add a Trainer', ADM, 5],
+    ['getting-started', 'gs-training', 'How-to', 'Assign Training', ADM, 10],
+    ['getting-started', 'gs-dashboard', 'How-to', 'View Your Dashboard', ADM, 5],
 
-    ['dashboard', 'dash-tour', 'Overview', 'Tour the dashboard', ALL, 4],
-    ['dashboard', 'dash-widgets', 'Concept', 'What each widget measures', ALL, 5],
-    ['dashboard', 'dash-open-record', 'How-to', 'Open the record behind a widget', ALL, 2],
-    ['dashboard', 'dash-reference', 'Reference', 'Dashboard widgets and their source modules', ALL, 3],
+    ['dashboard', 'dash-tour', 'Overview', 'The dashboard', ALL, 5],
+    ['dashboard', 'profile-open', 'How-to', 'Your profile', ALL, 4],
+    ['dashboard', 'profile-notifications', 'Reference', 'Choose your email notifications', ALL, 4],
 
     ['qms', 'qms-overview', 'Overview', 'The Document Management page', RISK, 5],
     ['qms', 'upload-and-map-a-document', 'How-to', 'Upload a document and map it to standards', MGR, 6],
@@ -83,15 +145,14 @@
     ['programs', 'prog-master-tas', 'How-to', 'Build a Master TAS', MGR, 20],
     ['programs', 'prog-tas-review', 'How-to', 'Submit, review and approve a TAS', MGR, 6],
     ['programs', 'prog-cohort-tas', 'How-to', 'Create a Cohort TAS', MGR, 5],
-    ['programs', 'prog-archive', 'How-to', 'Archive and restore courses', MGR, 3],
+    ['programs', 'prog-archive', 'How-to', 'Archive and restore courses and unit validations', MGR, 3],
 
-    ['cir', 'cir-overview', 'Overview', 'What the CIR is for', ALL, 3],
+    ['cir', 'cir-overview', 'Overview', 'The Continuous Improvement Register', ALL, 4],
     ['cir', 'cir-sources', 'Concept', 'Where improvement items come from', ALL, 4],
-    ['cir', 'cir-add-item', 'How-to', 'Add an ad hoc improvement item', ALL, 3],
-    ['cir', 'cir-assign-track', 'How-to', 'Assign, prioritise and track an item', MGR, 4],
-    ['cir', 'cir-statuses', 'Concept', 'Item statuses: open, in progress, completed, overdue', ALL, 2],
-    ['cir', 'cir-export', 'How-to', 'Export CI records for an audit or governance report', ['admin', 'auditor', 'coord'], 3],
-    ['cir', 'cir-import', 'How-to', 'Bulk import items from CSV or Excel', ADM, 5],
+    ['cir', 'cir-add-item', 'How-to', 'Add an improvement item', ALL, 4],
+    ['cir', 'cir-assign-track', 'How-to', 'View, edit and track an item', ALL, 5],
+    ['cir', 'cir-complete', 'How-to', 'Complete or verify an item', ALL, 4],
+    ['cir', 'cir-export', 'How-to', 'Export the register', ['admin', 'auditor', 'coord'], 2],
 
     ['workforce', 'wf-overview', 'Overview', 'The Workforce Management page', MGR, 5],
     ['workforce', 'wf-assign-units', 'How-to', 'Assign courses and units to a trainer', MGR, 5],
@@ -105,9 +166,15 @@
     ['workforce', 'wf-teams', 'Concept', 'The compliance governance chart and teams', MGR, 5],
     ['workforce', 'wf-export', 'Reference', 'Export workforce reports', MGR, 2],
 
-    ['users', 'users-invite', 'How-to', 'Invite a new user', ADM, 3],
-    ['users', 'users-roles', 'Concept', 'Built-in roles and their permissions', ALL, 4],
-    ['users', 'users-custom-role', 'How-to', 'Create a custom role', ADM, 5],
+    ['users', 'users-overview', 'Overview', 'The User Management page', ADM, 3],
+    ['users', 'users-invite', 'How-to', 'Add a user', ADM, 4],
+    ['users', 'users-manage', 'How-to', 'Find and manage staff', ADM, 4],
+    ['users', 'users-roles', 'Concept', 'Organisation roles and role templates', ADM, 4],
+    ['users', 'users-permissions', 'Concept', 'What each permission covers', ADM, 5],
+    ['users', 'users-custom-role', 'How-to', 'Create a custom role', ADM, 6],
+    ['users', 'users-portal-custom', 'Concept', 'What each role sees', ALL, 5],
+    ['users', 'users-plan-roles', 'Concept', 'Plan roles and permissions for your RTO', ADM, 7],
+    ['users', 'users-governance', 'Concept', 'Understanding the compliance governance chart', ALL, 8],
     ['users', 'users-teams', 'How-to', 'Create teams and set parent teams', ADM, 5],
 
     ['risk', 'risk-overview', 'Overview', 'The Risk Register Overview', RISK, 5],
@@ -120,40 +187,47 @@
     ['risk', 'risk-escalation-manager', 'Concept', 'The Escalation Manager', RISK, 4],
     ['risk', 'risk-escalation', 'How-to', 'Email and schedule risk reports to your Escalation Manager', ADM, 4],
     ['risk', 'risk-export', 'How-to', 'Export the risk register to Excel', RISK, 4],
-    ['risk', 'risk-versions', 'How-to', 'Save, view and export risk register versions', RISK, 6],
+    ['risk', 'risk-versions', 'How-to', 'Risk register revisions and versions', RISK, 7],
 
-    ['feedback', 'fb-overview', 'Overview', 'How feedback forms work', ALL, 3],
-    ['feedback', 'fb-create-form', 'How-to', 'Create a feedback, complaint or conflict of interest form', MGR, 6],
-    ['feedback', 'fb-embed', 'How-to', 'Embed a form on your website', ADM, 4],
+    ['feedback', 'fb-overview', 'Overview', 'The Complaints & Suggestions page', ALL, 4],
+    ['feedback', 'fb-create-form', 'How-to', 'Create and build a form', MGR, 9],
+    ['feedback', 'fb-manage-forms', 'How-to', 'Manage your forms', MGR, 4],
+    ['feedback', 'fb-embed', 'How-to', 'Share or embed a form on your website', MGR, 4],
+    ['feedback', 'fb-submissions', 'How-to', 'Review and respond to submissions', MGR, 6],
     ['feedback', 'fb-to-cir', 'How-to', 'Turn a submission into an improvement item', MGR, 3],
+    ['feedback', 'fb-plan', 'Concept', 'Plan your forms: teams, access and uses', ADM, 5],
 
-    ['events', 'ev-overview', 'Overview', 'The calendar and scheduler', ALL, 3],
-    ['events', 'ev-consultation', 'How-to', 'Schedule a consultation', MGR, 3],
-    ['events', 'ev-validation', 'How-to', 'Schedule a unit validation', MGR, 3],
+    ['events', 'ev-overview', 'Overview', 'The Events page', ALL, 3],
+    ['events', 'ev-calendar', 'How-to', 'Use the calendar', ALL, 4],
+    ['events', 'ev-add-event', 'How-to', 'Add an event', MGR, 3],
+    ['events', 'ev-export', 'How-to', 'Export events', MGR, 2],
+    ['events', 'ev-consultation', 'How-to', 'Schedule an industry consultation', MGR, 5],
+    ['events', 'ev-record-consultation', 'How-to', 'Record industry consultation evidence', MGR, 4],
+    ['events', 'ev-consultation-history', 'How-to', 'View and manage consultation evidence', MGR, 3],
+    ['events', 'ev-validation', 'How-to', 'Schedule a unit validation', MGR, 4],
 
     ['pd', 'pd-overview', 'Overview', 'PD across RTO Radar', ALL, 3],
-    ['pd', 'pd-enrol', 'How-to', 'Browse, enrol or register interest in PD', ALL, 3],
-    ['pd', 'pd-assign', 'How-to', 'Assign PD to a staff member', MGR, 3],
-    ['pd', 'pd-export', 'How-to', 'Export the PD calendar to CSV', MGR, 2],
-    ['pd', 'pd-configure', 'How-to', 'Configure PD sessions and providers', ADM, 6],
-    ['pd', 'pd-paid-evidence', 'Concept', 'Paid PD and evidence requirements', ADM, 4],
+    ['pd', 'pd-configure', 'How-to', 'Set up Professional Development', ADM, 5],
+    ['pd', 'pd-assign', 'How-to', 'Assign PD to a staff member', MGR, 4],
+    ['pd', 'pd-enrol', 'How-to', 'Find and enrol in PD', ALL, 3],
+    ['pd', 'pd-eoi', 'How-to', 'Request approval for paid PD', ALL, 4],
+    ['pd', 'pd-complete', 'How-to', 'Complete PD and attach evidence', ALL, 10],
+    ['pd', 'pd-export', 'How-to', 'Export PD records', MGR, 2],
 
-    ['integrations', 'ax-what-imports', 'Concept', 'What imports from aXcelerate', ADM, 3],
-    ['integrations', 'ax-tokens', 'How-to', 'Find your API Token and Web Service Token', ADM, 3],
-    ['integrations', 'connect-axcelerate', 'How-to', 'Connect aXcelerate', ADM, 5],
+    ['custom', 'cust-overview', 'Overview', 'Organisation settings', ADM, 2],
+    ['custom', 'connect-axcelerate', 'How-to', 'aXcelerate integration', ADM, 10],
 
-    ['security', 'mfa-levels', 'Concept', 'MFA enforcement levels', ADM, 3],
-    ['security', 'mfa-set-organisation', 'How-to', 'Set organisation MFA', ADM, 3],
-    ['security', 'mfa-user-status', 'How-to', 'Check a user’s MFA status', ADM, 2],
+    ['custom', 'mfa-set-organisation', 'How-to', 'Set up MFA for your organisation', ADM, 3],
 
-    ['custom', 'cust-course-risk-weights', 'Concept', 'Course risk score weights and bands', ADM, 6],
-    ['custom', 'cust-frequency-bands', 'Concept', 'Validation frequency bands and escalation', ADM, 6],
+    ['custom', 'cust-course-risk-weights', 'How-to', 'Set course and unit risk scoring', ADM, 5],
+    ['custom', 'cust-frequency-bands', 'How-to', 'Set validation frequency and escalation', ADM, 4],
     ['custom', 'cust-risk-categories', 'How-to', 'Configure risk categories and register versioning', ADM, 4],
     ['custom', 'cust-compliance-health', 'How-to', 'Set compliance health weighting', ADM, 3],
-    ['custom', 'cust-document-types', 'How-to', 'Add document types', ADM, 3],
+    ['custom', 'cust-document-types', 'How-to', 'Manage document types', ADM, 2],
     ['custom', 'cust-dashboard-widgets', 'How-to', 'Choose dashboard widgets and Teams visibility', ADM, 3],
-    ['custom', 'cust-cir-settings', 'How-to', 'Set CIR sources, templates and reminders', ADM, 5],
+    ['custom', 'cust-cir-settings', 'How-to', 'Set up the CIR: custom registers, imports, sources and reminders', ADM, 6],
     ['custom', 'cust-tas-templates', 'How-to', 'Customise TAS templates', ADM, 5],
+    ['custom', 'cust-branding', 'How-to', 'Add your logo', ADM, 1],
 
   ];
 
@@ -163,8 +237,17 @@
   // Related guides shown at the end of a feature guide. Guides not listed fall back to their
   // module's settings guides and workflow neighbours.
   var RELATED = {
+    'cust-overview': ['connect-axcelerate', 'mfa-set-organisation', 'cust-course-risk-weights'],
+    'cust-course-risk-weights': ['cust-frequency-bands', 'prog-course-risk', 'risk-provider-factors'],
+    'cust-frequency-bands': ['cust-course-risk-weights', 'prog-course-risk', 'prog-schedule-validation'],
+    'cust-risk-categories': ['risk-versions', 'risk-add-score', 'cust-course-risk-weights'],
+    'cust-compliance-health': ['qms-health', 'cust-document-types', 'qms-compliance-dashboard'],
+    'cust-document-types': ['upload-and-map-a-document', 'cust-compliance-health', 'wf-documents'],
+    'cust-dashboard-widgets': ['dash-tour', 'users-teams', 'cust-overview'],
+    'cust-cir-settings': ['cir-add-item', 'cir-sources', 'profile-notifications'],
+    'cust-branding': ['cust-tas-templates', 'cust-overview', 'dash-tour'],
     'prog-overview': ['prog-add-course', 'prog-add-units', 'prog-validate-unit', 'prog-master-tas'],
-    'prog-add-course': ['prog-course-risk', 'prog-add-units'],
+    'prog-add-course': ['prog-course-risk', 'prog-add-units', 'gs-programs'],
     'prog-course-risk': ['risk-provider-factors', 'cust-frequency-bands', 'cust-course-risk-weights', 'prog-schedule-validation'],
     'prog-add-units': ['prog-course-risk', 'prog-validate-unit', 'wf-assign-units'],
     'prog-schedule-validation': ['prog-validate-unit', 'prog-course-risk', 'prog-add-units'],
@@ -195,15 +278,56 @@
     'wf-evidence-map': ['wf-evidence-review', 'wf-description', 'wf-dashboard', 'wf-assign-units'],
     'wf-evidence-review': ['wf-evidence-map', 'wf-documents', 'wf-dashboard', 'wf-description'],
     'wf-pd': ['pd-assign', 'pd-configure', 'wf-dashboard', 'wf-export'],
-    'wf-dashboard': ['wf-evidence-review', 'wf-documents', 'wf-checklist', 'dash-widgets'],
+    'cir-overview': ['cir-sources', 'cir-add-item', 'cust-cir-settings'],
+    'cir-sources': ['risk-treatment', 'fb-to-cir', 'prog-validation-phases'],
+    'cir-add-item': ['cir-assign-track', 'cir-complete', 'cust-cir-settings'],
+    'cir-assign-track': ['cir-complete', 'cir-sources', 'cir-add-item'],
+    'cir-complete': ['cir-assign-track', 'cir-export', 'cir-sources'],
+    'cir-export': ['cir-overview', 'cir-complete', 'qms-export'],
+    'dash-tour': ['cust-dashboard-widgets', 'profile-open', 'risk-overview'],
+    'profile-open': ['profile-notifications', 'dash-tour', 'mfa-set-organisation'],
+    'profile-notifications': ['profile-open', 'risk-escalation-manager', 'dash-tour'],
+    'wf-dashboard': ['wf-evidence-review', 'wf-documents', 'wf-checklist', 'dash-tour'],
     'wf-teams': ['users-teams', 'users-roles', 'wf-overview'],
+    'ev-overview': ['ev-calendar', 'ev-consultation', 'ev-validation', 'pd-enrol'],
+    'ev-calendar': ['ev-add-event', 'ev-export', 'cir-overview'],
+    'ev-add-event': ['ev-calendar', 'ev-export'],
+    'ev-export': ['ev-calendar', 'ev-add-event'],
+    'ev-consultation': ['ev-record-consultation', 'ev-consultation-history', 'prog-course-risk'],
+    'ev-record-consultation': ['ev-consultation-history', 'ev-consultation', 'prog-industry-consultation'],
+    'ev-consultation-history': ['ev-record-consultation', 'ev-consultation', 'cir-overview'],
+    'ev-validation': ['prog-schedule-validation', 'prog-validate-unit', 'prog-course-risk'],
+    'pd-overview': ['pd-configure', 'pd-assign', 'pd-enrol', 'pd-complete'],
+    'pd-configure': ['pd-assign', 'pd-enrol', 'pd-overview'],
+    'pd-assign': ['pd-configure', 'pd-complete', 'wf-pd', 'pd-export'],
+    'pd-enrol': ['pd-eoi', 'pd-complete', 'pd-overview'],
+    'pd-eoi': ['pd-enrol', 'pd-complete', 'pd-overview'],
+    'pd-complete': ['wf-documents', 'wf-description', 'wf-evidence-map', 'pd-export'],
+    'pd-export': ['wf-export', 'pd-assign', 'wf-pd'],
+    'fb-overview': ['fb-create-form', 'fb-submissions', 'fb-plan'],
+    'fb-create-form': ['fb-manage-forms', 'fb-embed', 'fb-plan'],
+    'fb-manage-forms': ['fb-create-form', 'fb-embed', 'fb-submissions'],
+    'fb-embed': ['fb-manage-forms', 'fb-submissions', 'fb-create-form'],
+    'fb-submissions': ['fb-to-cir', 'fb-overview', 'cir-overview'],
+    'fb-to-cir': ['fb-submissions', 'cir-overview', 'cir-assign-track'],
+    'fb-plan': ['users-governance', 'users-custom-role', 'fb-create-form'],
+    'users-overview': ['users-invite', 'users-roles', 'users-teams', 'users-plan-roles'],
+    'users-invite': ['users-manage', 'users-roles', 'users-teams'],
+    'users-manage': ['users-invite', 'users-roles', 'users-teams'],
+    'users-roles': ['users-custom-role', 'users-plan-roles', 'users-manage'],
+    'users-permissions': ['users-custom-role', 'users-roles', 'users-plan-roles'],
+    'users-custom-role': ['users-permissions', 'users-portal-custom', 'users-roles'],
+    'users-portal-custom': ['users-custom-role', 'users-permissions', 'wf-evidence-map'],
+    'users-plan-roles': ['users-roles', 'users-custom-role', 'users-governance', 'users-teams'],
+    'users-governance': ['users-teams', 'users-plan-roles', 'wf-teams'],
+    'users-teams': ['users-governance', 'wf-teams', 'users-manage'],
     'wf-checklist': ['wf-documents', 'wf-overview', 'cir-overview', 'cust-document-types'],
     'wf-export': ['wf-pd', 'wf-checklist', 'wf-documents'],
-    'risk-overview': ['risk-provider-factors', 'prog-course-risk', 'cir-overview', 'dash-widgets'],
+    'risk-overview': ['risk-provider-factors', 'prog-course-risk', 'cir-overview', 'dash-tour'],
     'risk-rto-profile': ['risk-provider-factors', 'risk-escalation', 'cust-frequency-bands', 'users-roles'],
     'risk-add-score': ['risk-treatment', 'risk-heatmap', 'cust-risk-categories', 'cir-assign-track'],
-    'risk-treatment': ['risk-add-score', 'cir-assign-track', 'cir-statuses', 'risk-export'],
-    'risk-heatmap': ['risk-add-score', 'risk-export', 'dash-widgets'],
+    'risk-treatment': ['risk-add-score', 'cir-assign-track', 'cir-complete', 'risk-export'],
+    'risk-heatmap': ['risk-add-score', 'risk-export', 'dash-tour'],
     'risk-factors': ['risk-add-score', 'risk-rto-profile', 'risk-escalation'],
     'risk-provider-factors': ['prog-course-risk', 'cust-frequency-bands', 'cust-course-risk-weights', 'ev-validation'],
     'risk-escalation-manager': ['risk-rto-profile', 'risk-escalation', 'risk-treatment', 'users-teams'],
@@ -272,7 +396,7 @@
           '<div class="sub-steps">' +
             '<div><h4><span class="sn">1</span>Document Number</h4><p>Your own number for the document, such as POL-001. Leave it blank and RTO Radar generates one, such as DOC-20260404-…</p></div>' +
             '<div><h4><span class="sn">2</span>Initial Version</h4><p>Defaults to 1.0. Change it to match your existing records.</p><div class="callout tip"><b>Tip</b><span>Updating a document you’ve already uploaded? Upload a new version of it instead of a new document, so it keeps its number, mapping and history. See <a href="article.html?id=qms-new-version">Upload a new version and read version history</a>.</span></div></div>' +
-            '<div><h4><span class="sn">3</span>Document Title, Type and Category</h4><p>The title and type are required. The category groups related documents, such as Enrolment or Training &amp; Assessment.</p><div class="callout note"><b>Note</b><span>Need a document type that isn’t listed? Admins can add one in Settings › Customisation. See <a href="article.html?id=cust-document-types">Add document types</a>.</span></div></div>' +
+            '<div><h4><span class="sn">3</span>Document Title, Type and Category</h4><p>The title and type are required. The category groups related documents, such as Enrolment or Training &amp; Assessment.</p><div class="callout note"><b>Note</b><span>Need a document type that isn’t listed? Admins can add one in Settings › Customisation. See <a href="article.html?id=cust-document-types">Manage document types</a>.</span></div></div>' +
             '<div><h4><span class="sn">4</span>Description and Tags</h4><p>A short description of the document, and comma-separated tags to help find it later, such as assessment, validation, quality.</p></div>' +
             '<div><h4><span class="sn">5</span>Review Frequency and Review Due Date</h4><p>How often the document is reviewed, in months. The Review Due Date fills in as the upload date plus the review frequency. Change it to set a different date.</p></div>' +
             '<div><h4><span class="sn">6</span>Document Owner</h4><p>The person responsible for maintaining the document.</p></div>' +
@@ -498,22 +622,465 @@
         '<li>Effective Date, Review Due Date and Last Reviewed</li>' +
         '<li>Created Date and Created By</li>' +
         '<li>Framework Mappings and Mapped Standards, such as 1.1, 1.3, 1.8.</li>' +
-      '</ul>',
+      '</ul>' +
+      '<p>Archived documents are listed on a separate <b>Archived Documents</b> sheet, so they stay on record for audits. See <a href="article.html?id=qms-edit-download-delete#archive">Archive a document</a>.</p>',
+
+    // ---- Complaints & Suggestions ----
+    'fb-overview':
+      '<p class="lead">Complaints &amp; Suggestions is where you build forms to collect feedback, suggestions and complaints, share them or embed them on your website, and manage the submissions they collect.</p>' +
+      '<h2 id="open">Open Complaints &amp; Suggestions</h2>' +
+      '<p>Select <b>Complaints &amp; Suggestions</b> on your navigation bar. The page has two tabs, <b>Submissions</b> (1) and <b>Forms</b> (2):</p>' +
+      '<figure class="shot" data-marks="15.6,58,arrow-left,small; 37.2,36.4,6.6,3.6,oval,right,#1; 75.6,36.4,4,3.6,oval,right,#2"><img src="assets/img/fb-page.png" alt="Complaints and Suggestions on the navigation bar, with an arrow pointing at it, open on the Submissions tab, circled as 1, beside the Forms tab, circled as 2. Submissions shows 18 of 18 submissions, with Filters, Assigned To, Team and a search box, and Refresh, Generate Report and Export CSV. FS-0018 from the Business Form, in the Business Faculty, and FS-0017 from the CHC33021 - CHCCCS031 Student Evaluation, in System Default, are both Open and Unassigned." loading="lazy"><figcaption>Select Complaints &amp; Suggestions. It opens on Submissions (1), beside Forms (2).</figcaption></figure>' +
+      '<ol class="ov-list">' +
+        '<li><h4>Submissions</h4><p>Every response to your forms, with its number, type, category, form, team, status, who it’s assigned to and the date. Open a submission to read it, assign it, and add notes and action items. See <a href="article.html?id=fb-submissions">Review and respond to submissions</a>.</p></li>' +
+        '<li><h4>Forms</h4><p>Your feedback forms, with each one’s type, team, status, whether it accepts anonymous submissions, how many submissions it has had and when it was created. Create, build, share and embed forms here. See <a href="article.html?id=fb-create-form">Create and build a form</a>.</p></li>' +
+      '</ol>' +
+      '<h2 id="flow">How forms and submissions work</h2>' +
+      '<ol class="ov-list">' +
+        '<li><h4>Create the form</h4><p>Give it a name and type, and choose how contact details are collected, who’s notified and which team owns it. See <a href="article.html?id=fb-create-form">Create and build a form</a>.</p></li>' +
+        '<li><h4>Build its questions</h4><p>Add questions in the form builder, preview the form, then complete it. See <a href="article.html?id=fb-create-form#questions">Build the form</a>.</p></li>' +
+        '<li><h4>Share or embed it</h4><p>Send people the form’s public link, or embed it on your website. See <a href="article.html?id=fb-embed">Share or embed a form on your website</a>.</p></li>' +
+        '<li><h4>Respond to submissions</h4><p>Each response appears on the Submissions tab. Assign it, update its status, and add internal notes and action items. See <a href="article.html?id=fb-submissions">Review and respond to submissions</a>.</p></li>' +
+        '<li><h4>Improve</h4><p>Action items on a submission become improvement items in the Continuous Improvement Register. See <a href="article.html?id=fb-to-cir">Turn a submission into an improvement item</a>.</p></li>' +
+      '</ol>' +
+      '<div class="callout note"><b>Note</b><span>A form and its submissions belong to the form’s team, so only that team’s managers and members with the right permissions can see them. See <a href="article.html?id=fb-plan">Plan your forms: teams, access and uses</a>.</span></div>',
+
+    'fb-create-form':
+      '<p class="lead">Create a form for each kind of feedback you collect, such as course feedback, suggestions or complaints. You set up its details first, then build its questions.</p>' +
+      '<h2 id="steps">Create a form</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Complaints &amp; Suggestions</b>, open the <b>Forms</b> tab (1) and select <b>Create Form</b> (2).' +
+          '<figure class="shot" data-marks="17.6,62.8,arrow-left,small; 75,38.4,5.2,5.6,oval,right,#1; 84,53.4,10.2,7.4,oval,above,#2"><img src="assets/img/fb-forms.png" alt="Complaints and Suggestions, with an arrow pointing at it on the navigation bar, open on the Forms tab, circled as 1. Feedback Forms, to create and manage forms that can be embedded on your website, has no forms yet. Create Form, at the top right, is circled as 2." loading="lazy"><figcaption>Select Complaints &amp; Suggestions, the Forms tab (1), then Create Form (2).</figcaption></figure></li>' +
+        '<li>Enter the <b>Form Name</b>, and choose the <b>Form Type</b>, such as General Feedback or Suggestion. Optionally, add a <b>Description</b> shown to people filling it in.' +
+          '<figure class="shot shot-small"><img src="assets/img/fb-create-details.png" alt="Create Feedback Form: set up a new feedback form, and add questions after creating it. The Form Name is CHC33021 Course Feedback and the Form Type is General Feedback. The description reads: Tell us about your experience in CHC33021 Certificate III in Individual Support. Your feedback helps us improve our training, assessment and student support. It takes about 3 minutes." loading="lazy"><figcaption>A course feedback form’s name, type and description.</figcaption></figure></li>' +
+        '<li>Under <b>Contact Information</b>, choose how contact details are collected:' +
+          '<ul>' +
+            '<li><b>Anonymous Only</b>: no contact details are collected.</li>' +
+            '<li><b>Optional</b>: people can choose to give their contact details.</li>' +
+            '<li><b>Required</b>: people must give their contact details.</li>' +
+          '</ul>' +
+          '<figure class="shot shot-small"><img src="assets/img/fb-create-contact.png" alt="Contact Information, with Optional selected: users can choose to provide contact details. The other options are Anonymous Only, with no contact details collected, and Required, where contact details must be provided." loading="lazy"><figcaption>Optional lets people choose whether to give their contact details.</figcaption></figure></li>' +
+        '<li>Optionally, turn on <b>Email notifications</b> and choose the <b>Responsible person</b>. They receive an email each time someone submits the form.' +
+          '<figure class="shot shot-small"><img src="assets/img/fb-create-notify.png" alt="Email notifications turned on, with Design Manager chosen as the responsible person, who will receive an email each time a submission is made on this form." loading="lazy"><figcaption>The Design Manager is emailed about each submission.</figcaption></figure></li>' +
+        '<li>Choose the <b>Team</b> that owns the form. Its submissions go to that team. Leave it empty to keep the form in <b>System Default</b>, visible to everyone. Then select <b>Create &amp; Build Form</b>.' +
+          '<figure class="shot shot-small" data-marks="79,65.6,arrow-down,tiny"><img src="assets/img/fb-create-team.png" alt="Team, which is optional, set to Community and Health Faculty. A note says that as a System Default member you can assign this form to any team, and submissions will go to the team you pick. An arrow points down at Create and Build Form." loading="lazy"><figcaption>The form is owned by the Community &amp; Health Faculty. Select Create &amp; Build Form.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>Provided you have the right permissions, the teams you can choose depend on where you are:' +
+            '<ul>' +
+              '<li><b>In System Default:</b> create it in any team, so only that team’s members can see it, or in System Default, so everyone can see it.</li>' +
+              '<li><b>In a team:</b> create it in your team, or in System Default. If you’re in more than one team, you can choose any of them.</li>' +
+            '</ul>' +
+            'See <a href="article.html?id=fb-plan">Plan your forms: teams, access and uses</a>.</span></div></li>' +
+        '<li>The form builder opens, ready for you to add questions.</li>' +
+      '</ol>' +
+      '<h2 id="types">Question types</h2>' +
+      '<p>The form builder offers these question types, under <b>Add Question</b>:</p>' +
+      '<figure class="shot"><img src="assets/img/fb-question-types.png" alt="Add Question: choose a question type to add to your form. Text Inputs: Short Text, Long Text and Number. Contact Details: Email and Phone Number. Choice Questions: Single Choice, Multiple Choice, Dropdown and Category. Ratings and Scales: Star Rating, NPS Score and Likert Scale. Other: Date, File Upload, Table, and Heading and Instructions." loading="lazy"><figcaption>The question types, in five groups.</figcaption></figure>' +
+      '<h2 id="questions">Build the form</h2>' +
+      '<p>The form builder is where you add, edit and arrange a form’s questions. To come back to it later, select <b>⋮</b> › <b>Build Form</b> on the Forms tab.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Under <b>Add Question</b>, select a question type. See <a href="#types">Question types</a> above. It’s added to <b>Form Questions</b>, and <b>Edit Question</b> opens. Start with a <b>Heading &amp; Instructions</b> block to introduce the form.</li>' +
+        '<li>In <b>Edit Question</b>, enter the <b>Question Text</b>, and optionally <b>Help Text</b> shown below it. Then select <b>Save Changes</b>.' +
+          '<figure class="shot shot-small" data-marks="83.8,84.6,arrow-down,small"><img src="assets/img/fb-q-heading.png" alt="Edit Question for a Heading and Instructions block. The Question Text is About your course, and the Help Text reads: Your answers are confidential and help us improve CHC33021. It takes about 3 minutes. An arrow points down at Save Changes." loading="lazy"><figcaption>For example, a Heading &amp; Instructions block that opens the form. Select Save Changes.</figcaption></figure></li>' +
+        '<li>For a question people answer, you can also add a <b>Placeholder</b>, the hint shown inside the field before it’s answered (1), and turn on <b>Required question</b> if it must be answered (2). For a choice question, add its answers under <b>Options</b>: select <b>Add Option</b> (3) for each one. To remove an option, select the bin <svg class="ui-icon" viewBox="0 0 24 24" aria-label="bin" role="img"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg> beside it.' +
+          '<figure class="shot shot-small" data-marks="5,58,90,12,zone,#1; 5,73.4,40,5.6,oval,right,#2; 5,94,26,5.6,oval,right,#3"><img src="assets/img/fb-q-edit.png" alt="Edit Question for What is your feedback mainly about? Help Text is empty. The Placeholder, Select an option…, is outlined as 1, Required question is turned on and circled as 2, and the first option is Training and assessment, with a bin beside it. Add Option is circled as 3." loading="lazy"><figcaption>For example, a required Dropdown question: its placeholder (1), Required question (2) and Add Option (3).</figcaption></figure>' +
+          '<figure class="shot shot-small" data-marks="82.9,85.4,arrow-down,small"><img src="assets/img/fb-q-options.png" alt="The options: Training and assessment, Trainer, Learning Resources, Student Support, Work Placement, and Facilities and Equipment, each with a bin beside it, then Add Option. An arrow points down at Save Changes." loading="lazy"><figcaption>All six options added. Select Save Changes.</figcaption></figure></li>' +
+        '<li>Your questions are listed under <b>Form Questions</b>, each with its type and whether it’s required. To reorder a question, drag its handle <svg class="ui-icon" viewBox="0 0 24 24" aria-label="drag handle" role="img"><path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01" stroke-width="3"/></svg>, or point at it and use the arrows <svg class="ui-icon" viewBox="0 0 24 24" aria-label="move up" role="img"><path d="M12 19V5M6 11l6-6 6 6"/></svg> <svg class="ui-icon" viewBox="0 0 24 24" aria-label="move down" role="img"><path d="M12 5v14M6 13l6 6 6-6"/></svg> (1). Select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="edit" role="img"><path d="M4 7h10M18 7h2M4 17h4M12 17h8M16 5v4M10 15v4"/></svg> to edit it (2), or the bin <svg class="ui-icon" viewBox="0 0 24 24" aria-label="bin" role="img"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg> to delete it (3).' +
+          '<figure class="shot" data-marks="4.4,41.8,2.8,4.8,oval,#1; 80.2,41.8,6.4,4.8,oval,above,#1; 87.9,41.8,2.8,4.8,oval,above,#2; 92.5,41.8,2.8,4.8,oval,above,#3"><img src="assets/img/fb-q-list.png" alt="Form Questions: add and arrange questions for your feedback form, and drag to reorder. About your course, Heading and Instructions; What is your feedback mainly about?, Dropdown, Required; Which unit is your feedback about?, Dropdown; Overall, how would you rate this course?, Star Rating, Required; How much do you agree with each statement?, Heading and Instructions; then the Likert Scale statements The trainer explained things clearly and Assessment tasks matched what I was taught, both Required. On Which unit is your feedback about?, the drag handle and the up and down arrows are both circled as 1, the edit button as 2 and the delete button as 3." loading="lazy"><figcaption>Reorder a question with its handle or arrows (1), edit it (2) or delete it (3).</figcaption></figure>' +
+          '<div class="callout tip"><b>Tip</b><span>To ask people to rate several statements, add a <b>Heading &amp; Instructions</b> block, then a <b>Likert Scale</b> question for each statement.</span></div></li>' +
+        '<li>Select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="eye" role="img"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6a3 3 0 1 0 0-6z"/></svg> <b>Preview</b> to see the form as people will (see step 6), and <svg class="ui-icon" viewBox="0 0 24 24" aria-label="save" role="img"><path d="M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6"/></svg> <b>Save</b> as you go. <b>Unsaved changes</b> shows until you save. When the form is finished, select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="tick" role="img"><path d="M5 12l5 5 9-10"/></svg> <b>Complete Form</b> (circled).' +
+          '<figure class="shot" data-marks="77,28.4,11.6,9,oval,#"><img src="assets/img/fb-builder-top.png" alt="The form builder for CHC33021 Course Feedback, marked Unsaved changes, with Preview, Save and Complete Form at the top right. Complete Form is circled. Form Questions begins with About your course, a Heading and Instructions block." loading="lazy"><figcaption>Select Complete Form (circled) when the form is finished.</figcaption></figure></li>' +
+        '<li><b>Preview</b> opens <b>Form Preview</b>, showing the form as people will see it. Close it to keep building. For a filled-in example, see <a href="article.html?id=fb-embed#respondents">Live form on a website</a>.' +
+          '<figure class="shot shot-medium"><img src="assets/img/fb-form-preview.png" alt="Form Preview for CHC33021 Course Feedback: About your course and its instructions, What is your feedback mainly about? and Which unit is your feedback about?, each showing Select an option…, five empty stars for Overall, how would you rate this course?, and How much do you agree with each statement? Required questions are marked with a red asterisk." loading="lazy"><figcaption>Form Preview, before anything is filled in.</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>Then share or embed it. See <a href="article.html?id=fb-embed">Share or embed a form on your website</a>.</p>' +
+      '<p>To change these settings later, select <b>⋮</b> › <b>Edit Settings</b> on the form. See <a href="article.html?id=fb-manage-forms">Manage your forms</a>.</p>',
+
+    'fb-manage-forms':
+      '<p class="lead">Every form on the <b>Forms</b> tab has a menu of actions. Use <b>Team</b> to show only one team’s forms.</p>' +
+      '<p>On a form’s row, select <b>⋮</b> to:</p>' +
+      '<figure class="shot" data-marks="89.8,56.6,3,5.6,oval,#; 81.2,62.4,11.8,33.4,zone,#"><img src="assets/img/fb-form-menu.png" alt="The Forms tab, listing CHC33021 Course Feedback, a General form in the Community and Health Faculty, Active, anonymous, with 0 submissions, created 05 Nov 2026. Its ⋮ is circled, and its menu is outlined: Build Form, Preview, Get Embed Code, Share Form, Edit Settings, Deactivate and Delete." loading="lazy"><figcaption>Select ⋮ (circled) on a form to open its menu (outlined).</figcaption></figure>' +
+      '<ol class="ov-list">' +
+        '<li><h4><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 17H5M19 7h-9M17 20a3 3 0 1 0 0-6a3 3 0 1 0 0 6zM7 10a3 3 0 1 0 0-6a3 3 0 1 0 0 6z"/></svg> Build Form</h4><p>Add, edit and reorder its questions. See <a href="article.html?id=fb-create-form#questions">Build the form</a>.</p></li>' +
+        '<li id="preview"><h4><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6a3 3 0 1 0 0-6z"/></svg> Preview</h4><p>See the form as people will, with its title, description and questions. Required questions are marked <b>*</b>. See <a href="article.html?id=fb-embed#respondents">Live form on a website</a>.</p></li>' +
+        '<li><h4><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg> Get Embed Code</h4><p>Copy its direct link, or the code to embed it on your website. See <a href="article.html?id=fb-embed#embed">Embed a form</a>.</p></li>' +
+        '<li><h4><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a3 3 0 1 0 0-6a3 3 0 1 0 0 6zM6 15a3 3 0 1 0 0-6a3 3 0 1 0 0 6zM18 22a3 3 0 1 0 0-6a3 3 0 1 0 0 6zM8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg> Share Form</h4><p>Copy its public link to send to people. See <a href="article.html?id=fb-embed#share">Share a form’s link</a>.</p></li>' +
+        '<li><h4><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/></svg> Edit Settings</h4><p>Change its name, type, description, contact information, email notifications and team, then select <b>Update Settings</b>.</p>' +
+          '<figure class="shot shot-small" data-marks="7.6,27.2,83.8,8.4,oval,#; 81.3,83,arrow-down,small"><img src="assets/img/fb-edit-settings.png" alt="Part of Edit Form Settings for CHC33021 Course Feedback. Email notifications are on, and the Responsible person, circled, is now Training Coordinator, who will receive an email each time a submission is made on this form. The team is Community and Health Faculty. An arrow points down at Update Settings." loading="lazy"><figcaption>For example, course feedback now goes to the Training Coordinator (circled). Select Update Settings.</figcaption></figure></li>' +
+        '<li><h4><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10a5 5 0 0 1 0 10H7A5 5 0 0 1 7 7zM8 12h.01"/></svg> Deactivate</h4><p>Stop the form taking new submissions, without deleting it or its submissions.</p></li>' +
+        '<li><h4><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg> Delete</h4><p>Remove the form.</p></li>' +
+      '</ol>' +
+      '<div class="callout warn"><b>Important</b><span>Deactivate a form you no longer use rather than deleting it, so its submissions stay on record.</span></div>',
+
+    'fb-embed':
+      '<p class="lead">Each form has a public link. Send the link to people, or embed the form on your website so visitors can fill it in there.</p>' +
+      '<h2 id="share">Share a form’s link</h2>' +
+      '<ol class="steps-list">' +
+        '<li>On the <b>Forms</b> tab, select <b>⋮</b> › <b>Share Form</b> on the form.</li>' +
+        '<li>Select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="copy" role="img"><path d="M9 9h11v11H9zM5 15H4V4h11v1"/></svg> to copy the public link, then send it to people, for example in an email or your learning platform. Select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="open link" role="img"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg> to open it and check the form.' +
+          '<figure class="shot shot-small"><img src="assets/img/fb-share.png" alt="Share Form, to share this public link for CHC33021 Course Feedback: https://rtoradar.com.au/feedback/embed/ followed by the form’s ID, with copy and open-link buttons beside it." loading="lazy"><figcaption>The form’s public link, with copy and open-link buttons.</figcaption></figure></li>' +
+      '</ol>' +
+      '<h2 id="embed">Embed a form</h2>' +
+      '<ol class="steps-list">' +
+        '<li>On the <b>Forms</b> tab, select <b>⋮</b> › <b>Get Embed Code</b> on the form.</li>' +
+        '<li>Under <b>iFrame Embed Code</b>, select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="copy" role="img"><path d="M9 9h11v11H9zM5 15H4V4h11v1"/></svg> <b>Copy</b> (1), then paste the code into your website’s HTML where you want the form to appear. Above it, the <b>Direct Link</b> is the form’s public link: select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="copy" role="img"><path d="M9 9h11v11H9zM5 15H4V4h11v1"/></svg> to copy it or <svg class="ui-icon" viewBox="0 0 24 24" aria-label="open link" role="img"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg> to open it.' +
+          '<figure class="shot shot-small" data-marks="76.8,46,17.2,7.2,oval,above,#1; 4.8,75.4,90.4,22.4,zone,#2"><img src="assets/img/fb-embed-code.png" alt="Embed Form: CHC33021 Course Feedback, to copy the embed code and add the form to your website. The Direct Link is https://rtoradar.com.au/feedback/embed/ followed by the form’s ID, with copy and open buttons. The iFrame Embed Code sets the form’s source, a width of 100%, a height of 700 and no border, with a maximum width of 600px. Copy is circled as 1. Form Settings, outlined as 2, lists Type: General, Anonymous submissions: Allowed, Contact details: Optional and Categories: 6." loading="lazy"><figcaption>Copy the embed code (1). Form Settings (2) summarises the form.</figcaption></figure>' +
+          '<div class="callout tip"><b>Tip</b><span>If someone else looks after your website, send them the embed code. They don’t need access to RTO Radar.</span></div></li>' +
+        '<li>Check the <b>Form Settings</b> (2): the form’s type, whether it allows anonymous submissions, its contact details setting and how many categories it has. To change them, select <b>⋮</b> › <b>Edit Settings</b>. See <a href="article.html?id=fb-manage-forms">Manage your forms</a>.</li>' +
+      '</ol>' +
+      '<h2 id="respondents">Live form on a website</h2>' +
+      '<p>The form shows your logo, its title and description, and its questions, with required ones marked <b>*</b>. When someone selects <b>Submit Feedback</b>, their response appears on the Submissions tab.</p>' +
+      '<figure class="shot shot-medium"><img src="assets/img/fb-preview.png" alt="The live CHC33021 Course Feedback form, filled in as a student would. Your logo is at the top, then the form’s description and About your course. What is your feedback mainly about? is Learning Resources, the unit is CHCCCS031 Provide individualised support, and the course is rated 4 out of 5 stars. The trainer explained things clearly is Strongly Agree, Assessment tasks matched what I was taught is Agree, Learning resources were up to date and useful is Disagree, and I felt supported throughout my course is Agree. Practical simulations, Work placement and One-on-one trainer support are ticked as most useful, and the course is scored 8 out of 10 for recommending it. What could we improve? says the CHCCCS031 learner workbook still refers to the old Aged Care Quality Standards and should be updated. Email is left blank, the acknowledgement is ticked, and Submit Feedback is at the end. Required questions are marked with a red asterisk." loading="lazy"><figcaption>The live form, filled in as a student would.</figcaption></figure>' +
+      '<div class="callout note"><b>Note</b><span>Every form ends with an acknowledgement that the feedback will be recorded and used to improve services. You don’t need to add it as a question.</span></div>',
+
+    'fb-submissions':
+      '<p class="lead">Every response to your forms appears on the <b>Submissions</b> tab. Open one to read it, assign it to someone, update its status and record what you did about it.</p>' +
+      '<h2 id="list">Find a submission</h2>' +
+      '<p>Each submission has a number, such as FS-0001, with its type, category, form, team, status, who it’s assigned to, the date and whether it has an improvement item (CI). The category comes from the form’s category question, such as “What is your feedback mainly about?”.</p>' +
+      '<figure class="shot"><img src="assets/img/fb-submissions.png" alt="Complaints and Suggestions on the Submissions tab, showing 3 of 3 submissions from the CHC33021 Course Feedback form, all in the Community and Health Faculty. FS-0003, facilities and equipment, is Completed and assigned to the Compliance Officer. FS-0002, training and assessment, is In Progress, assigned to the Training Coordinator, with a link in the CI column. FS-0001, learning resources, is Open and Unassigned. All are dated 05 Nov 2026." loading="lazy"><figcaption>Submissions from the CHC33021 Course Feedback form, at different statuses.</figcaption></figure>' +
+      '<ul>' +
+        '<li>Narrow the list with <b>Filters</b>, <b>Assigned To</b> and <b>Team</b>, or search for a submission.</li>' +
+        '<li>Select <b>Refresh</b> to check for new submissions, <b>Generate Report</b> for a report on your submissions, or <b>Export CSV</b> to download them.</li>' +
+      '</ul>' +
+      '<h2 id="respond">Respond to a submission</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Select the eye <svg class="ui-icon" viewBox="0 0 24 24" aria-label="eye" role="img"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6a3 3 0 1 0 0-6z"/></svg> on the submission’s row (circled).' +
+          '<figure class="shot" data-marks="94,28,3.4,46,oval,#"><img src="assets/img/fb-sub-row.png" alt="FS-0001, a General submission in the learning resources category, from the CHC33021 Course Feedback form, in the Community and Health Faculty, Open and Unassigned, dated 05 Nov 2026. Its eye button is circled." loading="lazy"><figcaption>Select the eye (circled) to open the submission.</figcaption></figure></li>' +
+        '<li>Read the <b>Form Responses</b>. The top shows the submission’s number, type and when it was submitted, with its category below.' +
+          '<figure class="shot shot-medium" data-marks="2.4,30.2,93,69.2,zone,#"><img src="assets/img/fb-sub-open.png" alt="FS-0001, General, submitted on 05 November 2026 at 15:03, tagged Learning resources. Form Responses, outlined: What is your feedback mainly about? Learning Resources. Which unit is your feedback about? CHCCCS031 Provide individualised support. Overall, how would you rate this course? 4 out of 5. The trainer explained things clearly: 5, Strongly Agree. Assessment tasks matched what I was taught: 4, Agree. Learning resources were up to date and useful: 2, Disagree. Required questions are marked required." loading="lazy"><figcaption>The submission’s details and its Form Responses (outlined).</figcaption></figure></li>' +
+        '<li>Scroll down. Update its <b>Status</b>, such as <b>In Progress</b>. Under <b>Assigned To</b>, choose who owns this submission: they look into what it says, and can assign its action items to others. Add <b>Internal Notes</b> about what you’ve found and what happens next. People who submitted the form don’t see these.' +
+          '<figure class="shot shot-medium"><img src="assets/img/fb-respond.png" alt="Status set to In Progress, and Assigned To set to Design Manager. The Internal Notes read: Confirmed the CHCCCS031 learner workbook still refers to the old Aged Care Quality Standards. Design Manager to update it to the strengthened standards before the next intake, and trainers to cover the changes in class." loading="lazy"><figcaption>The status, who it’s assigned to and internal notes.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span><b>Assigned To</b> gives ownership of this submission only, not the form. By default, the form’s <b>Responsible person</b>, chosen when the form was created, looks after its submissions. To make someone else responsible for this submission, choose them here. See <a href="article.html?id=fb-create-form">Create and build a form</a>.</span></div></li>' +
+        '<li>To record what needs to happen, add action items. See <a href="article.html?id=fb-to-cir">Turn a submission into an improvement item</a>.</li>' +
+        '<li>Select <b>Save Changes</b> (circled). <b>Close</b> leaves without saving.' +
+          '<figure class="shot shot-medium" data-marks="77.2,29.4,19.6,51,oval,#"><img src="assets/img/fb-sub-save.png" alt="The bottom of the submission, with Delete on the left, and Close and Save Changes on the right. Save Changes is circled." loading="lazy"><figcaption>Select Save Changes (circled).</figcaption></figure></li>' +
+      '</ol>' +
+      '<div class="callout warn"><b>Important</b><span><b>Delete</b> removes the submission. Keep complaints on record rather than deleting them, so you can show an auditor how each was handled.</span></div>',
+
+    'fb-to-cir':
+      '<p class="lead">When a submission needs follow-up, add action items to it. Each action item becomes an improvement item in the Continuous Improvement Register, so it’s tracked to completion.</p>' +
+      '<ol class="steps-list">' +
+        '<li>On the <b>Submissions</b> tab, select the eye <svg class="ui-icon" viewBox="0 0 24 24" aria-label="eye" role="img"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6a3 3 0 1 0 0-6z"/></svg> (circled) to open the submission. See <a href="article.html?id=fb-submissions#respond">Respond to a submission</a>.' +
+          '<figure class="shot" data-marks="94,26,3.4,46,oval,#"><img src="assets/img/fb-sub-row-progress.png" alt="FS-0001, a General submission in the learning resources category, from the CHC33021 Course Feedback form, in the Community and Health Faculty. It’s In Progress, assigned to the Design Manager, dated 05 Nov 2026. Its eye button is circled." loading="lazy"><figcaption>FS-0001, now In Progress and assigned to the Design Manager. Select the eye (circled).</figcaption></figure></li>' +
+        '<li>Scroll down to <b>Action Items</b> and select <b>Add</b> (circled).' +
+          '<figure class="shot shot-medium" data-marks="83.4,81.4,12.8,10.4,oval,#"><img src="assets/img/fb-ai-add.png" alt="The lower half of FS-0001: Status In Progress, Assigned To Design Manager, and the internal notes. Below, Action Items, with Add circled." loading="lazy"><figcaption>Select Add (circled) under Action Items.</figcaption></figure></li>' +
+        '<li>Enter a <b>Title</b> (optional) and a <b>Description</b> of what needs to happen. Choose the <b>Person Responsible</b>, the <b>Priority</b> and the <b>Due Date</b>, then select <b>Add Action Item</b>.' +
+          '<figure class="shot shot-medium" data-marks="80.4,86.2,arrow-down,small"><img src="assets/img/fb-ai-form.png" alt="A new action item. The title is Update CHCCCS031 learner workbook to strengthened Aged Care Quality Standards. The description reads: Student feedback (FS-0001) reports the CHCCCS031 learner workbook still refers to the old Aged Care Quality Standards. Review the workbook and replace outdated references with the strengthened standards. Check the related assessment tasks and marking guide for the same references, and brief CHC33021 trainers on the changes before the Semester 1 2027 intake. The person responsible is the Training Coordinator, the priority is High and the due date is 30/01/2027. An arrow points down at Add Action Item." loading="lazy"><figcaption>The Design Manager hands the work to the Training Coordinator. Select Add Action Item.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>The submission’s <b>Assigned To</b> is its owner, who looks into it. See <a href="article.html?id=fb-submissions#respond">Respond to a submission</a>. Action items are the work the owner gives to other people, each with its own <b>Person Responsible</b>. For example, the Design Manager owns FS-0001. They add one action item for the Training Coordinator to update the CHCCCS031 workbook, and another for the Compliance Officer to check the other CHC33021 learner resources for the same outdated references.</span></div></li>' +
+        '<li>The action item is added as a <b>Draft</b>. Select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="edit" role="img"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/></svg> to edit it, <svg class="ui-icon" viewBox="0 0 24 24" aria-label="send" role="img"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg> to send it to the Continuous Improvement Register, or the bin <svg class="ui-icon" viewBox="0 0 24 24" aria-label="bin" role="img"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg> to delete it.' +
+          '<ol class="ov-list">' +
+            '<li><h4>Send it to the CI register</h4><p>Select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="send" role="img"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg> (1). It becomes an improvement item, assigned to the person responsible.</p></li>' +
+            '<li><h4>Save the submission</h4><p>Select <b>Save Changes</b> (2).</p></li>' +
+          '</ol>' +
+          '<figure class="shot shot-medium" data-marks="83.8,67.6,4.6,6.2,oval,above,#1; 77.2,84.2,19.4,10.4,oval,right,#2"><img src="assets/img/fb-ai-draft.png" alt="Action Items, 1: Update CHCCCS031 learner workbook to strengthened Aged Care Quality Standards, marked Draft, with its description, the Training Coordinator, High priority and due 30/01/2027. Its edit, send and delete buttons are below, with send circled as 1. Delete, Close and Save Changes are at the bottom, with Save Changes circled as 2." loading="lazy"><figcaption>Send the action item to the CI register (1), then Save Changes (2).</figcaption></figure></li>' +
+        '<li>The submission now has a link in the <b>CI</b> column on the Submissions tab. Select it to open the improvement item, which appears in the <a href="feature.html?m=cir">Continuous Improvement Register</a>, assigned to the responsible person.' +
+          '<figure class="shot" data-marks="84.9,85.4,3.4,5.6,oval,#"><img src="assets/img/fb-submissions-ci.png" alt="The Submissions tab, showing 3 of 3 submissions from the CHC33021 Course Feedback form. FS-0003 is Completed, assigned to the Compliance Officer; FS-0002 is In Progress, assigned to the Training Coordinator; and FS-0001 is In Progress, assigned to the Design Manager. Each has a link in the CI column, and FS-0001’s is circled." loading="lazy"><figcaption>FS-0001 now has a link in the CI column (circled).</figcaption></figure></li>' +
+      '</ol>',
+
+    'fb-plan':
+      '<p class="lead">A form and its submissions belong to the form’s team. Choosing the right team for each form decides who can see the responses, which matters most for complaints.</p>' +
+      '<h2 id="teams">Who sees a form’s submissions</h2>' +
+      '<ul>' +
+        '<li>A form owned by a team can only be seen by that team’s managers and members whose role includes Complaints &amp; Suggestions.</li>' +
+        '<li>A form left in <b>System Default</b> is visible to everyone with that permission.</li>' +
+      '</ul>' +
+      '<h2 id="choose">Which teams you can choose</h2>' +
+      '<p>Provided you have the right permissions, the teams you can create a form in depend on where you are:</p>' +
+      '<ul>' +
+        '<li><b>In System Default:</b> create it in any team, so only that team’s members can see it, or in System Default, so everyone can see it.</li>' +
+        '<li><b>In a team:</b> create it in your team, or in System Default. If you’re in more than one team, you can choose any of them.</li>' +
+      '</ul>' +
+      '<h2 id="suggested">A suggested setup</h2>' +
+      '<table><thead><tr><th>Form</th><th>Owning team</th><th>Why</th></tr></thead><tbody>' +
+        '<tr><td>Course or unit feedback</td><td>The course’s faculty, such as Business Faculty</td><td>The faculty can act on feedback about its own courses.</td></tr>' +
+        '<tr><td>Complaints and appeals</td><td>Compliance &amp; Validation, or Student Services &amp; Administration</td><td>Complaints are often about a trainer or course, so they must be handled independently and confidentially.</td></tr>' +
+        '<tr><td>Industry feedback</td><td>The course’s faculty</td><td>It feeds the faculty’s industry consultation evidence.</td></tr>' +
+        '<tr><td>General suggestions</td><td>System Default</td><td>Anyone with the permission can see and act on them.</td></tr>' +
+      '</tbody></table>' +
+      '<div class="callout tip"><b>Tip</b><span>A Head of Faculty can create and run course feedback forms for their own faculty if their role includes Complaints &amp; Suggestions view and create. See <a href="article.html?id=users-custom-role">Create a custom role</a>.</span></div>' +
+      '<p>See <a href="article.html?id=users-governance">Understanding the compliance governance chart</a>.</p>' +
+      '<h2 id="elsewhere">Where else your forms are used</h2>' +
+      '<p>Forms and their submissions aren’t only for complaints and suggestions. Other parts of RTO Radar draw on them:</p>' +
+      '<table><thead><tr><th>Where</th><th>How it uses your forms</th></tr></thead><tbody>' +
+        '<tr><td>Scheduling an industry consultation</td><td>Choose a <b>Feedback Form</b>, such as an industry feedback form for the course, to send to the industry representative. See <a href="article.html?id=ev-consultation#schedule">Schedule a consultation</a>.</td></tr>' +
+        '<tr><td>Completing a consultation</td><td>Select <b>Link Feedback</b> to attach the representative’s submissions as evidence that the consultation took place. See <a href="article.html?id=ev-consultation#complete">Mark a consultation complete</a>.</td></tr>' +
+        '<tr><td>Recording consultation evidence</td><td>Under <b>Link Feedback Submissions</b>, find and attach feedback submissions as evidence, from Events or from the course in Program Management. See <a href="article.html?id=ev-record-consultation">Record industry consultation evidence</a> and <a href="article.html?id=prog-industry-consultation">Record an industry consultation</a>.</td></tr>' +
+        '<tr><td>TAS Builder</td><td>Section 15, <b>Industry and Feedback</b>, draws on the industry engagement and feedback you’ve recorded, including form submissions. See <a href="article.html?id=prog-master-tas">Build a Master TAS</a>.</td></tr>' +
+        '<tr><td>Continuous Improvement Register</td><td>Action items on a submission become improvement items, tracked to completion. See <a href="article.html?id=fb-to-cir">Turn a submission into an improvement item</a>.</td></tr>' +
+      '</tbody></table>' +
+      '<div class="callout tip"><b>Tip</b><span>Build an industry feedback form for each course, owned by the course’s faculty. Its submissions then serve as consultation evidence, feed the course’s TAS, and can become improvement items.</span></div>',
+
+    // ---- Continuous Improvement Register ----
+    'cir-overview':
+      '<p class="lead">The Continuous Improvement Register (CIR) is one list of every improvement action in your RTO. Risk treatments, validation findings, consultation actions, feedback and more all land here, each with a person responsible, a due date and a priority, so nothing slips through.</p>' +
+      '<h2 id="open">Open the register</h2>' +
+      '<p>Select <b>Continuous Improvement</b> on your navigation bar. <b>Item List</b> shows every item you can see.</p>' +
+      '<figure class="shot" data-marks="0.1,21.9,11.8,5.4,oval,#"><img src="assets/img/gs-cir-nav.png" alt="The Continuous Improvement Register, with Continuous Improvement circled in the navigation bar on the left. The Item List shows 10 improvement items with their item number, who created them, status, source, person responsible, assigned date, description, tags, due date and priority." loading="lazy"><figcaption>Select Continuous Improvement in the navigation bar (circled).</figcaption></figure>' +
+      '<p>Each item shows its <b>Item Number</b>, such as CI-2026-145, who created it, its <b>Status</b> and <b>Source</b>, the <b>Person Responsible</b>, the date it was assigned, its <b>Description</b>, <b>Tags</b>, <b>Due Date</b> and <b>Priority</b>.</p>' +
+      '<h2 id="what-next">What you can do</h2>' +
+      '<ul>' +
+        '<li><b>Add an item</b>, for an improvement that doesn’t come from elsewhere in RTO Radar. See <a href="article.html?id=cir-add-item">Add an improvement item</a>.</li>' +
+        '<li><b>Open, edit or delete an item</b>. See <a href="article.html?id=cir-assign-track">View, edit and track an item</a>.</li>' +
+        '<li><b>Complete or verify an item</b> once the actions are done. See <a href="article.html?id=cir-complete">Complete or verify an item</a>.</li>' +
+        '<li><b>Export</b> the register for an audit or governance meeting. See <a href="article.html?id=cir-export">Export the register</a>.</li>' +
+      '</ul>' +
+      '<h2 id="access">Who sees which items</h2>' +
+      '<p>What you see in the register depends on your portal and your role’s permissions:</p>' +
+      '<ul>' +
+        '<li><b>Admin portal</b>: all the improvement items in your organisation, if your role includes the Continuous Improvement permission.</li>' +
+        '<li><b>Trainer/Assessor portal</b>: only the items assigned to you, where you’re the person responsible.</li>' +
+      '</ul>' +
+      '<p>See <a href="article.html?id=users-permissions">What each permission covers</a>.</p>' +
+      '<div class="callout note"><b>Note</b><span>Admins can see improvement items across the organisation, but can only assign items to people in their teams, and only if their role has the right permissions. See <a href="article.html?id=users-governance">Understanding the compliance governance chart</a>.</span></div>' +
+      '<h2 id="find">Find an item</h2>' +
+      '<p>To narrow the register:</p>' +
+      '<ol class="steps-list">' +
+        '<li>Select <b>Filters</b> (1) and choose what to show, such as one <b>Source</b> or <b>Status</b>. The number on the button shows how many filters are on.</li>' +
+        '<li>Select <b>Person Responsible</b> (2) and tick the people whose items you want to see.</li>' +
+        '<li>To see one team’s items, choose it in the team list beside them. To find a particular item, type part of its number or description in the search box.' +
+          '<figure class="shot" data-marks="1.6,24,8.4,10.6,oval,above,#1; 11.1,24,12.3,10.6,oval,above,#2"><img src="assets/img/gs-cir-list.png" alt="The Item List filtered to show only Risk Register items assigned to the Compliance Manager, showing 2 of 2 items. Filters, with 2 filters on, is circled as 1, and Person Responsible, with 1 person chosen, as 2. CI-2026-096, Staff Awareness of Cyber Risks, is In Progress, Medium, due 15/10/2026, and CI-2026-092, a VETiS student cohort child safety risk, is Completed, High." loading="lazy"><figcaption>The register filtered to Risk Register items (1) assigned to the Compliance Manager (2).</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>Select <b>Select Columns</b> to choose which columns show, such as <b>Completed By</b> and <b>Verified By</b>.</p>' +
+      '<div class="callout note"><b>Note</b><span>Admins set up CIR sources, custom item fields, reminders and bulk imports in <b>Settings</b> › <b>Customisation</b> › <b>CIR</b>. See <a href="article.html?id=cust-cir-settings">Set up the CIR: custom registers, imports, sources and reminders</a>.</span></div>',
+
+    'cir-sources':
+      '<p class="lead">Improvement items can come from anywhere in RTO Radar. When an action is raised in another module, it’s sent to the register with an automatic <b>Source</b>, so you can filter by where items came from and spot trends.</p>' +
+      '<h2 id="sources">Where items come from</h2>' +
+      '<table><thead><tr><th>Source</th><th>Raised from</th></tr></thead><tbody>' +
+        '<tr><td>Risk Register</td><td>Each treatment plan, when you complete the comprehensive risk assessment. See <a href="article.html?id=risk-treatment#cir">From treatment plan to improvement item</a>.</td></tr>' +
+        '<tr><td>Validation</td><td>Critical areas and improvements in Phase 4 of a unit validation. See <a href="article.html?id=prog-validation-phases#phase4">Phase 4: Add Improvement Items</a>.</td></tr>' +
+        '<tr><td>Assessment Judgement</td><td>Actions sent to the CI register from an assessment judgement. See <a href="article.html?id=prog-assessment-judgement">Record an assessment judgement</a>.</td></tr>' +
+        '<tr><td>Consultation</td><td>Action items from an industry consultation, recorded in Events or Program Management, or added later from its evidence history. See <a href="article.html?id=ev-record-consultation">Record industry consultation evidence</a> and <a href="article.html?id=ev-consultation-history">View and manage consultation evidence</a>.</td></tr>' +
+        '<tr><td>Feedback</td><td>Action items on a submission in Complaints &amp; Suggestions. See <a href="article.html?id=fb-to-cir">Turn a submission into an improvement item</a>.</td></tr>' +
+        '<tr><td>TAS Builder</td><td>Submitting a TAS for review creates an item to track the review. See <a href="article.html?id=prog-tas-review#submit">Submit a TAS for review</a>.</td></tr>' +
+        '<tr><td>PD EOI Request</td><td>A staff member’s request for approval of paid PD, assigned to the approver. See <a href="article.html?id=pd-eoi">Request approval for paid PD</a>.</td></tr>' +
+        '<tr><td>Document checklist</td><td>Action items added with a document type, such as getting staff to provide a new document. See <a href="article.html?id=wf-checklist#add">Add a document type</a>.</td></tr>' +
+        '<tr><td>Ad Hoc</td><td>Items you add yourself in the register. See <a href="article.html?id=cir-add-item">Add an improvement item</a>.</td></tr>' +
+      '</tbody></table>' +
+      '<p>To see items from one source, select <b>Filters</b> (1), then tick the source under <b>Source</b>, such as <b>Feedback</b> (2).</p>' +
+      '<figure class="shot shot-small" data-marks="2.4,3,33,8.4,oval,#; 37.6,7.2,#1; 4.6,54.2,24,6.6,oval,right,#2"><img src="assets/img/cir-filter-source.png" alt="Filters, circled as 1, with 1 filter on, and its menu open on Source: Ad Hoc, Audit, Complaint, Evidence Map, Feedback, Consultation, PD EOI Request, Assessment Judgement, QMS Review, Risk Register, TAS Builder, Validation and Workforce Document. Feedback is ticked and circled as 2." loading="lazy"><figcaption>Select Filters (1), then tick a source, such as Feedback (2).</figcaption></figure>' +
+      '<figure class="shot" data-marks="17.8,31,7.6,44,zone,#"><img src="assets/img/cir-list-feedback.png" alt="The Item List filtered to 2 items from Feedback, with the Source column outlined. An RTO feedback form item for Staff Demo is Completed, and an item about industry-based case studies for Quality Assurance is Overdue, both Medium." loading="lazy"><figcaption>Only Feedback items show, with their source in the Source column (outlined).</figcaption></figure>' +
+      '<h2 id="managed">Items managed by their source</h2>' +
+      '<p>An item raised elsewhere stays linked to where it came from. When you edit it, a banner says which module manages it, such as <b>Assessment Judgement</b> or <b>Risk Register</b>. To change the description, update it at the source: select <b>Go to Source</b>, or <b>More info</b> on the open item. You can still change its person responsible, due date, priority, status, tags and attachments in the register. Its <b>Source</b> can’t be changed, and any notes carried over from the source show under <b>Source Context / Notes</b>.</p>' +
+      '<figure class="shot shot-medium" data-marks="70.4,16.6,20.6,5.4,oval,above,#1; 65,88,29,6.2,oval,above,#2"><img src="assets/img/cir-managed.png" alt="Edit Improvement Item for an item from the Risk Register, with the banner: this item is managed by Risk Register, to edit the description, update it at the source. Go to Source is circled as 1. The item is for the Compliance Manager, due 30/10/2026, titled Trainer Industry Currency - RTO Radar to Document Trainer Matrix, with its description, existing controls and proposed treatment, and Source Context notes carried over from the risk: Operational and Educational Risk, High, score 16, likelihood 4 and consequence 4. Priority High, Status Overdue, and Source Risk Register, greyed out and circled as 2." loading="lazy"><figcaption>An item managed by the Risk Register. Select Go to Source (1) to change its description. Its Source (2) can’t be changed.</figcaption></figure>' +
+      '<div class="callout note"><b>Note</b><span>Admins can add your own source categories in <b>Settings</b> › <b>Customisation</b> › <b>CIR</b> › <b>Sources</b>. See <a href="article.html?id=cust-cir-settings">Set up the CIR: custom registers, imports, sources and reminders</a>.</span></div>',
+
+    'cir-add-item':
+      '<p class="lead">Add an item for an improvement that doesn’t come from elsewhere in RTO Radar, such as an issue raised in a staff meeting or found during an internal audit. Its source is <b>Ad Hoc</b> unless you choose another.</p>' +
+      '<h2 id="add">Add an item</h2>' +
+      '<ol class="steps-list">' +
+        '<li>In the register, select <b>Add Item</b> (1), then <b>Add Item (Default)</b> (2).' +
+          '<figure class="shot" data-marks="84.6,63.6,9.2,10.4,oval,above,#1; 84.8,77.4,9,6.8,oval,#2"><img src="assets/img/cir-add-menu.png" alt="The Continuous Improvement Register’s Item List, with Add Item circled as 1 and its menu open, showing Add Item (Default), circled as 2, and External CI Register." loading="lazy"><figcaption>Select Add Item (1), then Add Item (Default) (2).</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>The menu also lists your RTO’s custom CI registers, such as <b>External CI Register</b>, which add extra fields of your own. Admins set them up in <b>Settings</b> › <b>Customisation</b> › <b>CIR</b>. See <a href="article.html?id=cust-cir-settings#custom">Create a custom CI register</a>.</span></div></li>' +
+        '<li>Choose the <b>Person Responsible</b> and the <b>Due Date</b>. Add a short <b>Title</b>: it’s what shows in the register. Then describe the improvement under <b>Description</b>. The description shows when someone opens the item.' +
+          '<figure class="shot shot-medium"><img src="assets/img/cir-add-form.png" alt="Add New Improvement Item: Person Responsible Student Services Coordinator, Due Date 15/12/2026, and the title Update the student handbook complaints and appeals process. The description reads: Internal audit (November 2026) found the student handbook still describes the previous complaints and appeals process, with outdated timeframes and contact details. Update the handbook to match the current Complaints and Appeals Policy, including the 10 working day response timeframe and how to request an external review. Publish the updated version on the website and the learning platform, and brief student services staff on the changes." loading="lazy"><figcaption>An item raised from an internal audit finding.</figcaption></figure></li>' +
+        '<li>Set the <b>Priority</b>, <b>Status</b> and <b>Source</b>.' +
+          '<figure class="shot shot-medium"><img src="assets/img/cir-add-status.png" alt="Priority Medium, Status Open and Source Ad Hoc." loading="lazy"><figcaption>Medium priority, Open, from an Ad Hoc source.</figcaption></figure></li>' +
+        '<li>Optionally, add <b>Tags</b>: choose an existing tag, or type a new one and select <b>Add</b> (arrow).' +
+          '<figure class="shot shot-medium" data-marks="81.6,62,arrow-right,small"><img src="assets/img/cir-add-tags.png" alt="Tags, with Student Support already added, and Complaints typed in the new tag box. An arrow points right at Add." loading="lazy"><figcaption>Student Support added, and Complaints about to be added (arrow).</figcaption></figure></li>' +
+        '<li>Optionally, add <b>Attachments</b>: PDF, DOC, XLS, TXT or images, up to 20 MB each. Then select <b>Create</b>. The person responsible is emailed about their new item.' +
+          '<figure class="shot shot-medium" data-marks="85.2,83.2,10.6,12.4,oval,#"><img src="assets/img/cir-add-attach.png" alt="Attachments, with Internal_Audit_Findings_Nov2026.pdf attached. Create is circled." loading="lazy"><figcaption>The internal audit findings attached. Select Create (circled).</figcaption></figure></li>' +
+        '<li>The item appears in the register with its title, source, person responsible, assigned date, tags, due date and priority. As an item with an attachment, it has a download <svg class="ui-icon" viewBox="0 0 24 24" aria-label="download" role="img"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg> button beside the eye under <b>Actions</b>.' +
+          '<figure class="shot"><img src="assets/img/cir-add-done.png" alt="The Item List, showing the new item: Not Started, Ad Hoc, for the Student Services Coordinator, assigned 06/11/2026, Update the student handbook complaints and appeals process, tagged Student Support, due 15/12/2026, Medium, with download and view buttons under Actions." loading="lazy"><figcaption>The new item in the register.</figcaption></figure></li>' +
+      '</ol>' +
+      '<h2 id="import">Bulk import items</h2>' +
+      '<p>Admins can bulk import items from a CSV or Excel file in <b>Settings</b> › <b>Customisation</b> › <b>CIR</b> › <b>Import</b>, such as a register you kept in a spreadsheet. Import them as default items, or into a custom CI register, which must be set up first with fields matching the file’s columns. The columns match the register’s <b>Export Excel</b>, so you can also export the register, edit the file and import it again.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Select <b>Settings</b> (1), then <b>Customisation</b> (2), then <b>CIR</b> (3). It opens on the <b>Import</b> tab.' +
+          '<figure class="shot" data-marks="0.6,91.2,15.2,6.6,oval,right,#1; 72.9,48.9,9.2,8,oval,above,#2; 58,87,12.6,8,oval,above,#3"><img src="assets/img/cir-import-open.png" alt="RTO Admin, with Settings selected in the navigation, circled as 1. Organisation Settings: configure your organisation’s settings and integrations, with the tabs Integrations, User Management, Security, Professional Development and Customisation, circled as 2. Customisation: configure validation settings and personalise your dashboard, with the tabs Risk, QMS, Dashboard, CIR, circled as 3, TAS Templates and Branding." loading="lazy"><figcaption>Select Settings (1), Customisation (2), then CIR (3).</figcaption></figure></li>' +
+        '<li>On the <b>Import</b> tab, choose what to <b>Import as</b> (1): a <b>Default CI item</b>, or one of your custom CI registers, such as External CI Register, to import its custom fields too. Then select <b>Download CSV</b> (2) for a matching template.' +
+          '<figure class="shot" data-marks="4,33.4,26.4,7.4,oval,right,#1; 84.4,52.2,10.6,7.4,oval,above,#2"><img src="assets/img/cir-import-tab.png" alt="Import Continuous Improvement Items, on the Import tab beside Sources, Custom Items and Reminders: bulk import improvement items from a CSV or Excel file. Import as is Default CI item, circled as 1, with a note to choose a custom item type to download a matching template and import its custom fields. Download CSV is circled as 2. Below is a box to drag and drop your file, or browse, for CSV and XLSX files up to 5 MB." loading="lazy"><figcaption>Choose what to import as (1), then download the template (2).</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>To import into a custom CI register, set it up first, with fields matching your file’s columns. See <a href="article.html?id=cust-cir-settings#custom">Create a custom CI register</a>.</span></div></li>' +
+        '<li>Open the template and replace or delete its sample rows and the “# Valid choices” line. Then copy and paste in your existing register, or type your items, one per row, as in the example below. Follow the <b>Import Instructions</b> on the page.' +
+          '<figure class="shot"><img src="assets/img/cir-import-rules.png" alt="Import Instructions. Required columns: Description and Due Date. Date format: DD/MM/YYYY or YYYY-MM-DD, and Excel date cells are also accepted. Replace or delete the sample rows and the # Valid choices line in the template before importing. Person Responsible: email or full name of an existing staff member. Columns match the CI Register Excel export, so you can edit an exported file and re-upload it. Valid priority values: low, medium, high and critical. Valid status values: Open, In Progress and Completed. Valid source values: Adhoc, Audit, Complaint, Evidence Map, Feedback, Industry Consultation, Post Assessment Validation, Risk Register, Tas Builder and Validation." loading="lazy"><figcaption>The import rules, with the valid priority, status and source values.</figcaption></figure>' +
+          '<figure class="shot"><img src="assets/img/cir-import-sheet.png" alt="The template in Excel, with columns Title, Status, Priority, Person Responsible, Due Date, Source, Description, Tags, Notes, Impact of Action, Created By and Created Date, filled with nine items, such as Update student handbook complaints process, Open, Medium, Student Services Coordinator, 15/12/2026, Audit, and Revise BSB50120 marking guides, In Progress, High, Training Coordinator, 30/11/2026, Validation." loading="lazy"><figcaption>A template filled in with nine items, one per row.</figcaption></figure></li>' +
+        '<li>Drag your file into the box, or select <b>browse</b> (circled). CSV and XLSX files up to 5 MB are supported.' +
+          '<figure class="shot" data-marks="56.6,52.2,4.8,9.6,oval,#"><img src="assets/img/cir-import-drop.png" alt="The upload box: drag and drop your file here, or browse, which is circled. Supports CSV and XLSX files up to 5 MB." loading="lazy"><figcaption>Drag your file in, or select browse (circled).</figcaption></figure></li>' +
+        '<li>In <b>Review Import</b>, check the rows. Each is marked valid or invalid, with a count of each at the top, and every field can be edited here. Problems show under the row, such as a staff member who can’t be found or an invalid source. Untick any row you don’t want to import.' +
+          '<figure class="shot" data-marks="2,12.2,16,4.6,oval,above,#; 85.4,3.6,13.4,5.6,oval,#"><img src="assets/img/cir-import-review.png" alt="Review Import for ci_import_template.csv: 11 rows, with all fields editable. 10 Valid and 1 Invalid are circled. A note says the file was imported as a default item, so any extra columns have been added as tags; if it belongs to a custom item type, cancel and select that item type before uploading. Each row has a tick box, its row number, whether it’s valid, and its title, description, due date, priority and status. Two rows show Staff member not found, for trainer@example.com and Jane Smith. Import 10 Items is circled." loading="lazy"><figcaption>10 valid and 1 invalid row. Select Import 10 Items (circled) to import the valid ones.</figcaption></figure>' +
+          '<figure class="shot"><img src="assets/img/cir-import-invalid.png" alt="An invalid row, row 7, Add digital marketing case study, with the message Invalid source: consultation." loading="lazy"><figcaption>An invalid row: “Consultation” isn’t a valid source. Change it to Industry Consultation to import it.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>When you import as a default item, extra columns, such as Notes or Impact of Action, become tags. If the file belongs to a custom CI register, select <b>Cancel</b> and choose it under <b>Import as</b> before uploading.</span></div></li>' +
+        '<li>Select <b>Import</b>. The button shows how many items will be imported. The items appear in the register, created by you.' +
+          '<figure class="shot"><img src="assets/img/cir-import-done.png" alt="The Item List after the import, showing 10 of 10 items created by Admin Demo, each assigned 06/11/2026, such as Update WHS induction slides, Completed, Ad Hoc, Compliance Officer, and Refresh trainer industry currency records, In Progress, Validation, Compliance Manager. Two items whose staff member wasn’t found, Feedback process improvement and Update learner resources with current legislation references, are Unassigned and Overdue." loading="lazy"><figcaption>The imported items in the register.</figcaption></figure>' +
+          '<div class="callout tip"><b>Tip</b><span>Items whose person responsible couldn’t be found are imported as <b>Unassigned</b>. Assign them from the register: open each one and select <b>Edit Item</b>. See <a href="article.html?id=cir-assign-track#edit">Edit an item</a>.</span></div></li>' +
+      '</ol>',
+
+    'cir-assign-track':
+      '<p class="lead">Open an item to see everything about it, then edit it, change who’s responsible, or follow its progress through the activity log.</p>' +
+      '<h2 id="view">View an item</h2>' +
+      '<ol class="steps-list">' +
+        '<li>In the register, select the eye <svg class="ui-icon" viewBox="0 0 24 24" aria-label="eye" role="img"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6a3 3 0 1 0 0-6z"/></svg> under <b>Actions</b> on the item’s row.' +
+          '<figure class="shot" data-marks="93.4,54.6,5.6,14.6,oval,#"><img src="assets/img/gs-cir-list.png" alt="The Item List, filtered to two items from the Risk Register, both for the Compliance Manager: CI-2026-096, Staff Awareness of Cyber Risks, In Progress, Medium, due 15/10/2026, and CI-2026-092, a VETiS student cohort child safety risk, Completed, High. The eye under Actions on the first item is circled." loading="lazy"><figcaption>Select the eye (circled) to open an item.</figcaption></figure></li>' +
+        '<li>The item shows its number, priority and status, then its title, source, who created it, the person responsible, the assigned date, due date and created date, its tags, notes and description. The <b>Activity Log</b> records each change, such as when a verifier was assigned, and who made it.' +
+          '<figure class="shot shot-small" data-marks="12.4,91.2,#1; 33.8,91.2,#2; 53,91.2,#3; 70,91.2,#4; 88.4,91.2,#5"><img src="assets/img/gs-cir-item.png" alt="CI-2026-096 opened in full: Medium and In Progress. Its title is Staff Awareness of Cyber Risks - Checking Staff have completed the refresher, from the Risk Register, created by Admin Demo for the Compliance Manager, assigned 12/08/2026 and due 15/10/2026, tagged ICT and Cyber-Security Risk, with its original risk of 3 by 3, 9. The notes carry over the risk category, description, level, existing controls, likelihood and consequence, and the description gives the proposed treatment. Delete Item, Complete Item, Verify, More info and Edit Item along the bottom are numbered 1 to 5." loading="lazy"><figcaption>An item raised from the Risk Register, with its five buttons (1–5).</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>At the bottom of an open item:</p>' +
+      '<ol class="ov-list">' +
+        '<li><h4>Delete Item</h4><p>Removes the item.</p></li>' +
+        '<li><h4>Complete Item</h4><p>Record the actions taken and mark the item complete. See <a href="article.html?id=cir-complete">Complete or verify an item</a>.</p></li>' +
+        '<li><h4>Verify</h4><p>Send the item to someone to confirm the actions worked. See <a href="article.html?id=cir-complete#verify">Send an item for verification</a>.</p></li>' +
+        '<li><h4>More info</h4><p>Takes you to where the item came from, such as the risk or validation that raised it, like <b>Go to Source</b>. See <a href="article.html?id=cir-sources#managed">Items managed by their source</a>.</p></li>' +
+        '<li><h4>Edit Item</h4><p>Change its details. See below.</p></li>' +
+      '</ol>' +
+      '<h2 id="edit">Edit an item</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Open the item and select <b>Edit Item</b>.</li>' +
+        '<li>Change the <b>Person Responsible</b>, <b>Due Date</b>, <b>Title</b>, <b>Description</b>, <b>Priority</b>, <b>Status</b>, <b>Tags</b> or <b>Attachments</b>, then select <b>Update</b>.' +
+          '<figure class="shot shot-medium" data-marks="87.4,92,arrow-down,small"><img src="assets/img/cir-edit.png" alt="Edit Improvement Item for the student handbook item. The description now ends: Draft updated 20/11/2026 and sent to the Compliance Manager for review. Priority Medium, Status In Progress and Source Ad Hoc. Tags Student Support, Complaints and Policy. Attachments: Internal_Audit_Findings_Nov2026.pdf, and Student_Handbook_2027_Draft.pdf, newly added. An arrow points down at Update." loading="lazy"><figcaption>The item updated: In Progress, with a progress note, a Policy tag and the draft handbook attached. Select Update.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>If the item came from elsewhere in RTO Radar, its description is managed there. Select <b>Go to Source</b> to change it. See <a href="article.html?id=cir-sources#managed">Items managed by their source</a>.</span></div></li>' +
+      '</ol>' +
+      '<h2 id="status">Change an item’s status</h2>' +
+      '<p>Select the arrow beside an item’s status in the register to change it, for example from <b>Open</b> to <b>In Progress</b>.</p>' +
+      '<figure class="shot" data-marks="10.4,30,6.4,38,oval,#"><img src="assets/img/cir-status-row.png" alt="An item from QMS Review for Admin Demo: Document Review Due, #TAS-CHC30121v1, Cohort TAS Approved, CHC30121 Certificate III in Early Childhood Education and Care, due 31/10/2026, High. Its status, In Progress, with the arrow beside it, is circled." loading="lazy"><figcaption>Select the arrow beside the status (circled) to change it.</figcaption></figure>' +
+      '<h2 id="tags">Manage tags</h2>' +
+      '<p>Tags are shared by everyone in your RTO.</p>' +
+      '<ol class="steps-list">' +
+        '<li>In the register, select the gear beside <b>Tags</b> (circled). <b>Manage Organization Tags</b> opens.' +
+          '<figure class="shot" data-marks="69.3,42.6,2.4,7.4,oval,#"><img src="assets/img/gs-cir-list.png" alt="The Item List, with the gear beside the Tags column heading circled." loading="lazy"><figcaption>Select the gear beside Tags (circled).</figcaption></figure></li>' +
+        '<li>Type a tag in the search box (arrow). If it isn’t there yet, select <b>Create</b> (1) to add it. Tags that already exist are listed below, with how many items use each one. Select the bin <svg class="ui-icon" viewBox="0 0 24 24" aria-label="bin" role="img"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg> (2) to delete a tag, or tick several and select <b>Delete Selected</b>.' +
+          '<figure class="shot shot-medium" data-marks="17,25.9,arrow-left,small; 6,46.2,88,6.6,oval,above,#1; 90,56.8,4,4.4,oval,#2"><img src="assets/img/cir-tags.png" alt="Manage Organization Tags: create, view and delete tags for your organisation, shared across all staff members. An arrow points at Admin, typed in the search box. Below, Create Admin is circled as 1, and the existing tag Administration, used in 2 items and created 10/03/2026, has its bin circled as 2." loading="lazy"><figcaption>Type a tag (arrow), then create it (1), or delete an existing one (2).</figcaption></figure></li>' +
+      '</ol>',
+
+    'cir-complete':
+      '<p class="lead">When the actions for an item are done, open it and either send it for verification or complete it. A verifier can complete the item or send it on to someone else, until the item is completed.</p>' +
+      '<p>These examples follow the item <b>Update the student handbook complaints and appeals process</b>, from <a href="article.html?id=cir-add-item" target="_blank" rel="noopener">Add an improvement item</a>. The Student Services Coordinator updates the handbook, the Compliance Manager checks it, and the Governance Lead signs it off.</p>' +
+      '<h2 id="verify">Verify an item</h2>' +
+      '<p>Send an item for verification when someone else should confirm the actions worked.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Select the eye (1) beside the item in the register.' +
+          '<figure class="shot" data-marks="94.9,75,2.6,10.6,oval,above,#1"><img src="assets/img/cir-verify-list.png" alt="The Item List, showing the student handbook item: created by Admin Demo, In Progress, Ad Hoc, for the Student Services Coordinator, assigned 06/11/2026, Update the student handbook complaints and appeals process, tagged Student Support, Complaints and Policy, due 19/12/2026, Medium, and not yet verified. The eye under Actions is circled as 1." loading="lazy"><figcaption>Select the eye (1) to open the item.</figcaption></figure></li>' +
+        '<li>Select <b>Verify</b> (2). The <b>Complete Continuous Improvement Item</b> form opens, with <b>Verify</b> selected.' +
+          '<figure class="shot shot-medium" data-marks="64.6,93.9,13.7,4.1,oval,above,#2"><img src="assets/img/cir-verify-item.png" alt="Item CI-2026-149, Medium and In Progress: Update the student handbook complaints and appeals process, Ad Hoc, created by Admin Demo, for the Student Services Coordinator, assigned and created 06/11/2026, due 19/12/2026, tagged Student Support, Complaints and Policy. Attachments: Internal_Audit_Findings_Nov2026.pdf and Student_Handbook_2027_Draft.pdf, with Download All as ZIP. The description ends: Draft updated 20/11/2026 and sent to the Compliance Manager for review. At the bottom are Delete Item, Complete Item, Verify, circled as 2, and Edit Item." loading="lazy"><figcaption>Select Verify (2).</figcaption></figure></li>' +
+        '<li>Choose who will verify it under <b>Assign Verifier</b>. Describe <b>What were the actions taken?</b> and <b>What is the intent of resolving this CIR?</b>, and optionally set a <b>Follow-up / Review Date</b>. Then select <b>Send for Verification</b>.' +
+          '<figure class="shot shot-medium" data-marks="83.1,93.2,arrow-down,small"><img src="assets/img/cir-verify-send.png" alt="Complete Continuous Improvement Item: document the outcome of this improvement action before progressing it. CI-2026-149, Internal audit (November 2026) found the student handbook still describes the previous complaints and appeals process. Status Pathway is Verify: the item will be assigned to a verifier for confirmation before final completion. Assign Verifier is the Compliance Manager. What were the actions taken: Updated the student handbook to match the current Complaints and Appeals Policy, including the 10 working day response timeframe, current contact details and how to request an external review. Published it on the website and the learning platform on 24/11/2026, and briefed student services staff on 25/11/2026. What is the intent of resolving this CIR: Students have accurate, current information on how to make a complaint or appeal, and staff handle complaints in line with the policy. Follow-up / Review Date 15/06/2027. An arrow points down at Send for Verification." loading="lazy"><figcaption>Sent to the Compliance Manager to verify. Select Send for Verification.</figcaption></figure></li>' +
+        '<li>The item’s status changes to <b>Verify</b> (circled). The verifier is now the person responsible, and the due date is the follow-up date.' +
+          '<figure class="shot" data-marks="10,75,4.6,11,oval,#"><img src="assets/img/cir-verify-status.png" alt="The Item List, showing the student handbook item: created by Admin Demo, with the status Verify circled, Ad Hoc, for the Compliance Manager, assigned 06/11/2026, Update the student handbook complaints and appeals process, tagged Student Support, Complaints and Policy, due 15/06/2027, Medium, and not yet verified." loading="lazy"><figcaption>The item, now with the Compliance Manager to verify (circled).</figcaption></figure></li>' +
+        '<li>The verifier opens the item and checks the actions. To send it on, they select <b>Verify</b> and repeat step 3. Here, the Compliance Manager sends it to the Governance Lead to sign off.' +
+          '<figure class="shot shot-medium" data-marks="82.4,93.4,arrow-down,small"><img src="assets/img/cir-verify-onward.png" alt="Complete Continuous Improvement Item for CI-2026-149, filled in by the Compliance Manager. Status Pathway is Verify, and Assign Verifier is the Governance Lead. What were the actions taken: Checked the published handbook against the Complaints and Appeals Policy. The response timeframes, contact details and external review process are correct, the same version is on the website and the learning platform, and all student services staff attended the briefing. What is the intent of resolving this CIR: Confirm the handbook is accurate before sign-off, so students and staff follow the current process. Follow-up / Review Date 15/06/2027. An arrow points down at Send for Verification." loading="lazy"><figcaption>The Compliance Manager sends it on to the Governance Lead.</figcaption></figure></li>' +
+      '</ol>' +
+      '<h2 id="complete">Complete an item</h2>' +
+      '<p>The person responsible, or the last verifier, completes the item.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Open the item and select <b>Complete Item</b>.</li>' +
+        '<li>Under <b>Status Pathway</b>, choose <b>Mark as Complete</b>. Describe the actions taken and the intent, and optionally set a follow-up date. Then select <b>Complete Item</b>.' +
+          '<figure class="shot shot-medium" data-marks="85.9,91.9,arrow-down,small"><img src="assets/img/cir-verify-complete.png" alt="Complete Continuous Improvement Item for CI-2026-149, filled in by the Governance Lead. Status Pathway is Mark as Complete: the item will be marked as fully resolved. What were the actions taken: Reviewed the updated handbook and the Compliance Manager’s check, and approved the 2027 student handbook for use. What is the intent of resolving this CIR: Close the internal audit finding with an accurate, approved complaints and appeals process for students. Follow-up / Review Date 15/06/2027. An arrow points down at Complete Item." loading="lazy"><figcaption>The Governance Lead marks it complete. Select Complete Item.</figcaption></figure></li>' +
+        '<li>The item shows as <b>Completed</b>. It records who completed it, with their signature, date and device, and the activity log shows each verification.' +
+          '<figure class="shot shot-medium"><img src="assets/img/cir-verify-done.png" alt="Item CI-2026-149, Medium and Completed: Update the student handbook complaints and appeals process, Ad Hoc, created by Admin Demo, with the Governance Lead as person responsible, assigned and created 06/11/2026, due 15/06/2027. Verification requested by the Compliance Manager on 08/11/2026, and assigned to verify to the Governance Lead on 08/11/2026. Completed by the Governance Lead, with their signature, signed at Sun, 08/11/2026 13:09, from device Windows 10/11, Chrome. Completed date 08/11/2026. Tags Student Support, Complaints and Policy. Attachments Internal_Audit_Findings_Nov2026.pdf and Student_Handbook_2027_Draft.pdf. Actions taken: Reviewed the updated handbook and the Compliance Manager’s check, and approved the 2027 student handbook for use. Resolution intent: Close the internal audit finding with an accurate, approved complaints and appeals process for students. Review date 15/06/2027. The activity log lists, newest first: Completed, by the Governance Lead, 08 Nov 2026 13:09; Verification Assigned, by the Compliance Manager, reassigned to the Governance Lead, 13:06; and Verification Assigned, by the Student Services Coordinator, reassigned to the Compliance Manager, 13:00." loading="lazy"><figcaption>The completed item, with the Governance Lead’s signature and each round in the activity log.</figcaption></figure></li>' +
+      '</ol>',
+
+    'cir-export':
+      '<p class="lead">Export the register for an audit, a governance meeting or your own records.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Filter the register to the items you need. For example, to export the Compliance Manager’s completed items, choose the Compliance Manager under <b>Person Responsible</b>, and <b>Completed</b> under <b>Filters</b>. See <a href="article.html?id=cir-overview#find" target="_blank" rel="noopener">Find an item</a>.</li>' +
+        '<li>Select <b>Export Excel</b>, then <b>Export with filters</b> to export only the items shown, or <b>Export all</b> for the whole register. Each option shows how many items it includes.' +
+          '<figure class="shot" data-marks="1.1,9.6,20.1,6.4,oval,above,#1; 78.9,8.9,10.8,3.4,oval,#2"><img src="assets/img/cir-export-filters.png" alt="The Item List filtered to the Compliance Manager’s completed items, with Filters (2) and Person Responsible (1), circled as 1, showing 6 of 6 items. The Export Excel menu is open on Export with filters (6 items), circled as 2, and Export all (112 items). The six items are all Completed, from the Risk Register, created by Admin Demo, such as New Digital Enrolment Process - Further Staff Training, High, and Ensuring appropriate documentation of Conflict of Interest - Internal Audit - Identify gaps, Medium." loading="lazy"><figcaption>Filtered to the Compliance Manager’s completed items (1), then Export with filters (2).</figcaption></figure></li>' +
+      '</ol>' +
+      '<div class="callout tip"><b>Tip</b><span>A register showing items raised from every source, with actions taken and verification recorded, is strong evidence of continuous improvement for an auditor.</span></div>',
+
+    // ---- Dashboard & Profile ----
+    'dash-tour':
+      '<p class="lead">Your dashboard is the first page you see after signing in. It’s a live snapshot of your RTO: risk, improvement items, workforce readiness, documents and upcoming events each have a widget that brings forward what needs your attention.</p>' +
+      '<h2 id="open">Open the dashboard</h2>' +
+      '<p>Select <b>Dashboard</b> in the navigation bar (circled). The heading shows your team and your role in it, such as Executive Team - Manager.</p>' +
+      '<figure class="shot" data-marks="0.3,13.6,7.3,3.9,oval,#"><img src="assets/img/gs-welcome-dashboard.png" alt="The Admin Dashboard, with Dashboard circled in the navigation bar. It shows a Risk Register Overview with missing treatments, responsibility gaps and overdue or missing dates, a Risk Level Breakdown bar chart and a Treatment Status Overview pie chart." loading="lazy"><figcaption>Select Dashboard in the navigation bar.</figcaption></figure>' +
+      '<h2 id="widgets">What’s on the dashboard</h2>' +
+      '<p>Each widget draws on one module, and shows only the items you’re allowed to see:</p>' +
+      '<ul>' +
+        '<li><b>Risk Register Overview</b>: risks with missing treatments, responsibility gaps, and overdue or missing dates, with a <b>Risk Level Breakdown</b> and a <b>Treatment Status Overview</b> (shown above). <b>Matrix Risks Identified</b> lists each risk with its category, risk level, proposed treatment and status, and can be filtered by level, status and category. See <a href="feature.html?m=risk">Risk Assessment</a>.' +
+          '<figure class="shot"><img src="assets/img/dash-risks.png" alt="Matrix Risks Identified (27), with Risk Level, Status and Category filters. Each risk shows its category, description, risk level, proposed treatment and status, such as Ensuring we are properly prepared for reregistration, a High strategic risk In Progress, and Reliance on State Funding, a High financial risk Not started. Page 1 of 6." loading="lazy"><figcaption>Matrix Risks Identified, with filters for level, status and category.</figcaption></figure></li>' +
+        '<li><b>Continuous Improvement Items</b>: your overdue and upcoming improvement items, with their due dates, priority and status. See <a href="feature.html?m=cir">Continuous Improvement Register</a>.' +
+          '<figure class="shot"><img src="assets/img/dash-cir.png" alt="Continuous Improvement Items, with Overdue, Upcoming and All tabs. On Upcoming, CI-2026-105, TAS submission approved, due 10/10/2026, and CI-2026-107, a Master TAS submitted for review, due 13/10/2026, both Medium and Open." loading="lazy"><figcaption>Your overdue and upcoming improvement items.</figcaption></figure></li>' +
+        '<li><b>Workforce</b>: pending admin actions, such as documents waiting for verification, units needing a response and overdue PD, and each trainer’s delivery readiness. Select a bar to see that trainer’s units. See <a href="feature.html?m=workforce">Workforce Management</a>.' +
+          '<figure class="shot"><img src="assets/img/dash-workforce.png" alt="Workforce (16), with a search box. Pending Admin Actions: 2 documents pending verification, 1 unit needing admin response and 2 overdue PD. Delivery Readiness shows a bar for each trainer split into Approved Map, Draft and Action Required." loading="lazy"><figcaption>Pending admin actions and each trainer’s delivery readiness.</figcaption></figure></li>' +
+        '<li><b>QMS Overview</b>: your total, approved, review-due and draft documents, any overdue reviews under <b>Review Alerts</b>, and your <b>Policy Compliance Health</b> score. See <a href="feature.html?m=qms">Document Management</a>.' +
+          '<figure class="shot"><img src="assets/img/dash-qms.png" alt="QMS Overview for RTO Radar Demo: 5 total documents, 5 approved, 2 review due and 0 drafts. Review Alerts shows 2 overdue reviews. Policy Compliance Health is 54, Fair, on a scale of 0 to 39, 40 to 69 and 70 and above." loading="lazy"><figcaption>Your documents, review alerts and Policy Compliance Health.</figcaption></figure></li>' +
+        '<li><b>Upcoming Events</b>: validations, consultations and improvement items due this week or fortnight. Switch between <b>1W</b> and <b>2W</b>, list and grid views, and filter by type. See <a href="feature.html?m=events">Events</a>.' +
+          '<figure class="shot"><img src="assets/img/dash-events.png" alt="Upcoming Events - This Fortnight, with 1W and 2W, list and grid views, Filters, and 14 events. Each day shows its events, such as validations, consultations and improvement items for the TAS Builder and industry consultations." loading="lazy"><figcaption>The fortnight’s events, by day.</figcaption></figure></li>' +
+      '</ul>' +
+      '<div class="callout tip"><b>Tip</b><span>Select a card marked <b>Click to view</b>, or an item in a widget, to open the records behind it in their module.</span></div>' +
+      '<h2 id="filter">Filter a widget</h2>' +
+      '<p>Use the filter on a widget to narrow down the items it shows. For example, filter Matrix Risks Identified by category to see only your financial risks.</p>' +
+      '<figure class="shot" data-marks="67,21.9,8.5,5.8,oval,#; 3.3,48.7,7.1,4.5,underline,#; 3.3,61.4,7.1,4.5,underline,#"><img src="assets/img/gs-dashboard-filter.png" alt="The Matrix Risks Identified widget, filtered by Category to Financial Risk, which is circled. The two remaining risks, Reliance on State Funding rated High and a cash-flow risk rated Medium, both have their Financial Risk category underlined." loading="lazy"><figcaption>Filtering by Financial Risk shows only the risks in that category.</figcaption></figure>' +
+      '<h2 id="customise">Customise your dashboard</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Select the gear icon at the top right of the dashboard. <b>Customise Dashboard</b> opens.</li>' +
+        '<li>Tick the widgets you want to see, and untick the rest. Use the arrows beside a widget to move it up or down.</li>' +
+        '<li>Select <b>Save</b>.' +
+          '<figure class="shot" data-marks="92.55,13.65,3.45,6,oval,#; 93.3,30.5,arrow-down,small; 88.2,87.85,4.9,6.1,oval,#"><img src="assets/img/gs-dashboard-customise.png" alt="The Admin Dashboard with the Customise Dashboard menu open on top of it. The gear icon at the top right is circled, and an arrow points from it down to the menu, which lists widgets such as Risk Matrix Dashboard, Continuous Improvement, Workforce Statistics, Workforce Table and QMS Overview, each with a tick box and arrows to reorder it. The Save button at the bottom of the menu is circled." loading="lazy"><figcaption>Select the gear icon to open Customise Dashboard, choose your widgets, then select Save.</figcaption></figure></li>' +
+      '</ol>' +
+      '<div class="callout note"><b>Note</b><span>Admins choose which widgets are available to everyone in <b>Settings</b> › <b>Customisation</b>. See <a href="article.html?id=cust-dashboard-widgets">Choose dashboard widgets and Teams visibility</a>.</span></div>',
+
+    'profile-open':
+      '<p class="lead">Your profile holds your own details: your photo, name, email and password, your two-factor authentication, and the emails RTO Radar sends you.</p>' +
+      '<h2 id="switch">Switch organisations</h2>' +
+      '<p>If you belong to more than one RTO, select your RTO’s name at the top right (1). Under <b>Switch Organisation</b> (2), choose the RTO to work in. A tick shows the one you’re in, with your role in each RTO below its name. <b>Choose organisation</b> opens the full list.</p>' +
+      '<figure class="shot" data-marks="70.4,3,10.9,15,oval,above,#1; 49.6,20.4,33.9,70,zone,#2"><img src="assets/img/switch-org.png" alt="The Admin Dashboard for the Executive Team and System Default, both as Manager. RTO Radar Demo at the top right is circled as 1, and its Switch Organisation menu is outlined as 2: Demo Training College, RTO Radar Demo, ticked, Demo Skills Institute and Demo Community College, each as Administrator, then Choose organisation." loading="lazy"><figcaption>Select your RTO’s name (1), then choose an RTO under Switch Organisation (2).</figcaption></figure>' +
+      '<p>Your dashboard, data and email notifications are separate for each RTO.</p>' +
+      '<h2 id="open">Open your profile</h2>' +
+      '<p>Select your email address at the top right (1), then <b>Profile</b> (2). <b>Logout</b> signs you out.</p>' +
+      '<figure class="shot" data-marks="81.9,1.1,16.8,4.8,oval,#1; 83.4,12.2,15.4,4.6,oval,#2"><img src="assets/img/profile-menu.png" alt="The Admin Dashboard, with admindemo@rtoradar.com.au at the top right circled as 1, and its My Account menu open, with Profile circled as 2 and Logout below it." loading="lazy"><figcaption>Select your email address (1), then Profile (2).</figcaption></figure>' +
+      '<p>The top of the page shows your photo or initials, name and email, your role, such as Administrator, and your team and your role in it, such as Executive Team, Manager. Below are four tabs:</p>' +
+      '<figure class="shot" data-marks="34.5,79.6,#1; 44.8,79.6,#2; 53.3,79.6,#3; 62.7,79.6,#4"><img src="assets/img/profile-open.png" alt="The profile of Admin Demo, admindemo@rtoradar.com.au, Administrator, Manager of the Executive Team, with AD as their initials. Below are the Edit Profile, Multi RTO Setup, MFA and Email Notifications tabs, numbered 1 to 4." loading="lazy"><figcaption>Your profile’s four tabs (1–4).</figcaption></figure>' +
+      '<ol class="ov-list">' +
+        '<li><h4>Edit Profile</h4><p>Your photo, name, email, RTO name and password. See <a href="#photo">Upload a profile picture</a>, <a href="#edit">Edit your information</a> and <a href="#password">Change your password</a> below.</p></li>' +
+        '<li><h4>Multi RTO Setup</h4><p>If you belong to more than one RTO, your profile details for each one.</p></li>' +
+        '<li><h4>MFA</h4><p>Your two-factor authentication and trusted devices. See <a href="article.html?id=mfa-set-organisation">Set up MFA for your organisation</a>.</p></li>' +
+        '<li><h4>Email Notifications</h4><p>Which emails RTO Radar sends you. See <a href="article.html?id=profile-notifications">Choose your email notifications</a>.</p></li>' +
+      '</ol>' +
+      '<div class="callout note"><b>Note</b><span>Your role and team are set by an Admin in <b>Settings</b> › <b>User Management</b>, not on your profile. See <a href="feature.html?m=users">Users, Roles &amp; Teams</a>.</span></div>' +
+      '<h2 id="photo">Upload a profile picture</h2>' +
+      '<p>On the <b>Edit Profile</b> tab, under <b>Profile Picture</b>, select <b>Upload photo</b> (circled) and choose a PNG, JPG, WEBP or GIF up to 2 MB. Your photo shows across the workforce and wherever your profile appears. Until you add one, your initials show.</p>' +
+      '<figure class="shot" data-marks="13.3,52.3,15.4,19.8,oval,#"><img src="assets/img/profile-photo.png" alt="Profile Picture: shown across the workforce and wherever your profile appears. The initials AD, and Upload photo, circled, for a PNG, JPG, WEBP or GIF up to 2 MB." loading="lazy"><figcaption>Select Upload photo (circled).</figcaption></figure>' +
+      '<h2 id="edit">Edit your information</h2>' +
+      '<p>Under <b>Profile Information</b>, update your <b>First Name</b>, <b>Last Name</b>, <b>Email</b> or <b>RTO Name</b>, then select <b>Update Profile</b>.</p>' +
+      '<figure class="shot" data-marks="91.4,85.8,arrow-down,small"><img src="assets/img/profile-info.png" alt="Profile Information: update your personal information and RTO details. First Name Admin, Last Name Demo, Email admindemo@rtoradar.com.au, with a note that email changes require confirmation, and RTO Name RTO Radar Demo. Change Password and Update Profile are at the bottom, with an arrow pointing down at Update Profile." loading="lazy"><figcaption>Update your details, then select Update Profile.</figcaption></figure>' +
+      '<div class="callout note"><b>Note</b><span>Only Admins whose role includes the <b>Brand Customisation</b> permission can change the <b>RTO Name</b>. It changes the name for everyone in your RTO.</span></div>' +
+      '<h2 id="password">Change your password</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Under <b>Profile Information</b>, select <b>Change Password</b>.</li>' +
+        '<li>Enter your <b>Current Password</b>, then your <b>New Password</b> twice, under <b>New Password</b> and <b>Confirm New Password</b>. Then select <b>Update Password</b>.' +
+          '<figure class="shot" data-marks="90.3,85,arrow-down,small"><img src="assets/img/profile-password.png" alt="Change Password: update your account password for security. Current Password, New Password and Confirm New Password are filled in, hidden as dots. An arrow points down at Update Password." loading="lazy"><figcaption>Enter your current and new password, then select Update Password.</figcaption></figure></li>' +
+      '</ol>',
+
+    'profile-notifications':
+      '<p class="lead">Choose which emails RTO Radar sends you on the <b>Email Notifications</b> tab of your profile. Turn a switch off to stop receiving that email.</p>' +
+      '<div class="callout tip"><b>Tip</b><span>Your choices here override everything else. For example, if you turn off <b>Feedback and complaints notifications</b>, you won’t be emailed when an Admin assigns you a Complaints &amp; Suggestions submission.</span></div>' +
+      '<h2 id="recurring">Recurring reminders</h2>' +
+      '<p>These are only sent when your RTO has turned them on.</p>' +
+      '<table><thead><tr><th>Email</th><th>What it’s for</th></tr></thead><tbody>' +
+        '<tr><td>Monthly continuous improvement report</td><td>One email each month listing every CI item you’re responsible for, grouped into overdue, due soon and open.</td></tr>' +
+        '<tr><td>Continuous improvement due date reminders</td><td>Reminders as your CI items approach their due date, and while they’re overdue.</td></tr>' +
+        '<tr><td>Document review reminders</td><td>Reminders when a QMS document you own or review is approaching its review due date.</td></tr>' +
+        '<tr><td>Evidence map renewal reminders</td><td>Reminders ahead of the 12-month renewal date of an approved evidence map you own or manage.</td></tr>' +
+        '<tr><td>Workforce document expiry reminders</td><td>Reminders when your own documents, or those of staff you manage, are approaching expiry.</td></tr>' +
+        '<tr><td>Monthly risk register report <i>(required)</i></td><td>Sent to your RTO’s Escalation Manager.</td></tr>' +
+      '</tbody></table>' +
+      '<h2 id="activity">Activity notifications</h2>' +
+      '<table><thead><tr><th>Email</th><th>When it’s sent</th></tr></thead><tbody>' +
+        '<tr><td>Continuous improvement assignments</td><td>When a CI item is assigned to you as the responsible person.</td></tr>' +
+        '<tr><td>Professional development assignments</td><td>When you’re assigned to a PD session, with a calendar invitation.</td></tr>' +
+        '<tr><td>Document reviewer assignments</td><td>When you’re nominated as the reviewer of a QMS document.</td></tr>' +
+        '<tr><td>Document verification outcomes</td><td>When one of your uploaded documents is rejected or needs replacing.</td></tr>' +
+        '<tr><td>Feedback and complaints notifications</td><td>When a feedback or complaint submission is assigned to you.</td></tr>' +
+        '<tr><td>Calendar event invitations</td><td>When you’re added to an event, with a calendar invitation.</td></tr>' +
+        '<tr><td>RTO Radar platform updates</td><td>Occasional emails about new features and improvements.</td></tr>' +
+        '<tr><td>New high risk alerts <i>(required)</i></td><td>Sent straight away to the Escalation Manager when a new high or extreme risk is recorded.</td></tr>' +
+      '</tbody></table>' +
+      '<div class="callout note"><b>Note</b><span>Emails marked <b>Required</b> can’t be turned off. Your choices apply to the current RTO only: if you belong to more than one RTO, set them separately for each one.</span></div>',
 
     // ---- Workforce Management ----
     'wf-overview':
       '<p class="lead">Workforce Management is where you look after your staff: their profiles and documents, the courses and units they deliver, their professional development, and whether they’re ready to deliver.</p>' +
       '<h2 id="open">Open Workforce Management</h2>' +
-      '<p>Select <b>Workforce Management</b> on your navigation bar. Along the top of the page are three things you’ll first see:</p>' +
-      '<figure class="shot" data-marks="0.4,59.2,17.4,7.6,oval,#"><img src="assets/img/wf-page.png" alt="The top of Workforce Management, with Workforce Management circled in the navigation bar. Export and a greyed-out Assign Training button sit at the top right, above the summary cards: Total Workforce 16, all users in your organisation; RTO Staff 3, staff members; and Admin Actions 5, items awaiting your review." loading="lazy"><figcaption>Select Workforce Management in the navigation bar.</figcaption></figure>' +
-      '<ul>' +
-        '<li><b>Summary cards</b> showing your <b>Total Workforce</b> (all users in your organisation), <b>RTO Staff</b>, and <b>Admin Actions</b> waiting for your review.</li>' +
+      '<p>Select <b>Workforce Management</b> on your navigation bar (circled). The page opens on the <b>Workforce</b> tab. Around the page you’ll see:</p>' +
+      '<figure class="shot" data-marks="1,38.6,11.2,3.8,oval,#; 78.3,17.4,7,4.4,oval,#1; 88,17.4,8.4,4.4,oval,above,#2; 86.6,32.8,10.6,5,oval,#3"><img src="assets/img/wf-landing.png" alt="Workforce Management, circled on the navigation bar, open on the Workforce tab beside Workforce Dashboard, Teams, Document Checklist and Search. Export is circled as 1 and a greyed-out Assign Training button as 2 at the top right, with User Management circled as 3 below them. The Workforce list has a search box and Trainers (3), Admin (9) and All (12), listing Ken Lombardo, John Doe and Staff Demo. On the right: Select a Trainer, choose a trainer from the list to view their profile and details." loading="lazy"><figcaption>Export (1), Assign Training (2) and User Management (3).</figcaption></figure>' +
+      '<ol>' +
         '<li><b>Export</b>, which downloads workforce reports. See <a href="article.html?id=wf-export">Export workforce reports</a>.</li>' +
         '<li><b>Assign Training</b>, which assigns courses and units to the staff member you’re viewing. See <a href="article.html?id=wf-assign-units">Assign courses and units to a trainer</a>.</li>' +
-      '</ul>' +
+        '<li><b>User Management</b>, which opens User Management, where you invite staff and manage their roles and teams. See <a href="article.html?id=users-overview">The User Management page</a>.</li>' +
+      '</ol>' +
       '<div class="callout note"><b>Note</b><span>Assign Training is greyed out until you select a staff member on the Workforce tab, because it assigns training to the person you’re viewing.</span></div>' +
       '<h2 id="tabs">The five tabs</h2>' +
-      '<p>Below the summary cards are five tabs. Select a tab below to see what each one is for.</p>' +
+      '<p>Workforce Management has five tabs. Select a tab below to see what each one is for.</p>' +
       '<div class="xl-book">' +
         '<div class="xl-bar" role="tablist" aria-label="Workforce Management tabs">' +
           '<button type="button" role="tab" aria-selected="true">Workforce</button>' +
@@ -531,7 +1098,7 @@
       '<h2 id="find">Find a staff member</h2>' +
       '<ol class="steps-list">' +
         '<li>On the <b>Workforce</b> tab (1), choose who to list: <b>Trainers</b>, <b>Admin</b> or <b>All</b> (2). Each shows how many people it holds.' +
-          '<figure class="shot" data-marks="0.2,1.2,7,7.4,oval,#; 3.4,12.5,#1; 1.2,33,29.2,10,oval,right,#2"><img src="assets/img/wf-find-list.png" alt="The Workforce tab, circled as marker 1. The Workforce list has a search box and three options, Trainers (3), Admin (13) and All (16), which are circled as marker 2. Trainers is selected, listing Ken Lombardo, John Doe and Staff Demo. On the right, Select a Trainer: choose a trainer from the list to view their profile and details." loading="lazy"><figcaption>On the Workforce tab (1), choose Trainers, Admin or All (2).</figcaption></figure></li>' +
+          '<figure class="shot" data-marks="19,33.4,5.4,4,oval,above,#1; 20.2,55.8,22.4,6.4,oval,right,#2"><img src="assets/img/wf-landing.png" alt="Workforce Management on the Workforce tab, circled as marker 1. The Workforce list has a search box and three options, Trainers (3), Admin (9) and All (12), which are circled as marker 2. Trainers is selected, listing Ken Lombardo, John Doe and Staff Demo. On the right, Select a Trainer: choose a trainer from the list to view their profile and details." loading="lazy"><figcaption>On the Workforce tab (1), choose Trainers, Admin or All (2).</figcaption></figure></li>' +
         '<li>To narrow the list, type in <b>Search by name, email or role</b>.' +
           '<figure class="shot shot-small" data-marks="4.6,24,90.8,18.8,oval,#; 37,79,arrow-left,small"><img src="assets/img/wf-find-search.png" alt="The Workforce list with Staff typed in the search box, which is circled. The list now shows only Staff Demo, with an arrow pointing left at it." loading="lazy"><figcaption>Searching for “Staff” narrows the list to Staff Demo.</figcaption></figure></li>' +
         '<li>Select a person. The page now shows <b>Now viewing</b> with their name (1), and four tabs: <b>Profile</b>, <b>Documents</b>, <b>Units</b> and <b>PD Calendar</b> (2). Their profile opens first.' +
@@ -546,6 +1113,7 @@
     'wf-documents':
       '<p class="lead">The <b>Documents</b> tab holds a staff member’s qualifications, licences, professional development and other evidence. These documents count towards their document checklist, and their descriptions feed their evidence maps.</p>' +
       '<p>To open it, go to <b>Workforce Management</b> › <b>Workforce</b>, select the person, then the <b>Documents</b> tab.</p>' +
+      '<div class="callout note"><b>Note</b><span>An Admin with the right permissions and teams can manage every staff member’s documents in Workforce Management, including their own. Staff can only view their own documents, in <b>My Documents</b>. Depending on their permissions, they may also be able to view QMS documents in Document Management, or Workforce documents. See <a href="feature.html?m=workforce#faq">the Workforce Management FAQ</a>.</span></div>' +
       '<h2 id="upload">Upload a document</h2>' +
       '<ol class="steps-list">' +
         '<li>On the <b>Documents</b> tab (1), select <b>Upload Document</b> (2).' +
@@ -603,7 +1171,7 @@
         '<div class="hs-panel" id="verify" hidden>' +
           '<h4>Open and verify a document</h4>' +
           '<p>Select the document’s name, or the tick on a <b>Pending</b> document, to open it on the page. Under <b>Action Required</b> you’ll see the document itself with a <b>Download</b> button, its <b>Document Description</b> and its <b>Document Details</b>, such as the issue and completion dates.</p>' +
-          '<figure class="shot" data-marks="78.8,93.3,arrow-down,small; 85.8,93.3,arrow-down,small"><img src="assets/img/wf-doc-verify.png" alt="Action Required for a webinar certificate: the PDF shown on the page with a Download button, a certificate of participation presented to Staff Demo, then the Document Description, Document Details with issue and completion dates of 16/03/2026, a Verification Notes box, and Reject, Approve and Delete buttons. Arrows point down at Reject and Approve." loading="lazy"><figcaption>A Pending document opened for verification.</figcaption></figure>' +
+          '<figure class="shot" data-marks="78.8,93.3,arrow-down,small; 85.8,93.3,arrow-down,small"><img src="assets/img/wf-doc-verify.png" alt="Action Required for a webinar certificate: the PDF shown on the page with a Download button, a certificate of participation presented to Staff Demo, then the Document Description, Document Details with issue and completion dates of 17/03/2026, a Verification Notes box, and Reject, Approve and Delete buttons. Arrows point down at Reject and Approve." loading="lazy"><figcaption>A Pending document opened for verification.</figcaption></figure>' +
           '<p>Every uploaded document must be verified, including documents an Admin uploads:</p>' +
           '<ul>' +
             '<li><b>What to check</b>: that it’s the right document, that it hasn’t expired, and that its description is detailed enough to use as evidence.</li>' +
@@ -641,7 +1209,7 @@
       '<h2 id="courses">Assign courses</h2>' +
       '<ol class="steps-list">' +
         '<li>Go to <b>Workforce Management</b> › <b>Workforce</b> and select the trainer.' +
-          '<figure class="shot" data-marks="34.6,91.3,arrow-left"><img src="assets/img/wf-assign-select.png" alt="The Workforce tab in Workforce Management, listing three trainers: Ken Lombardo, John Doe and Staff Demo. An arrow points left at Staff Demo." loading="lazy"><figcaption>Select the trainer, such as Staff Demo here.</figcaption></figure></li>' +
+          '<figure class="shot" data-marks="35.1,90.3,arrow-left"><img src="assets/img/wf-landing.png" alt="The Workforce tab in Workforce Management, listing three trainers: Ken Lombardo, John Doe and Staff Demo. An arrow points left at Staff Demo." loading="lazy"><figcaption>Select the trainer, such as Staff Demo here.</figcaption></figure></li>' +
         '<li>Select <b>Assign Training</b> at the top right of the page.' +
           '<figure class="shot" data-marks="81.4,15.2,13.6,8.2,oval,#"><img src="assets/img/wf-assign-button.png" alt="Workforce Management, now viewing Staff Demo, with the Profile, Documents, Units and PD Calendar tabs below. The Assign Training button at the top right is circled." loading="lazy"><figcaption>Select Assign Training while viewing the trainer.</figcaption></figure></li>' +
         '<li>Manage Assignments opens on step 1, <b>Course Assignments</b>. The page has two sides:' +
@@ -677,7 +1245,18 @@
         '<li>From their staff profile, open the <b>Units</b> tab to check the units assigned to them.' +
           '<figure class="shot" data-marks="11.1,26.2,3.75,6.3,oval,#"><img src="assets/img/gs-staff-units.png" alt="The Units tab of a staff profile, with the Units tab circled, headed Units Delivered: 11. Each row shows the unit code and title, its course, team, unit status of Assigned, an evidence map icon, the assigned date, and the completed date, which reads No map provided." loading="lazy"><figcaption>The Units tab lists every unit assigned to the trainer, with its course, status and evidence map.</figcaption></figure></li>' +
       '</ol>' +
-      '<div class="callout tip"><b>Tip</b><span>Assign units before you generate the evidence map. The map is built from the units assigned here.</span></div>',
+      '<div class="callout tip"><b>Tip</b><span>Assign units before you generate the evidence map. The map is built from the units assigned here.</span></div>' +
+      '<h2 id="trainer-view">What the trainer sees</h2>' +
+      '<p>In the Trainer/Assessor portal, <b>My Courses</b> lists the courses assigned to them, with each course’s units, team, status and the date it was assigned. They can search and filter by status. Selecting <b>Manage Course</b> opens the course’s <b>Assigned Units</b>.</p>' +
+      '<figure class="shot"><img src="assets/img/wf-trainer-courses.png" alt="Staff Demo’s assigned courses: CHC22015 Certificate II in Community Services, 2 of 2 units, Community and Health, Assigned, 06/10/2026; CPC50220 Diploma of Building and Construction (Building), Construction, Assigned, 06/10/2026; BSB50120 Diploma of Business, 3 of 3 units, Business Faculty, In Progress, 08/10/2026; and CHC50121 Diploma of Early Childhood Education and Care, 2 of 2 units, Community and Health, In Progress, 16/03/2026. Each has a Manage Course button." loading="lazy"><figcaption>A trainer’s assigned courses, with their status.</figcaption></figure>' +
+      '<p><b>Assigned Units</b> shows each unit with its evidence map, completed and scheduled unit validations, validation due date and priority, the date it was assigned and its status. From here they can:</p>' +
+      '<ul>' +
+        '<li>Select <b>Create Map</b> or <b>Edit Map</b> to work on the unit’s evidence map. A map that needs changes shows <b>Needs Revision</b>.</li>' +
+        '<li>View <svg class="ui-icon" viewBox="0 0 24 24" aria-label="eye" role="img"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6a3 3 0 1 0 0-6z"/></svg> or download <svg class="ui-icon" viewBox="0 0 24 24" aria-label="download" role="img"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg> a completed validation.</li>' +
+        '<li>Select <b>+</b> under <b>Unit Validations</b> to start a scheduled validation.</li>' +
+      '</ul>' +
+      '<figure class="shot"><img src="assets/img/wf-trainer-units.png" alt="Assigned Units, with a search box and an All Maps filter. BSBTWK502 Manage team effectiveness has Create Map, a + button under Unit Validations, a validation due 05/11/2026 with Low priority, assigned 08/10/2026 and Assigned. CHCECE046 Implement strategies for the inclusion of all children has Edit Map marked Needs Revision, a completed validation from 26/10/2026 with view and download buttons, Unit Validations Completed, assigned 16/03/2026 and In Progress." loading="lazy"><figcaption>A trainer’s assigned units, with their evidence maps and validations.</figcaption></figure>' +
+      '<p>See <a href="article.html?id=wf-evidence-map">Create an evidence map for a trainer</a>.</p>',
 
     'wf-description':
       '<p class="lead">Every staff document has a <b>Description</b>. It’s the most important field when you upload a document, because it’s what RTO Radar’s AI uses to write a trainer’s evidence map.</p>' +
@@ -786,6 +1365,801 @@
       '<div class="callout warn"><b>Important</b><span>If a trainer or Admin deletes a document used in an approved evidence map, the map reverts to draft. It then appears under Admin Action as <b>Reverted from approved</b> and needs approving again.</span></div>',
 
     // Document Management FAQs, shown on the module page under its guides
+    // ---- Users, Roles & Teams ----
+    'users-overview':
+      '<p class="lead">User Management is where you add your staff, decide what each person can do, and organise them into teams. A person’s <b>role</b> sets what they can do. Their <b>team</b> sets whose records they can do it to.</p>' +
+      '<h2 id="open">Open User Management</h2>' +
+      '<p>Go to <b>Settings</b> › <b>User Management</b>.</p>' +
+      '<figure class="shot" data-marks="0.7,91.7,5.5,5.2,oval,right,#1; 43.2,50.4,8.7,4.8,oval,above,#2"><img src="assets/img/users-open.png" alt="Organisation Settings for RTO Radar Demo, signed in as admindemo@rtoradar.com.au, with the User Management tab open on Staff. Settings in the navigation bar is circled as marker 1, and the User Management tab as marker 2. Below are the Staff, User Roles and Teams Configuration tabs." loading="lazy"><figcaption>Select Settings (1), then User Management (2).</figcaption></figure>' +
+      '<h2 id="tabs">The three tabs</h2>' +
+      '<ol class="ov-list">' +
+        '<li><h4>Staff</h4><p>Everyone in your organisation, with their role, team and team role. Add, invite and manage people here. See <a href="article.html?id=users-invite">Add a user</a> and <a href="article.html?id=users-manage">Find and manage staff</a>.</p></li>' +
+        '<li><h4>User Roles</h4><p>Your organisation’s roles and the role templates to start from. See <a href="article.html?id=users-roles">Organisation roles and role templates</a>.</p></li>' +
+        '<li><h4>Teams Configuration</h4><p>Your teams, their parent teams and members, and the Compliance Governance Chart. See <a href="article.html?id=users-teams">Create teams and set parent teams</a>.</p></li>' +
+      '</ol>' +
+      '<h2 id="together">How roles and teams work together</h2>' +
+      '<p>Keep roles few and based on the job, and let teams separate the work. Two heads of faculty can share one role and sit in different teams. Each then manages only their own faculty’s courses, TAS, trainers and validations. See <a href="article.html?id=users-plan-roles">Plan roles and permissions for your RTO</a>.</p>' +
+      '<div class="callout note"><b>Note</b><span>Only people whose role includes the <b>User Management</b> permission can open this page, usually Administrators.</span></div>',
+
+    'users-invite':
+      '<p class="lead">Add each staff member with their role and team. Invite people who need to sign in, or add them as a silent user to track their compliance without giving them access.</p>' +
+      '<h2 id="add">Add a user</h2>' +
+      '<ol class="steps-list">' +
+        '<li>On the <b>Staff</b> tab, select <b>Add New User</b>.' +
+          '<figure class="shot" data-marks="1.9,74.5,12.5,17.9,oval,#"><img src="assets/img/users-add-button.png" alt="User Management on the Staff tab, beside User Roles and Teams Configuration. The Add New User button is circled." loading="lazy"><figcaption>Select Add New User (circled).</figcaption></figure></li>' +
+        '<li>Enter their <b>First Name</b>, <b>Last Name</b> and <b>Email</b>.</li>' +
+        '<li>Choose their <b>User Role</b>. It defaults to Trainer/Assessor.</li>' +
+        '<li>Choose their <b>Team</b>. Leave it as <b>System Default (no team)</b> to assign them later.' +
+          '<figure class="shot shot-small" data-marks="59.4,89.3,29.5,5.4,oval,#"><img src="assets/img/users-add-form.png" alt="Create New User filled in for Design Manager: first name Design, last name Manager, email designmanager@rtoradar.com.au, user role Head of Faculty and team Learning Design. Silent user is off, and Send Invitation is circled." loading="lazy"><figcaption>Design Manager, invited as a Head of Faculty in Learning Design. Select Send Invitation (circled).</figcaption></figure></li>' +
+        '<li>Select <b>Send Invitation</b>. They receive an email to set up their sign-in.</li>' +
+      '</ol>' +
+      '<div class="callout tip"><b>Tip</b><span>Using aXcelerate? You can import your trainers from it instead, and invite them or add them silently. See <a href="article.html?id=connect-axcelerate#import-trainers">Import Trainers</a>.</span></div>' +
+      '<h2 id="silent">Add a silent user</h2>' +
+      '<p>A silent user has a profile but can’t sign in and isn’t emailed. Use it for staff whose credentials and compliance you track but who don’t use RTO Radar, or to set someone up before inviting them.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Fill in the form as above, then turn on <b>Silent user (no login access)</b>.' +
+          '<figure class="shot shot-small" data-marks="80.4,68.6,12.7,4.5,oval,#; 60.6,90.8,30.2,4.8,oval,#"><img src="assets/img/users-add-silent.png" alt="Create New User for New Starter Demo, newstarter@rtoradar.com.au, role Trainer/Assessor, team left as System Default. Silent user (no login access) is turned on and circled, and a message says they’ll be created for compliance tracking only, won’t receive an invitation email and won’t be able to log in. Create Profile is circled." loading="lazy"><figcaption>New Starter Demo, added as a silent user. Turn on Silent user, then select Create Profile (both circled).</figcaption></figure></li>' +
+        '<li>Select <b>Create Profile</b>. They show as <b>Compliance Only</b> on the Staff tab.</li>' +
+      '</ol>' +
+      '<p>Ready to give them access? Select <b>⋮</b> › <b>Send Invitation</b> on their row. See <a href="article.html?id=users-manage#actions">Staff actions</a>.</p>',
+
+    'users-manage':
+      '<p class="lead">The Staff tab lists everyone in your organisation. Find people by name, email or role, and change their role or team.</p>' +
+      '<figure class="shot"><img src="assets/img/users-staff-list.png" alt="The Staff tab, page 2 of 2, 16 records. Each person shows their name, a Compliance Only tag for silent users, email, user role, team name, team role and when they were created. Quality Assurance Manager is a TAS Reviewer and Compliance Officer an Administrator, both Team Members in Compliance and Validation. Compliance Manager is Team Manager of both Compliance and Validation and System Default. CEO Demo is Team Manager of the Executive Team. Admin Demo and Governance Lead are Administrators and Team Members in System Default." loading="lazy"><figcaption>The Staff tab. Silent users are tagged Compliance Only.</figcaption></figure>' +
+      '<p>Someone in more than one team shows each team, with their role in it, such as the Compliance Manager, who manages both Compliance &amp; Validation and System Default.</p>' +
+      '<h2 id="find">Find staff</h2>' +
+      '<p>Search by name, email or role, or filter the list by role.</p>' +
+      '<figure class="shot" data-marks="2,3.5,79.5,22.5,zone,#1; 82.3,3.5,15.5,22.5,zone,#2"><img src="assets/img/users-staff-search.png" alt="The Staff tab with Design typed in the search box, outlined as 1, and the role filter set to Head of Faculty, outlined as 2. One person matches: Design Manager, marked Pending, designmanager@rtoradar.com.au, Head of Faculty, Team Manager of Learning Design." loading="lazy"><figcaption>Searching for “Design” (1) among Heads of Faculty (2).</figcaption></figure>' +
+      '<p>The filter offers <b>All Users</b>, <b>Admin Roles</b> and <b>Trainer / Assessor Roles</b>, then each of your organisation’s roles. Someone marked <b>Pending</b> has been invited but hasn’t yet accepted.</p>' +
+      '<h2 id="actions">Staff actions</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Scroll the list to the right, using the scrollbar below it, to reach the <b>Actions</b> column.</li>' +
+        '<li>Select <b>⋮</b> on the person’s row.' +
+          '<figure class="shot" data-marks="6.2,87.3,89.8,8.8,oval,#; 62,80.5,arrow-right,small,#1; 91.6,72,2.4,6.5,oval,right,#2"><img src="assets/img/users-staff-menu.png" alt="Three rows of the Staff tab: Staff Demo, IT Faculty Manager and Design Manager. The scrollbar below the list is circled, with an arrow, 1, pointing right. The ⋮ on Design Manager’s row is circled as 2, and its menu is open: View Details, Assign Role, Assign Team, Reset Password, marked with an asterisk, and Delete User." loading="lazy"><figcaption>Scroll right (1), then select ⋮ on the row (2). *Depending on the account’s status, this can say <span style="color:#ff715b">Reset Password</span>, <span style="color:#16507e">Send Invitation</span> or <span style="color:#1e5582">Resend Invitation</span>.</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>The menu has these actions:</p>' +
+      '<ol class="ov-list">' +
+        '<li><h4>View Details</h4><p>Their name, email, role, organisation, account type and every permission their role gives them. The account type is <b>Active User</b> for someone who can sign in, or <b>Compliance Only (No Login)</b> for a silent user.</p>' +
+          '<figure class="shot shot-medium"><img src="assets/img/users-staff-details.png" alt="Staff Member Details for Staff Demo: first name Staff, last name Demo, email staffdemo@rtoradar.com.au, user role Trainer/Assessor, organisation RTO Radar Demo, account type Active User, created 12 months ago." loading="lazy"><figcaption>Staff Demo’s details. Their permissions are listed further down.</figcaption></figure></li>' +
+        '<li><h4>Assign Role</h4><p>Change their role. Their permissions change straight away.</p>' +
+          '<figure class="shot shot-small" data-marks="5.5,74,89,8,oval,#; 69.8,88,24.4,7.8,oval,#"><img src="assets/img/users-assign-role.png" alt="Assign User Role for Staff Demo, staffdemo@rtoradar.com.au. The current role is Trainer/Assessor, and Change to is set to Training Coordinator, circled. Assign Role is circled." loading="lazy"><figcaption>Choose the new role, then select Assign Role (both circled).</figcaption></figure></li>' +
+        '<li><h4>Assign Team</h4><p>Tick each team they belong to, and choose whether they’re a <b>Team Member</b> or <b>Team Manager</b> in it. Changes apply straight away.</p>' +
+          '<figure class="shot shot-small" data-marks="5.5,55,87,15,zone,#"><img src="assets/img/users-assign-team.png" alt="Assign User to Teams for Staff Demo. Each team has a tick box and a role. Business Faculty and Community and Health are ticked as Team Member, and are outlined. A note says to tick a team, then pick the role, and that changes apply instantly." loading="lazy"><figcaption>Tick each team and choose their role in it. Changes apply straight away.</figcaption></figure></li>' +
+        '<li><h4><img src="assets/img/users-tag-reset.png" alt="Reset Password" style="height:1.5em;width:auto;vertical-align:middle;display:inline;margin:0 2px;border-radius:6px">, <img src="assets/img/users-tag-send.png" alt="Send Invitation" style="height:1.5em;width:auto;vertical-align:middle;display:inline;margin:0 2px;border-radius:6px"> or <img src="assets/img/users-tag-resend.png" alt="Resend Invitation" style="height:1.5em;width:auto;vertical-align:middle;display:inline;margin:0 2px;border-radius:6px"></h4><p>For someone who can sign in, <b>Reset Password</b> emails them a single-use link to set a new password. Enter the reason, which is recorded in the security audit log, then select <b>Send Reset Email</b>. Their current sessions stay active.</p>' +
+          '<figure class="shot shot-small" data-marks="66.8,90,29.5,7.6,oval,#"><img src="assets/img/users-reset-password.png" alt="Reset User Password for Staff Demo. The reason for the password reset is User forgot password, which will be recorded in the security audit log. A note says the user will receive an email with a secure link and their current sessions will remain active. Send Reset Email is circled." loading="lazy"><figcaption>Enter the reason, then select Send Reset Email (circled).</figcaption></figure>' +
+          '<p>The link can only be used once. If they see an “expired” message, ask them to try signing in with their new password before you send another.</p>' +
+          '<p>For a silent user, <b>Send Invitation</b> appears instead. For someone invited who hasn’t yet accepted, marked <b>Pending</b>, it’s <b>Resend Invitation</b>.</p>' +
+          '<div class="callout note"><b>Note</b><span>To change your own password, use your profile instead. See <a href="article.html?id=profile-open#password">Change your password</a>.</span></div></li>' +
+        '<li><h4>Delete User</h4><p>Deleting someone can’t be undone. First move their work to other staff, so nothing is left without an owner.</p>' +
+          '<ol class="steps-list">' +
+            '<li>Select <b>Reassign Duties</b>. <b>Delete</b> stays unavailable until their work is reassigned.' +
+              '<figure class="shot shot-small" data-marks="5,62.5,90.5,9,oval,#"><img src="assets/img/users-delete.png" alt="Delete Staff Member for Staff Demo, Trainer/Assessor, with a warning that it cannot be undone. Reassign Duties is circled, with a note that reassignments must be reviewed and confirmed before deletion. Delete is greyed out." loading="lazy"><figcaption>Select Reassign Duties (circled).</figcaption></figure></li>' +
+            '<li>In <b>Data Migration</b>, choose who takes over their work. Use <b>Reassign All Items</b> to give everything to one person, or reassign each item on its tab: improvement items, units, courses, risks, files, industry evidence, validation and consultation schedules, and feedback actions.' +
+              '<figure class="shot" data-marks="2.4,21.5,49.8,6.5,zone,#; 54.5,24.8,#1; 10,32.3,15.5,4,underline,#2; 85.4,49,9.5,10,oval,above,#3"><img src="assets/img/users-delete-migrate.png" alt="Data Migration for Staff Demo. Reassign All Items, outlined as 1, has a person, a role filter and Apply to All (40 items). Tabs, underlined as 2, show CI (14), Units (14), Courses (5), Risk (0), Files (0), Industry Evidence (0), Val Sched (3), Consult Sched (3) and Feedback Actions (1). The CI tab lists overdue improvement items, each with a Reassign To person, the first circled as 3. A warning says items not reassigned will have their owner set to Unassigned or be deleted. Save Reassignments (7)." loading="lazy"><figcaption>Reassign everything at once (1), or each item on its tab (2) using Reassign To (3).</figcaption></figure>' +
+              '<div class="callout warn"><b>Important</b><span>Anything you don’t reassign has its owner set to Unassigned, or is deleted. Check every tab before you save.</span></div></li>' +
+            '<li>Select <b>Save Reassignments</b>, then <b>Delete</b>.</li>' +
+          '</ol></li>' +
+      '</ol>' +
+      '<h2 id="bulk">Assign several people to a team</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Tick the box before each person, or the box in the header to select everyone listed. A bar shows how many are selected. Select <b>Assign to Team</b>.' +
+          '<figure class="shot" data-marks="3.1,46.5,2.5,53,oval,#1; 84.4,17.8,13,8.4,oval,above,#2"><img src="assets/img/users-bulk-select.png" alt="The Staff tab searched for Trainer, with Trainer Three, Trainer Two and Trainer One ticked, circled together as 1. A bar reads 3 staff members selected, with Clear and Assign to Team, circled as 2." loading="lazy"><figcaption>Tick each person (1), then select Assign to Team (2).</figcaption></figure></li>' +
+        '<li>Choose the <b>Team</b> and their <b>Role on this team</b>.</li>' +
+        '<li>Choose the <b>Behaviour</b>:' +
+          '<ul>' +
+            '<li><b>Add to team</b> keeps each person’s other team memberships.</li>' +
+            '<li><b>Replace memberships</b> removes them from their other teams first.</li>' +
+          '</ul>' +
+          '<figure class="shot shot-small" data-marks="65.5,89.4,29.5,7.2,oval,#"><img src="assets/img/users-bulk-assign.png" alt="Assign to Team, for 3 people in one step. Team is IT Faculty, the role on this team is Team Member, and Behaviour is set to Add to team, keeping each person’s other team memberships, rather than Replace memberships. Assign 3 people is circled." loading="lazy"><figcaption>Adding three trainers to the IT Faculty as Team Members, keeping their other teams. Select Assign 3 people (circled).</figcaption></figure></li>' +
+        '<li>Select <b>Assign</b>. The button shows how many people you selected, such as <b>Assign 3 people</b>.</li>' +
+      '</ol>',
+
+    'users-roles':
+      '<p class="lead">A role is a set of permissions: what someone can view, create, edit and delete in each feature. Your organisation’s roles are on the <b>User Roles</b> tab, with templates to start new ones from. See <a href="article.html?id=users-permissions">What each permission covers</a>.</p>' +
+      '<h2 id="open">Open User Roles</h2>' +
+      '<p>Go to <b>Settings</b> › <b>User Management</b>, then select the <b>User Roles</b> tab.</p>' +
+      '<figure class="shot" data-marks="30.1,37.6,13.2,8.8,oval,above,#1; 21.2,85.5,18,8.8,oval,right,#2"><img src="assets/img/users-roles-open.png" alt="Organisation Settings with the User Management tab, circled as 1, and below it the User Roles tab, circled as 2, between Staff and Teams Configuration." loading="lazy"><figcaption>Select User Management (1), then User Roles (2).</figcaption></figure>' +
+      '<h2 id="org">Organisation roles</h2>' +
+      '<p>Each role shows how many users have it and whether it’s active.</p>' +
+      '<figure class="shot"><img src="assets/img/users-roles-list.png" alt="Organisation Roles, each with its description, number of users and status: Administrator 5, Compliance Officer 0, Head of Faculty 2, Quality Auditor 1, Record Keeper 1, TAS Reviewer 1, Trainer/Assessor 5 and Training Coordinator 1, all Active." loading="lazy"><figcaption>RTO Radar Demo’s roles, with how many people have each.</figcaption></figure>' +
+      '<p>Select <b>⋮</b> on a role to <b>Edit</b> its permissions or <b>Delete</b> it. A role can’t be deleted while people have it.</p>' +
+      '<figure class="shot" data-marks="93.4,18.5,2.6,17,oval,#1; 85.5,44,10.8,51,zone,#"><img src="assets/img/users-role-menu.png" alt="The ⋮ on the Head of Faculty role, circled as 1, with its menu open: Edit, and Delete greyed out because two people have the role. The menu is outlined." loading="lazy"><figcaption>Head of Faculty has 2 users, so Delete is greyed out.</figcaption></figure>' +
+      '<h2 id="templates">Role templates</h2>' +
+      '<p>Templates are ready-made roles for common jobs in an RTO. Start from the closest one, then remove the permissions the job doesn’t need.</p>' +
+      '<figure class="shot"><img src="assets/img/users-role-templates.png" alt="Role Templates: Administrator, Compliance Officer, Quality Auditor, Record Keeper, Staff, TAS Builder, TAS Reviewer, Trainer/Assessor and Training Coordinator, each with a short description and a Template tag." loading="lazy"><figcaption>The nine role templates.</figcaption></figure>' +
+      '<ol class="steps-list">' +
+        '<li>Select <b>From Template</b>, then the template.' +
+          '<figure class="shot" data-marks="71.8,32.3,15.8,7.6,oval,above,#1; 69.3,40.8,18.3,56.5,zone,#"><img src="assets/img/users-from-template.png" alt="The User Roles tab with From Template, circled as 1, open to list the templates, outlined: Administrator, Compliance Officer, Quality Auditor, Record Keeper, Staff, TAS Builder, TAS Reviewer, Trainer/Assessor and Training Coordinator." loading="lazy"><figcaption>Select From Template (1), then the template.</figcaption></figure></li>' +
+        '<li><b>Create Role from Template</b> opens with the template’s name, description and permissions filled in. Change the name or description if you like.' +
+          '<figure class="shot shot-medium"><img src="assets/img/users-template-name.png" alt="Create Role from TAS Reviewer Template, to customise the template permissions for your organisation. Role Name is TAS Reviewer, and the description reads Full administrator access with TAS Builder and Review permissions, excluding Settings." loading="lazy"><figcaption>A role being created from the TAS Reviewer template.</figcaption></figure></li>' +
+        '<li>Check its permissions, and untick anything the job doesn’t need. For what each one allows, see <a href="article.html?id=users-permissions">What each permission covers</a>.' +
+          '<div class="callout tip"><b>Tip</b><span>The <b>TAS Reviewer</b> template includes <b>TAS Builder</b> as well as <b>TAS Builder Review</b>. Untick TAS Builder’s Create and Edit so reviewers can’t approve a TAS they built themselves.</span></div></li>' +
+        '<li>Select <b>Activate Role</b>. Its permissions take effect once you assign it to people.' +
+          '<figure class="shot shot-medium" data-marks="81,54.5,16.5,30,oval,#"><img src="assets/img/users-template-activate.png" alt="A note that permissions defined here only take effect once this role is assigned to users, with Cancel and Activate Role. Activate Role is circled." loading="lazy"><figcaption>Select Activate Role (circled).</figcaption></figure></li>' +
+      '</ol>',
+
+    'users-permissions':
+      '<p class="lead">Each permission can allow <b>View</b>, <b>Create</b>, <b>Edit</b> and <b>Delete</b>. Where an action doesn’t apply, the form shows a dash. The <b>Trainer / Assessor</b> set offers only the permissions marked in the last column. What someone can reach is also limited by their team. See <a href="article.html?id=users-governance">Understanding the compliance governance chart</a>.</p>' +
+      '<h3>Core Features</h3>' +
+      '<table><thead><tr><th>Permission</th><th>What it covers</th><th>Actions</th><th>Trainer set</th></tr></thead><tbody>' +
+        '<tr><td>Dashboard</td><td>The main dashboard and its widgets</td><td>View</td><td>Yes</td></tr>' +
+        '<tr><td>QMS Documents</td><td>Your quality management system documents: upload, map to standards, new versions and archive</td><td>View, Create, Edit, Delete</td><td>Yes, without Delete</td></tr>' +
+        '<tr><td>Program Management</td><td>Courses and programs, their units, risk assessments and validations</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+        '<tr><td>My Courses</td><td>The person’s own course and unit assignments, and their unit evidence</td><td>View, Create, Edit</td><td>Trainer set only</td></tr>' +
+        '<tr><td>Continuous Improvement</td><td>The Continuous Improvement Register and its items</td><td>View, Create, Edit, Delete</td><td>Yes</td></tr>' +
+        '<tr><td>Events</td><td>The organisation calendar and scheduling events</td><td>View, Create, Edit, Delete</td><td>Yes</td></tr>' +
+        '<tr><td>TAS Builder</td><td>Building and managing Master and Cohort TAS</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+        '<tr><td>TAS Builder Review</td><td>Reviewing, approving or declining TAS submissions</td><td>View, Edit, Delete</td><td>No</td></tr>' +
+      '</tbody></table>' +
+      '<h3>Compliance &amp; Quality</h3>' +
+      '<table><thead><tr><th>Permission</th><th>What it covers</th><th>Actions</th><th>Trainer set</th></tr></thead><tbody>' +
+        '<tr><td>Risk Assessment</td><td>The risk register and risk assessments</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+        '<tr><td>Validation</td><td>Assessment validation across your programs</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+        '<tr><td>Staff Validation</td><td>The unit validations assigned to the person</td><td>View, Create</td><td>Yes</td></tr>' +
+        '<tr><td>Industry Consultation</td><td>Industry consultation records</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+        '<tr><td>Complaints &amp; Suggestions</td><td>Feedback, complaint and suggestion forms, and their submissions</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+        '<tr><td>Lead Validator</td><td>Any user’s unit validations, whoever started them</td><td>View, Edit</td><td>No</td></tr>' +
+      '</tbody></table>' +
+      '<h3>Workforce Management</h3>' +
+      '<table><thead><tr><th>Permission</th><th>What it covers</th><th>Actions</th><th>Trainer set</th></tr></thead><tbody>' +
+        '<tr><td>Workforce</td><td>Staff profiles in Workforce Management</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+        '<tr><td>Unit Assignments</td><td>Assigning courses and units to staff</td><td>View, Create, Delete</td><td>No</td></tr>' +
+        '<tr><td>Evidence Verification</td><td>Verifying the evidence staff submit, such as their credentials</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+        '<tr><td>Staff Documents</td><td>Other people’s documents, on the Documents tab of a staff profile</td><td>View, Create, Edit, Delete</td><td>Yes</td></tr>' +
+        '<tr><td>My Documents</td><td>The person’s own documents page only. Off unless ticked.</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+        '<tr><td>PD Calendar</td><td>The professional development calendar and training</td><td>View, Create, Edit, Delete</td><td>Yes</td></tr>' +
+      '</tbody></table>' +
+      '<h3>Settings</h3>' +
+      '<table><thead><tr><th>Permission</th><th>What it covers</th><th>Actions</th><th>Trainer set</th></tr></thead><tbody>' +
+        '<tr><td>Settings Tab</td><td>Opening the Settings area</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+        '<tr><td>User Management</td><td>Inviting, editing and removing users</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+        '<tr><td>Team Coordination</td><td>Creating and managing teams and their members. Needs User Management.</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+        '<tr><td>Integrations</td><td>External integrations, such as aXcelerate</td><td>View, Edit</td><td>No</td></tr>' +
+        '<tr><td>Security</td><td>Multi-factor authentication and security settings</td><td>View, Edit</td><td>No</td></tr>' +
+        '<tr><td>User Roles</td><td>Creating and editing roles</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+        '<tr><td>Brand Customisation</td><td>Uploading and managing your organisation’s logos</td><td>View, Create, Edit, Delete</td><td>No</td></tr>' +
+      '</tbody></table>' +
+      '<div class="callout warn"><b>Important</b><span>Anyone with the <b>User Roles</b> permission in Settings can change any role’s permissions, including their own. Keep it, with User Management and Security, to one or two Administrators.</span></div>',
+
+    'users-custom-role':
+      '<p class="lead">Build a role from scratch when no template fits. For example, a Head of Faculty who manages their faculty’s courses, TAS and trainers, and also teaches.</p>' +
+      '<h2 id="create">Creating a role</h2>' +
+      '<ol class="steps-list">' +
+        '<li>On the <b>User Roles</b> tab, select <b>New Role</b>.' +
+          '<figure class="shot" data-marks="22.2,43.7,15.1,13.6,oval,#1; 88.8,72,8.9,15.8,oval,above,#2"><img src="assets/img/users-roles-new.png" alt="User Management on the User Roles tab, circled as marker 1. Under User Roles, From Template and New Role buttons sit at the right, and New Role is circled as marker 2." loading="lazy"><figcaption>Select the User Roles tab (1), then New Role (2).</figcaption></figure></li>' +
+        '<li>Enter the <b>Role Name</b> and a <b>Description</b>.' +
+          '<figure class="shot"><img src="assets/img/users-role-name.png" alt="Create New Role, with Role Name Head of Faculty and the description Manages a faculty’s courses, TAS, trainers and validations." loading="lazy"><figcaption>The name and description of a Head of Faculty role.</figcaption></figure></li>' +
+        '<li>Tick <b>User delivers training</b> if people in this role teach. They then count as trainers in Workforce Management and delivery readiness, whatever their permissions.' +
+          '<figure class="shot" data-marks="5.5,29.4,1.8,13.8,oval,#"><img src="assets/img/users-role-trains.png" alt="User delivers training, ticked and circled: always list users on this role as a Trainer / Assessor for workforce and delivery readiness tracking, regardless of their permission set." loading="lazy"><figcaption>User delivers training, ticked (circled).</figcaption></figure></li>' +
+        '<li>Choose the <b>Base Permission Set</b>:' +
+          '<ul>' +
+            '<li><b>Trainer / Assessor Permissions</b> lists only the features trainers use, such as My Courses, Staff Validation and PD Calendar.</li>' +
+            '<li><b>Admin Permissions</b> lists every feature, including Program Management, TAS Builder, Risk Assessment, Workforce and Settings.</li>' +
+          '</ul>' +
+          '<figure class="shot" data-marks="50.3,30.6,46.3,59.6,zone,#"><img src="assets/img/users-role-base.png" alt="Base Permission Set, with Trainer / Assessor Permissions and Admin Permissions. Admin Permissions is selected and outlined." loading="lazy"><figcaption>Admin Permissions selected (outlined).</figcaption></figure></li>' +
+        '<li>Tick what the role can <b>View</b>, <b>Create</b>, <b>Edit</b> and <b>Delete</b> in each feature. A dash means the action doesn’t apply. For the Head of Faculty:' +
+          '<div class="sub-steps">' +
+            '<div><h4><span class="sn">A</span>Core Features</h4><p>View the dashboard and QMS documents. View, create and edit courses in Program Management, improvement items, events and TAS. <b>TAS Builder Review</b> stays off, so they can’t approve their own TAS.</p>' +
+              '<figure class="shot"><img src="assets/img/users-role-core.png" alt="Core Features permissions for Head of Faculty: Dashboard View; QMS Documents View; Program Management, Continuous Improvement, Events and TAS Builder View, Create and Edit; TAS Builder Review unticked. No Delete ticks." loading="lazy"><figcaption>Core Features.</figcaption></figure></div>' +
+            '<div><h4><span class="sn">B</span>Compliance &amp; Quality</h4><p>View, create and edit validations and industry consultations, and their own assigned validations. <b>Lead Validator</b> and Risk Assessment stay off.</p>' +
+              '<figure class="shot"><img src="assets/img/users-role-compliance.png" alt="Compliance and Quality permissions for Head of Faculty: Validation and Industry Consultation View, Create and Edit; Staff Validation View and Create; Complaints and Suggestions View and Create; Risk Assessment and Lead Validator unticked." loading="lazy"><figcaption>Compliance &amp; Quality.</figcaption></figure><div class="callout tip"><b>Tip</b><span><b>Complaints &amp; Suggestions</b> is view and create, so they can run feedback surveys for their own courses. Form submissions are only visible to the form’s team, so put each course feedback form in its faculty’s team, and keep the complaints and appeals form in Compliance &amp; Validation or Student Services. Complaints are then handled independently of the faculty they may be about, and anything the faculty needs to fix reaches them as an improvement item.</span></div></div>' +
+            '<div><h4><span class="sn">C</span>Workforce Management</h4><p>View staff profiles, other staff’s documents and evidence, and assign units. Full access to their own documents and the PD calendar.</p>' +
+              '<figure class="shot"><img src="assets/img/users-role-workforce.png" alt="Workforce Management permissions for Head of Faculty: Workforce, Evidence Verification and Staff Documents View; Unit Assignments View and Create; My Documents View, Create, Edit and Delete; PD Calendar View, Create and Edit." loading="lazy"><figcaption>Workforce Management.</figcaption></figure></div>' +
+            '<div><h4><span class="sn">D</span>Settings</h4><p>Leave every Settings permission off. Only Administrators should manage users, roles, teams and security.</p></div>' +
+          '</div></li>' +
+        '<li>Select <b>Activate Role</b>. The permissions take effect once you assign the role to people from the <b>Staff</b> tab.' +
+          '<figure class="shot" data-marks="81.2,57.8,15,28.3,oval,#"><img src="assets/img/users-role-activate.png" alt="A note that permissions defined here only take effect once the role is assigned to users, with Cancel and Activate Role. Activate Role is circled." loading="lazy"><figcaption>Select Activate Role (circled).</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>For what each permission covers, see <a href="article.html?id=users-permissions">What each permission covers</a>. For what people with the role see, see <a href="article.html?id=users-portal-custom">What each role sees</a>.</p>',
+
+    'users-portal-custom':
+      '<p class="lead">What someone sees in RTO Radar depends on their role. Its permissions decide which areas appear in their navigation and what they can do there, and their team decides whose records they see.</p>' +
+      '<h2 id="custom">Custom role portal</h2>' +
+      '<p>People with a custom role see a portal shaped by its permissions. For example, the IT Faculty Manager, a Head of Faculty, sees only what the role allows:</p>' +
+      '<ul>' +
+        '<li><b>Their navigation</b> (1) has no Risk Assessment or Settings, and adds <b>My Documents</b>.</li>' +
+        '<li><b>Document Management</b> is view only. <b>Manage Frameworks</b> and <b>Upload Document</b> (2) are greyed out, and say the action requires an admin.</li>' +
+      '</ul>' +
+      '<figure class="shot" data-marks="0.6,11.5,15.4,34.5,zone,#; 17.6,13.5,#1; 72,12.4,24.7,5.6,zone,#; 73.8,7.6,#2"><img src="assets/img/users-hof-qms.png" alt="Document Management as the IT Faculty Manager sees it, labelled Head of Faculty, Organisation View. The navigation, outlined as 1, lists Dashboard, Document Management, Program Management, My Documents, Continuous Improvement, Workforce Management, Complaints and Suggestions, and Events, with no Risk Assessment or Settings. Manage Frameworks and Upload Document, outlined as 2, are greyed out, with the message This action requires an admin. Export is available, and the document repository shows 27 documents." loading="lazy"><figcaption>The IT Faculty Manager’s navigation (1), and the admin-only buttons greyed out (2).</figcaption></figure>' +
+      '<p>Because the role has <b>User delivers training</b> ticked, the IT Faculty Manager is listed with the trainers in Workforce Management, beside Staff Demo, who reports to them.</p>' +
+      '<figure class="shot shot-small"><img src="assets/img/users-hof-workforce.png" alt="Workforce, on the Trainers (2) tab: Staff Demo and IT Faculty Manager. Admin shows 0 and All shows 2." loading="lazy"><figcaption>The IT Faculty Manager counts as a trainer, as well as managing the IT Faculty.</figcaption></figure>' +
+      '<h2 id="trainer">Trainer / Assessor portal</h2>' +
+      '<p>The Trainer/Assessor role uses the staff level permission set, so a trainer’s portal is much simpler. Staff Demo, a Trainer/Assessor in the IT Faculty, sees only <b>Dashboard</b>, <b>My Courses</b>, <b>My Documents</b>, <b>Events</b> and <b>Continuous Improvement</b> (1). <b>My Assigned Courses</b> lists the courses assigned to them, and <b>Manage Course</b> (2) opens one.</p>' +
+      '<figure class="shot" data-marks="0.5,12,15.5,22.5,zone,#; 17.2,13.8,#1; 84.2,69.1,9.7,4,oval,right,#2"><img src="assets/img/users-trainer-courses.png" alt="The Trainer/Assessor portal for Staff Demo, staffdemo@rtoradar.com.au. The navigation, outlined as 1, lists Dashboard, My Courses, My Documents, Events and Continuous Improvement. My Assigned Courses shows 2 courses assigned and 4 active units: 52867WA Advanced Diploma of Industrial Data Communication, Networking and IT, and ICT50220 Diploma of Information Technology, both in the IT Faculty and Assigned. Manage Course on ICT50220 is circled as 2." loading="lazy"><figcaption>Staff Demo’s navigation (1) and their assigned courses. Select Manage Course (2).</figcaption></figure>' +
+      '<p>The course opens on <b>Assigned Units</b>, where they create an evidence map for each unit and see the validations scheduled for it, with their due date and priority.</p>' +
+      '<figure class="shot" data-marks="39.9,46.6,8,3.9,oval,#"><img src="assets/img/users-trainer-units.png" alt="Diploma of Information Technology, ICT50220, with 4 units assigned to Staff Demo. ICTAII501 Automate work tasks using machine learning has a validation due 15/11/2026, Medium priority, and is In Progress. ICTIOT503 Design and test IoT devices and networks has a validation due 20/11/2026, Low priority, and is Assigned. ICTOPN511 and ICTWEB519 are Assigned with no validations yet. Each has Create Map under Evidence Map, the first circled." loading="lazy"><figcaption>Staff Demo’s units in ICT50220, with two validations scheduled.</figcaption></figure>',
+
+    'users-plan-roles':
+      '<p class="lead">Plan your roles and teams before you add your staff. Give each person only what their job needs, and keep the people who build something separate from those who approve it.</p>' +
+      '<h2 id="roles-teams">Roles set what, teams set whose</h2>' +
+      '<p>A role decides what someone can do in each feature. Their team decides whose records they can do it to. Keep roles few and based on the job, and let teams separate the work. Two heads of faculty can share the Head of Faculty role and sit in different teams, so each manages only their own faculty. See <a href="article.html?id=users-governance">Understanding the compliance governance chart</a>.</p>' +
+      '<h2 id="principles">Principles</h2>' +
+      '<ol class="ov-list">' +
+        '<li><h4>Give only what the job needs</h4><p>Start from the closest template and untick what the job doesn’t need, rather than adding to a broad role. Keep <b>Delete</b> rare: your records are your audit evidence. See <a href="article.html?id=users-roles#templates">Role templates</a>.</p></li>' +
+        '<li><h4>Keep building separate from approving</h4><p>Give <b>TAS Builder</b> and <b>TAS Builder Review</b> to different people, so no one approves a TAS they wrote. The TAS Reviewer template includes TAS Builder, so untick its Create and Edit. Give <b>Lead Validator</b> to your validation lead only, so trainers can’t edit validations of their own assessment work.</p></li>' +
+        '<li><h4>Handle complaints independently</h4><p>Complaints and appeals must be handled fairly and confidentially, and are often about a trainer or course. Keep the complaints and appeals form in Compliance &amp; Validation or Student Services &amp; Administration, and give each faculty only its own course feedback forms.</p></li>' +
+        '<li><h4>Have credentials checked by someone else</h4><p>Give <b>Evidence Verification</b> to compliance staff, so a trainer’s credentials and currency are approved by someone outside their faculty. Faculty managers can still view their trainers’ documents with <b>Staff Documents</b>.</p></li>' +
+        '<li><h4>Keep Settings with one or two people</h4><p><b>User Management</b>, <b>User Roles</b>, <b>Security</b> and <b>Team Coordination</b> control who can do what. Anyone with User Roles can change any role, including their own, so keep these with one or two Administrators.</p></li>' +
+        '<li><h4>Give silent users their real role</h4><p>A silent user can’t sign in, but if you invite them later, they get their role straight away. Give them the role their job needs, not Administrator.</p></li>' +
+        '<li><h4>Give auditors view-only, temporary access</h4><p>Use the <b>Quality Auditor</b> role, which is view only, for internal reviewers and external auditors, and delete their account after the audit.</p></li>' +
+      '</ol>' +
+      '<h2 id="setup">A suggested setup</h2>' +
+      '<p>This is the setup used throughout these guides. Adjust it to the size and structure of your RTO.</p>' +
+      '<table><thead><tr><th>Role</th><th>Starts from</th><th>Typical people</th><th>Key permissions</th><th>Team</th></tr></thead><tbody>' +
+        '<tr><td>Administrator</td><td>Administrator template</td><td>CEO, Compliance Manager</td><td>Everything, including Settings</td><td>Executive Team, Compliance &amp; Validation, System Default</td></tr>' +
+        '<tr><td>Compliance Officer</td><td>Compliance Officer template</td><td>Compliance Officer</td><td>QMS documents, Risk Assessment, Continuous Improvement, Complaints &amp; Suggestions, Validation, Lead Validator, Evidence Verification. No Settings.</td><td>Compliance &amp; Validation</td></tr>' +
+        '<tr><td>TAS Reviewer</td><td>TAS Reviewer template, with TAS Builder unticked</td><td>Quality Assurance Manager</td><td>TAS Builder Review, QMS documents (view)</td><td>Compliance &amp; Validation</td></tr>' +
+        '<tr><td>Head of Faculty</td><td>New role, Admin Permissions, delivers training</td><td>Design Manager, IT Faculty Manager</td><td>Program Management, TAS Builder, Validation, Industry Consultation, Unit Assignments, course feedback forms. No Delete or Settings.</td><td>Their faculty, as Team Manager</td></tr>' +
+        '<tr><td>Training Coordinator</td><td>Training Coordinator template</td><td>Training Coordinator</td><td>Workforce, unit assignments and course delivery</td><td>Their faculty</td></tr>' +
+        '<tr><td>Trainer/Assessor</td><td>Trainer/Assessor template</td><td>Trainers</td><td>My Courses, Staff Validation, My Documents, PD Calendar</td><td>Their faculty</td></tr>' +
+        '<tr><td>Record Keeper</td><td>Record Keeper template</td><td>Student Services Coordinator</td><td>QMS documents, Complaints &amp; Suggestions</td><td>Student Services &amp; Administration</td></tr>' +
+        '<tr><td>Quality Auditor</td><td>Quality Auditor template</td><td>Internal or external auditors</td><td>View only</td><td>System Default, for the audit only</td></tr>' +
+      '</tbody></table>' +
+      '<p>For what each permission allows, see <a href="article.html?id=users-permissions">What each permission covers</a>. To build a role that no template fits, see <a href="article.html?id=users-custom-role">Create a custom role</a>.</p>' +
+      '<h2 id="review">Review it regularly</h2>' +
+      '<ul>' +
+        '<li>Check the <b>Users</b> count on each role. Look for people who are Administrators but don’t need to be. See <a href="article.html?id=users-roles#org">Organisation roles</a>.</li>' +
+        '<li>Check that each person is in the right team and that every team has a manager. See <a href="article.html?id=users-teams">Create teams and set parent teams</a>.</li>' +
+        '<li>When someone leaves, reassign their work and delete them. See <a href="article.html?id=users-manage#actions">Staff actions</a>.</li>' +
+      '</ul>',
+
+    'users-governance':
+      '<p class="lead">The chart decides what each person can see and work on in RTO Radar. Where someone sits in it controls which people, courses, TAS and submissions they can reach. It’s a compliance-focused chart, not an organisational chart.</p>' +
+      '<h2 id="system-default">System Default</h2>' +
+      '<p><b>System Default</b> sits at the top of the chart and oversees everything in your RTO. Its manager is usually your RTO’s Compliance Manager, who is often also the Escalation Manager.</p>' +
+      '<p>Anything not assigned to a team when it’s created goes into System Default, such as a new member, course, TAS or form. Everyone in the organisation can see it until it’s assigned to a team.</p>' +
+      '<figure class="shot"><img src="assets/img/wf-gov-default.png" alt="The top of the compliance governance chart. System Default, with the Compliance Manager at the top. Beneath them are Governance Lead, Admin Demo and Quality Assurance Manager, and the Design Manager, who heads the Learning Design team." loading="lazy"><figcaption>System Default, with the Compliance Manager at the top.</figcaption></figure>' +
+      '<h2 id="visibility">How teams limit what people see</h2>' +
+      '<p>Create a team for each area whose records should stay within it. People see the documents, courses, TAS, staff, forms and improvement items of their own team, not those of teams on other branches of the chart. For example:</p>' +
+      '<figure class="shot" data-marks="68.4,18.9,16.4,4.7,oval,#A; 3,18.9,16.4,4.7,oval,right,#B"><img src="assets/img/wf-gov-teams.png" alt="Part of the compliance governance chart. Beneath the Executive Team are Learning Design, managed by Design Manager, circled as B, with three teams beneath it: Business Faculty with Member Demo 1, Hospitality Faculty with Member Demo 2, and IT Faculty, managed by IT Faculty Manager, with Staff Demo; Compliance and Validation, managed by Compliance Manager, circled as A, with Compliance Officer and Compliance Specialist; and Student Services and Administration." loading="lazy"><figcaption>Compliance &amp; Validation (A) and Learning Design (B), each with its own manager and members.</figcaption></figure>' +
+      '<div class="sub-steps">' +
+        '<div><h4><span class="sn">A</span>Compliance &amp; Validation</h4><p>Compliance documents belong to the Compliance &amp; Validation team, so only its manager, the Compliance Manager, and its members, the Compliance Officer and Compliance Specialist, can see them.</p></div>' +
+        '<div><h4><span class="sn">B</span>Learning Design</h4><p>This team manages the training and courses assigned to it, but can’t see administrative documents or the workforce of other teams. Beneath it, the <b>Business Faculty</b>, <b>Hospitality Faculty</b> and <b>IT Faculty</b> teams each see only their own courses, TAS, workforce, forms and improvement items. A Business Faculty trainer never sees a Hospitality Faculty course.</p></div>' +
+      '</div>' +
+      '<h2 id="managers">Managers and their members</h2>' +
+      '<p>A team’s members report to its manager. The manager can assign them work and review how they’re tracking, such as their delivery readiness, evidence maps and improvement items. A team without a manager reports to the manager of the team above it.</p>' +
+      '<div class="sub-steps">' +
+        '<div><h4><span class="sn">1</span>A team sees its own work</h4><p>A team’s manager can see the members of their team and the manager they report to, and can assign work to their members. Teams on other branches stay out of view.</p></div>' +
+        '<div><h4><span class="sn">2</span>System Default sees everything</h4><p>Anyone in <b>System Default</b> bypasses teams: they can see everyone in the organisation and every team’s work.</p></div>' +
+        '<div><h4><span class="sn">3</span>System Default work is shared</h4><p>Anything in System Default is unassigned, so every team can see and use it until it’s assigned to a team.</p></div>' +
+      '</div>' +
+      '<h2 id="example">An example</h2>' +
+      '<p>Design Manager, who is in System Default, also manages the <b>Learning Design</b> team. Learning Design has three teams beneath it:</p>' +
+      '<ul>' +
+        '<li>The <b>Business Faculty</b> and <b>Hospitality Faculty</b>, each with one member and no manager. Their members report to Design Manager, the manager of the team above.</li>' +
+        '<li>The <b>IT Faculty</b>, managed by IT Faculty Manager, with Staff Demo as its member. Staff Demo reports only to IT Faculty Manager. IT Faculty Manager isn’t in System Default.</li>' +
+      '</ul>' +
+      '<figure class="shot" data-marks="67.9,40.8,28.5,24.8,zone,#"><img src="assets/img/wf-gov-chart.png" alt="Part of the compliance governance chart. Learning Design, managed by Design Manager, has three teams beneath it: Business Faculty, with Member Demo 1, and Hospitality Faculty, with Member Demo 2, neither with a manager; and the IT Faculty, outlined, managed by IT Faculty Manager, an Administrator, with Staff Demo, a Trainer/Assessor, beneath." loading="lazy"><figcaption>Learning Design and the three teams beneath it. The IT Faculty (outlined) is managed by IT Faculty Manager.</figcaption></figure>' +
+      '<div class="xl-book" data-hint="1">' +
+        '<div class="xl-bar" role="tablist" aria-label="What the IT Faculty Manager sees">' +
+          '<button type="button" role="tab" aria-selected="true">IT Faculty Manager</button>' +
+          '<button type="button" role="tab" aria-selected="false">IT Faculty Manager and System Default member</button>' +
+        '</div>' +
+        '<div class="xl-sheet" role="tabpanel">' +
+        '<p>In <b>Program Management</b>, IT Faculty Manager sees only the courses assigned to the IT Faculty and the unassigned courses in System Default:</p>' +
+        '<figure class="shot" data-marks="37.8,32.2,12.6,64,zone,#"><img src="assets/img/wf-gov-courses-team.png" alt="The Courses list as IT Faculty Manager sees it. The Team column, outlined, shows only System Default and IT Faculty courses, such as Diploma of Hospitality Management and Digital Literacy course wrapper in System Default, and Certificate III in Business, Diploma of Business and Certificate I in Engineering in the IT Faculty." loading="lazy"><figcaption>As a manager of the IT Faculty only: IT Faculty and System Default courses.</figcaption></figure>' +
+        '<p>If IT Faculty Manager managed the Business Faculty instead, they would see only the Business Faculty’s courses and any System Default courses. A member, such as Staff Demo, sees only the courses and units assigned to them.</p>' +
+        '</div>' +
+        '<div class="xl-sheet" role="tabpanel" hidden>' +
+        '<p>Once IT Faculty Manager is added to <b>System Default</b>, every course in the organisation appears, including Learning Design’s courses and those of the Business Faculty and Hospitality Faculty:</p>' +
+        '<figure class="shot" data-marks="34.4,23.6,16.6,76.4,zone,#"><img src="assets/img/wf-gov-courses-all.png" alt="The Courses list after IT Faculty Manager joins System Default. The Team column, outlined, now shows courses from every team, including System Default, IT Faculty, Learning Design, Business Faculty, with the Diploma of Business, and Hospitality Faculty, with the Diploma of Hospitality Management." loading="lazy"><figcaption>In System Default: every team’s courses.</figcaption></figure>' +
+        '</div>' +
+      '</div>' +
+      '<p>The <b>TAS Builder</b> works the same way. IT Faculty Manager can only build and manage TAS for courses their team can see:</p>' +
+      '<figure class="shot" data-marks="55.2,58.4,10.4,30.6,zone,#"><img src="assets/img/wf-gov-tas.png" alt="The TAS Builder on the Master TAS tab, listing two draft TAS, Advanced Diploma of Cyber Security and Diploma of Business, both in the IT Faculty, outlined." loading="lazy"><figcaption>The TAS Builder shows only the IT Faculty’s TAS.</figcaption></figure>' +
+      '<h2 id="elsewhere">Where else this applies</h2>' +
+      '<ul>' +
+        '<li><b>Workforce Management</b>: a manager sees only their own members and the manager they report to. Someone in System Default sees everyone in the organisation.</li>' +
+        '<li><b>Continuous Improvement</b>: improvement items can only be assigned to people you can see.</li>' +
+        '<li><b>Complaints &amp; Suggestions</b>: a form submitted to a team can only be viewed by that team’s managers and members with the right permissions.</li>' +
+      '</ul>' +
+      '<p>This keeps each team’s work to itself. The Business Faculty doesn’t receive the IT Faculty’s courses, TAS, improvement items or complaints.</p>' +
+      '<div class="callout tip"><b>Tip</b><span>Can’t find someone or something? Check the compliance governance chart to see whether it belongs to your team. If you need to oversee the whole organisation, ask an Admin to add you to <b>System Default</b> in <b>Settings</b> › <b>User Management</b>.</span></div>',
+
+    'users-teams':
+      '<p class="lead">Teams decide whose records each person can see. Create a team for each area whose work should stay within it, and nest teams under a parent.</p>' +
+      '<h2 id="settings">Team settings</h2>' +
+      '<p>Go to <b>Settings</b> › <b>User Management</b> › <b>Teams Configuration</b>. Each team shows its parent team, members and colour.</p>' +
+      '<figure class="shot" data-marks="0.7,91.4,5.5,5.1,oval,right,#1; 43.3,50.4,8.7,4.8,oval,above,#2; 50.4,87.9,12.5,4.8,oval,right,#3"><img src="assets/img/users-teams-open.png" alt="Organisation Settings for RTO Radar Demo, signed in as admindemo@rtoradar.com.au. Settings in the navigation bar is circled as marker 1, the User Management tab as marker 2, and the Teams Configuration tab as marker 3." loading="lazy"><figcaption>Select Settings (1), User Management (2), then Teams Configuration (3).</figcaption></figure>' +
+      '<figure class="shot"><img src="assets/img/users-team-list.png" alt="Team settings for RTO Radar Demo, with Create New Team. The Executive Team, described as leadership and governance, has Compliance and Validation, Learning Design and Student Services and Administration as sub-teams. Learning Design has the Business, Community and Health, Hospitality and IT faculties. System Default, the default team, has 5 members. Each team shows its members, its colour, Add Staff, a pencil to edit and a bin to delete." loading="lazy"><figcaption>Every team, with its sub-teams indented beneath it.</figcaption></figure>' +
+      '<h2 id="create">Create a team</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Select <b>Create New Team</b>. The new team’s settings open.' +
+          '<figure class="shot" data-marks="10.9,14.6,#1; 12.6,49,#2; 17,71.8,#3; 11.8,85.7,#4; 62.8,13.6,#5; 96.4,8.8,arrow-up,small,#6"><img src="assets/img/users-team-create.png" alt="Creating a new team, with a reminder to assign items such as programs or feedback submissions to it, and Cancel and Save. Numbers mark the team name, IT Faculty, as 1; Team Manager, IT Faculty Manager, as 2; Parent team, Learning Design, as 3; Team Colour, with a preview of the IT Faculty label, as 4; and Team Members, where Staff Demo is ticked as a Team Member, as 5. Save is 6." loading="lazy"><figcaption>Creating the IT Faculty.</figcaption></figure></li>' +
+        '<li>Enter the <b>Team name</b> (1) and an optional <b>Description</b>.</li>' +
+        '<li>Choose the <b>Team Manager</b> (2). Their team’s members report to them. They can view and assign items tagged to the team, see every member and item across the team and its sub-teams, and receive email notifications when their team’s staff files are about to expire.</li>' +
+        '<li>Choose the <b>Parent team</b> (3), if it sits under another team.</li>' +
+        '<li>Choose the <b>Team Colour</b> (4). The team’s label and its people cards on the chart take this colour.</li>' +
+        '<li>Under <b>Team Members</b> (5), tick each member and choose their role. Members see only the items tagged to their team, on top of what their user role allows.</li>' +
+        '<li>Select <b>Save</b> (6). Then assign items to the team, such as its programs and feedback forms. On the chart, the manager’s card sits under the team’s name, with its members beneath.' +
+          '<figure class="shot shot-narrow"><img src="assets/img/users-team-tree.png" alt="The IT Faculty on the Compliance Governance Chart. IT Faculty Manager, Head of Faculty, sits under the team name as its manager, and a line leads down to Staff Demo, Trainer/Assessor, who reports to them." loading="lazy"><figcaption>IT Faculty Manager manages the IT Faculty, and Staff Demo reports to them.</figcaption></figure>' +
+        '</li>' +
+      '</ol>' +
+      '<div class="callout tip"><b>Tip</b><span>Someone can belong to more than one team: tick them in each team’s members. On the chart, a dotted line links them to their second team. For example, a trainer who teaches business units in both the Business Faculty and the IT Faculty can belong to both, so each faculty’s manager can assign them units and track their credentials.</span></div>' +
+      '<h2 id="members">Team actions</h2>' +
+      '<p>Each team in the list has <b>Add Staff</b>, a pencil <svg class="ui-icon" viewBox="0 0 24 24" aria-label="pencil" role="img"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/></svg> to edit it and a bin <svg class="ui-icon bin" viewBox="0 0 24 24" aria-label="bin" role="img"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg> to delete it.</p>' +
+      '<figure class="shot" data-marks="84.2,30,#1; 89.4,30,#2; 93.6,30,#3"><img src="assets/img/users-team-row.png" alt="The IT Faculty row in team settings, a sub-team of Learning Design with 1 member. Numbers mark Add Staff as 1, the pencil as 2 and the bin as 3." loading="lazy"><figcaption>Add Staff (1), edit (2) and delete (3).</figcaption></figure>' +
+      '<ol class="ov-list">' +
+        '<li><h4>Add staff</h4><p>Select <b>Add Staff</b>. Search for each person by name or email, tick them, then select <b>Review changes</b>.</p>' +
+          '<figure class="shot shot-small" data-marks="80.1,89,arrow-down,small"><img src="assets/img/users-team-staff.png" alt="Manage staff in IT Faculty, with Trainer One, Trainer Three and Trainer Two ticked and Training Coordinator not ticked. Each shows the team they are in now. A note says new users to teams are added as Team Member, and users without teams are automatically allocated to the System Default team. 3 people added, with an arrow pointing down at Review changes." loading="lazy"><figcaption>Three trainers ticked. Select Review changes.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>People are added as a <b>Team Member</b>. Anyone not in a team is automatically in <b>System Default</b>.</span></div>' +
+          '<p><b>Preview visibility changes</b> shows what each person will be able to see. Nothing is saved yet. Select <b>Confirm and save</b>, or <b>Back to editing</b> to change your selection.</p>' +
+          '<figure class="shot shot-medium" data-marks="85.8,87,arrow-down,small"><img src="assets/img/users-team-preview.png" alt="Preview visibility changes: nothing has been saved yet. Trainer One, Trainer Three and Trainer Two have each been added to the IT Faculty, with no change to what they can see. A note says counts are based on team rules only and role permissions still apply. An arrow points down at Confirm and save, beside Back to editing." loading="lazy"><figcaption>Check the changes, then select Confirm and save.</figcaption></figure>' +
+          '<p>The counts are based on team rules only. Role permissions still apply, so some areas may stay hidden.</p></li>' +
+        '<li><h4>Edit a team</h4><p>Select the pencil <svg class="ui-icon" viewBox="0 0 24 24" aria-label="pencil" role="img"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/></svg>. Change its name, description or parent team, then select <b>Save</b>, or <b>Discard</b> to cancel.</p>' +
+          '<figure class="shot" data-marks="89.1,44.1,3.5,13,oval,#"><img src="assets/img/users-team-edit.png" alt="The IT Faculty being edited: its name, the description Diploma and certificate courses in information technology and cyber security, and parent team Learning Design, with 2 members. Save is circled, beside Discard." loading="lazy"><figcaption>Editing the IT Faculty. Select Save (circled).</figcaption></figure></li>' +
+        '<li><h4>Delete a team</h4><p>Select the bin <svg class="ui-icon bin" viewBox="0 0 24 24" aria-label="bin" role="img"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>. The window shows what will change before anything is deleted:</p>' +
+          '<ul>' +
+            '<li>Items assigned to the team move to <b>System Default</b>.</li>' +
+            '<li>Its members snap to the deleted team’s parent team, so they stay in the right place in your structure.</li>' +
+            '<li>People above the team, such as its parent team’s manager, stay in their teams but see fewer people.</li>' +
+          '</ul>' +
+          '<p>Type the team’s name to confirm, then select <b>Delete team</b>.</p>' +
+          '<figure class="shot shot-medium" data-marks="91.4,90.5,arrow-down,small"><img src="assets/img/users-team-delete.png" alt="Delete team, about to delete the IT Faculty, with the warning that this cannot be undone and items will no longer belong to the team. Its assigned items will move to System Default; none are tagged to it. Under visibility changes, CEO Demo and Design Manager stay in the same teams but see 2 fewer people, and Staff Demo and IT Faculty Manager will be moved from IT Faculty to System Default, seeing 15 and 14 more items. IT Faculty is typed to confirm, and an arrow points down at Delete team." loading="lazy"><figcaption>Deleting the IT Faculty. Type its name, then select Delete team.</figcaption></figure>' +
+          '<div class="callout warn"><b>Important</b><span>Deleting a team can’t be undone. Its members move up to the parent team, so check they’re in the right teams straight away.</span></div></li>' +
+      '</ol>' +
+      '<h2 id="chart">The Compliance Governance Chart</h2>' +
+      '<p>The chart shows every team with its manager and members, in each team’s colour. A dotted line shows someone who belongs to a second team. To open it, select <b>View Compliance Chart</b> on the <b>Teams Configuration</b> tab.</p>' +
+      '<figure class="shot" data-marks="10.6,74.8,arrow-up,small"><img src="assets/img/users-chart-button.png" alt="The Teams Configuration tab, explaining that moving user profiles into teams changes their scope of visibility. A note says all users can view every area of RTO Radar by default if they have the permissions, that the System Default team keeps the broadest visibility, suiting compliance managers and RTO admins, and that role-based permissions are set in User Roles, separately from teams. An arrow points up at View Compliance Chart." loading="lazy"><figcaption>Select View Compliance Chart.</figcaption></figure>' +
+      '<p>Zoom in or out, fit the chart to the screen, or export it.</p>' +
+      '<figure class="shot" data-marks="25.5,11.2,16.3,10.7,zone,#; 44,16.5,#1; 34.3,42.7,16.2,10.6,zone,#; 52.8,48,#2"><img src="assets/img/users-gov-chart.png" alt="The Compliance Governance Chart for RTO Radar Demo. At the top, System Default, outlined as 1, is managed by the Compliance Manager, with New Starter Demo, Quality Auditor and Admin Demo beneath. Below, the Executive Team, outlined as 2, is managed by CEO Demo, with Compliance and Validation under the Compliance Manager, Student Services and Administration under the Student Services Coordinator, and Learning Design under Design Manager. Learning Design has the IT Faculty, managed by IT Faculty Manager with Staff Demo, the Business Faculty with Trainer One, the Community and Health Faculty, managed by the Training Coordinator with Trainer Three, and the Hospitality Faculty with Trainer Two." loading="lazy"><figcaption>System Default, managed by the Compliance Manager (1), and the Executive Team, managed by the CEO (2).</figcaption></figure>' +
+      '<h3>Why it’s a compliance governance chart</h3>' +
+      '<p>The chart has two managers at the top, and they oversee different things:</p>' +
+      '<ul>' +
+        '<li><b>The CEO</b> manages the <b>Executive Team</b>. They’re concerned with how Learning Design, Compliance &amp; Validation and Student Services &amp; Administration are performing.</li>' +
+        '<li><b>The Compliance Manager</b> manages <b>System Default</b>, as well as Compliance &amp; Validation. Everyone in System Default sees every team, so everything passes through the Compliance Manager: auditors, new staff not yet in a team, the members of each faculty, and how compliance flows through the RTO.</li>' +
+      '</ul>' +
+      '<p>The Compliance Manager is also the manager of <b>Compliance &amp; Validation</b>, even though System Default already lets them see everything. Managing that team puts them in the reporting line: the Quality Assurance Manager and Compliance Officer report to them directly, and they report to the CEO through the Executive Team. Without it, the CEO couldn’t assign them improvement items or other actions, because they’d sit outside the Executive Team’s branch.</p>' +
+      '<p>That’s why it’s a compliance governance chart rather than an organisational chart: it’s built so the person accountable for compliance can see it all.</p>' +
+      '<p>For what each person can see, see <a href="article.html?id=users-governance">Understanding the compliance governance chart</a>.</p>',
+
+    // ---- Events ----
+    'ev-overview':
+      '<p class="lead">Events brings every compliance date in your RTO into one place: improvement item due dates, scheduled industry consultations and unit validations, document reviews, professional development and your own events.</p>' +
+      '<h2 id="open">Open Events</h2>' +
+      '<p>Select <b>Events</b> on your navigation bar.</p>' +
+      '<figure class="shot" data-marks="1.2,42.2,4.8,3.2,oval,right,#"><img src="assets/img/ev-open.png" alt="The Events page for RTO Radar Demo on the Calendar tab, showing November 2026 with events on several days and a colour key along the bottom. Events in the navigation bar is circled." loading="lazy"><figcaption>Select Events (circled).</figcaption></figure>' +
+      '<h2 id="tabs">The three tabs</h2>' +
+      '<ol class="ov-list">' +
+        '<li><h4>Calendar</h4><p>A month view of everything due, colour-coded by type. Filter it, add your own events and export them. See <a href="article.html?id=ev-calendar">Use the calendar</a>.</p></li>' +
+        '<li><h4>Schedule</h4><p>Quick actions to schedule and record industry consultations, and to schedule unit validations. See <a href="article.html?id=ev-consultation">Schedule an industry consultation</a> and <a href="article.html?id=ev-validation">Schedule a unit validation</a>.</p></li>' +
+        '<li><h4>Professional Development</h4><p>Your PD sessions, the PD catalogue and your expressions of interest. See <a href="feature.html?m=pd">Professional Development</a>.</p></li>' +
+      '</ol>' +
+      '<h2 id="sources">Where events come from</h2>' +
+      '<p>Most events appear on their own, from work recorded elsewhere in RTO Radar:</p>' +
+      '<ul>' +
+        '<li><b>Improvement items</b> show on their due date, labelled by source, such as CIR Validation, CIR Risk Register, CIR TAS Builder, CIR Assessment Judgement, CIR Industry Consultation, CIR Workforce Document, CIR QMS Review and CIR Ad Hoc. See <a href="feature.html?m=cir">Continuous Improvement</a>.</li>' +
+        '<li><b>Scheduled consultations and validations</b> show on their scheduled date.</li>' +
+        '<li><b>QMS document review dates</b> show when each document is due for review. See <a href="feature.html?m=qms">Document Management</a>.</li>' +
+        '<li><b>Your own events</b>, such as staff meetings, show for the roles and people you choose. See <a href="article.html?id=ev-add-event">Add an event</a>.</li>' +
+      '</ul>' +
+      '<p>What you see depends on your role and team. See <a href="article.html?id=users-governance">Understanding the compliance governance chart</a>.</p>',
+
+    'ev-calendar':
+      '<p class="lead">The calendar shows a month at a time. Each day with events shows how many there are and a coloured dot for each type.</p>' +
+      '<figure class="shot"><img src="assets/img/ev-calendar.png" alt="The Calendar tab for November 2026. Days with events show how many there are and a coloured dot for each type, such as 6 events on 25 November. The colour key along the bottom lists Consultation, CIR Industry Consultation, CIR Assessment Judgement, CIR Risk Register, CIR TAS Builder and CIR Validation." loading="lazy"><figcaption>November 2026, with each day’s event count and the colour key below.</figcaption></figure>' +
+      '<h2 id="navigate">Move between months</h2>' +
+      '<p>Use the arrows either side, or choose the month and year. Select <b>Today</b> to return to the current month.</p>' +
+      '<h2 id="filter">Filter and search</h2>' +
+      '<ol class="ov-list">' +
+        '<li><h4>Filters</h4><p>Show only some event types or sources.</p></li>' +
+        '<li><h4>Assigned To</h4><p>Show only the events assigned to particular people.</p></li>' +
+        '<li><h4>Team</h4><p>Show only one team’s events.</p></li>' +
+        '<li><h4>Search events</h4><p>Find an event by its title or description.</p></li>' +
+      '</ol>' +
+      '<figure class="shot" data-marks="6.1,7,#1; 17.2,7,#2; 29.1,7,#3; 56.7,7,#4"><img src="assets/img/ev-filter.png" alt="The calendar filtered to CIR Validation items assigned to the Training Manager. Filters (1), Assigned To (2) and Team (3) each show 1 active filter, beside Search events (4). The active filters appear as tags, CIR Validation and Training Manager, with Clear all. Only 25 November has events, and Filtered Events in November 2026 lists the 2 matching events with their date, type, status, priority and who they are assigned to." loading="lazy"><figcaption>Filters (1), Assigned To (2), Team (3) and Search (4). The calendar shows only CIR Validation items assigned to the Training Manager.</figcaption></figure>' +
+      '<p>Each active filter shows as a tag below the toolbar. Select a tag’s ×, or <b>Clear all</b>, to remove filters. While a filter is on, <b>Filtered Events</b> below the calendar lists every matching event that month, with its date, type, status, priority and who it’s assigned to.</p>' +
+      '<h2 id="key">The colour key</h2>' +
+      '<p>The key below the calendar lists the event types shown that month, each with its colour. Select the <b>i</b> beside a type to see what it is.</p>' +
+      '<figure class="shot"><img src="assets/img/ev-key.png" alt="The colour key: Consultation, CIR Industry Consultation, CIR Assessment Judgement, CIR Risk Register, CIR TAS Builder and CIR Validation, each with its colour and an information icon. The icon beside CIR Risk Register is selected, showing: Action items from the Continuous Improvement Register sourced from risk register activities." loading="lazy"><figcaption>Selecting the i beside CIR Risk Register explains what it shows.</figcaption></figure>' +
+      '<h2 id="day">See a day’s events</h2>' +
+      '<p>Select a day to list its events. Each shows its title, type, status, the person responsible and a short description.</p>' +
+      '<figure class="shot" data-marks="42.9,72.5,14.1,10,zone,#; 39.6,77.5,#1; 43.2,17.4,25.2,55,zone,#; 70.7,22,#2"><img src="assets/img/ev-day.png" alt="The calendar with 25 November selected, outlined as 1. Its 6 events are listed in a panel, outlined as 2: a CHCECE046 Validation V4 improvement item, tagged CIR Validation and Open, assigned to Admin Demo, with its description of an assessment conditions issue, the risk, the consequence and the recommended action." loading="lazy"><figcaption>Select a day (1) to list its events (2). Scroll the list to see them all.</figcaption></figure>' +
+      '<p>Select an improvement item to open its details: the action, description, due date, source, status, priority, person responsible, when it was created and any notes.</p>' +
+      '<figure class="shot shot-small"><img src="assets/img/ev-item.png" alt="CIR Validation Action Item Details: action item CHCECE046 Validation V4, with a description of the assessment conditions issue, its risk, consequence and recommended action. Due 25 November 2026, source CIR Validation, status open, priority Medium, person responsible Admin Demo, created on 26 October 2026." loading="lazy"><figcaption>An improvement item raised from a unit validation.</figcaption></figure>' +
+      '<div class="callout tip"><b>Tip</b><span>To change an improvement item, open it in the <a href="feature.html?m=cir">Continuous Improvement Register</a>. The calendar shows it, but it’s managed there.</span></div>',
+
+    'ev-add-event':
+      '<p class="lead">Add your own events, such as staff meetings, moderation sessions or compliance deadlines, and choose who sees them.</p>' +
+      '<ol class="steps-list">' +
+        '<li>On the <b>Calendar</b> tab (1), select <b>Add Event</b> (2).' +
+          '<figure class="shot" data-marks="14.6,43.5,6.6,10.5,oval,#1; 79.6,87.9,8.1,10,oval,above,#2"><img src="assets/img/ev-add-open.png" alt="The Events page on the Calendar tab, showing November 2026, with Filters, Assigned To, Team and Search events. The Calendar tab is circled as 1, and Add Event, at the right beside Export Events, as 2." loading="lazy"><figcaption>On the Calendar tab (1), select Add Event (2).</figcaption></figure></li>' +
+        '<li>Enter the <b>Title</b> and an optional <b>Description</b>.' +
+          '<figure class="shot shot-medium"><img src="assets/img/ev-add-title.png" alt="Add Event, to create a custom event visible to selected roles and staff members, with the title Validation Moderation Meeting and the description Review this cycle’s unit validation outcomes and agree moderation actions with each faculty." loading="lazy"><figcaption>A validation moderation meeting.</figcaption></figure></li>' +
+        '<li>Choose the <b>Date</b>, <b>Time</b>, <b>Duration</b> and <b>Timezone</b>. To repeat it, choose how often under <b>Recurring Event</b>. The event is assigned to your team.' +
+          '<figure class="shot shot-medium"><img src="assets/img/ev-add-date.png" alt="The event’s team, Executive Team, greyed out because the event is assigned to your team. The date is 20/11/2026, the time 10:00 AM and the duration 1 hour, with no recurrence and the timezone AEST Melbourne/Sydney." loading="lazy"><figcaption>20 November 2026 at 10:00 am, for an hour.</figcaption></figure></li>' +
+        '<li>To remind people, choose a <b>Reminder</b>, and tick <b>Email notification</b> to send it by email too.' +
+          '<figure class="shot shot-medium"><img src="assets/img/ev-add-reminder.png" alt="Reminder set to 1 day before, with Email notification ticked." loading="lazy"><figcaption>A reminder the day before, also sent by email.</figcaption></figure></li>' +
+        '<li>Under <b>Visibility</b>, choose who can see the event: select <b>Roles</b>, tick <b>Individual staff members</b>, or both. Then select <b>Create Event</b>.' +
+          '<figure class="shot shot-medium" data-marks="83.7,87.2,arrow-down,small"><img src="assets/img/ev-add-visibility.png" alt="Visibility, to choose who can see the event on their calendar. Roles is set to Head of Faculty and Trainer/Assessor, and under Individual staff members the Compliance Manager is ticked. An arrow points down at Create Event." loading="lazy"><figcaption>Visible to heads of faculty, trainers and the Compliance Manager. Select Create Event.</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>The event appears on the calendar of everyone you chose, and an <b>.ics</b> calendar file downloads. Open it to add the event to your own calendar, such as Outlook or Google Calendar.</p>',
+
+    'ev-export':
+      '<p class="lead">Export events to a spreadsheet, or download them as a calendar file to add to your own calendar.</p>' +
+      '<ol class="steps-list">' +
+        '<li>On the <b>Calendar</b> tab (1), select <b>Export Events</b> (2).' +
+          '<figure class="shot" data-marks="14.6,43.5,6.6,10.5,oval,#1; 88.4,87.9,9.8,10,oval,above,#2"><img src="assets/img/ev-add-open.png" alt="The Events page on the Calendar tab, showing November 2026. The Calendar tab is circled as 1, and Export Events, at the right beside Add Event, as 2." loading="lazy"><figcaption>On the Calendar tab (1), select Export Events (2).</figcaption></figure></li>' +
+        '<li>Choose the date range: the <b>Current month</b>, <b>All time</b> or a <b>Custom range</b>. Select <b>Next</b>.' +
+          '<figure class="shot shot-medium" data-marks="88.3,89.7,arrow-down,small"><img src="assets/img/ev-export-1.png" alt="Export Events, step 1 of 3, Select Date Range, with Current month, November 2026, selected, and All time and Custom range below. An arrow points down at Next." loading="lazy"><figcaption>Exporting the current month.</figcaption></figure></li>' +
+        '<li>Everything is included to start with. Untick anything to leave out, by <b>Event type</b> (consultations, improvement items and custom events), <b>CI source</b> or <b>Assigned to</b>. Select <b>Next</b>.' +
+          '<figure class="shot shot-medium" data-marks="88.9,92.4,arrow-down,small"><img src="assets/img/ev-export-2.png" alt="Export Events, step 2 of 3, Apply Filters. Under Event Type, Consultation, CI Register Item and Custom Event are ticked. Under CI Source, CIR Industry Consultation, CIR Assessment Judgement, CIR Risk Register, CIR TAS Builder and CIR Validation are ticked. Assigned To has a staff search, with Admin Demo ticked. An arrow points down at Next." loading="lazy"><figcaption>Untick anything to leave out of the export.</figcaption></figure></li>' +
+        '<li>Check how many events of each type are included, then select <b>Export CSV</b> (1) for a spreadsheet, or <b>Download Calendar</b> (2) for an <b>.ics</b> file to open in your own calendar.' +
+          '<figure class="shot shot-medium" data-marks="53.7,90.6,arrow-down,small,#1; 80.8,90.6,arrow-down,small,#2"><img src="assets/img/ev-export-3.png" alt="Export Events, step 3 of 3, Preview and Download. Events in selection for November 2026: CIR TAS Builder 9, CIR Validation 5, Custom Event 2, CIR Risk Register 1, CIR Assessment Judgement 1 and CIR Industry Consultation 1, 19 in total. Arrows point down at Export CSV, 1, and Download Calendar, 2." loading="lazy"><figcaption>19 events in November 2026. Select Export CSV (1) or Download Calendar (2).</figcaption></figure></li>' +
+      '</ol>',
+
+    'ev-consultation':
+      '<p class="lead">Plan industry consultations for your programs, based on each program’s risk, and keep track of what’s due and what’s overdue.</p>' +
+      '<h2 id="schedule">Schedule a consultation</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Events</b> (1) › <b>Schedule</b> (2). Under <b>Consultations</b>, select <b>Add</b> (3) beside <b>Add New</b>.' +
+          '<figure class="shot" data-marks="1.6,85.4,3.7,6.5,oval,right,#1; 54.9,49.5,4.2,6.6,oval,#2"><img src="assets/img/ev-schedule-open.png" alt="The Events page for RTO Radar Demo, with Events in the navigation bar circled as 1 and the Schedule tab circled as 2. Quick Actions begins below, with Consultations." loading="lazy"><figcaption>Select Events (1), then the Schedule tab (2).</figcaption></figure>' +
+          '<figure class="shot" data-marks="89.4,42.9,7.4,9.6,oval,#3"><img src="assets/img/ev-consult-actions.png" alt="Consultations, to manage industry consultations and record outcomes: View Scheduled Consultations with Open, Add New with Add, Record Evidence with Record, and View Evidence with View. Add, beside Add New, is circled as 3." loading="lazy"><figcaption>Select Add (3) beside Add New.</figcaption></figure></li>' +
+        '<li>Tick the <b>Program(s)</b> it covers. Search by code or title.' +
+          '<figure class="shot shot-small" data-marks="10.5,70.5,4.3,3.6,oval,#"><img src="assets/img/ev-ic-form-programs.png" alt="Program(s), with a search box and the list of programs, each with its team. BSB50120 Diploma of Business, in the Business Faculty, is ticked and circled, and 1 program is selected." loading="lazy"><figcaption>BSB50120 Diploma of Business, ticked (circled).</figcaption></figure></li>' +
+        '<li>Choose the <b>Scheduled Date</b> and the <b>Assigned Personnel</b>, and enter the <b>Subject Matter Expert</b>: their name, organisation, role and email, or <b>Select Existing Contact</b>. Enter “Not yet identified” if you don’t know yet.' +
+          '<figure class="shot shot-small"><img src="assets/img/ev-ic-form-people.png" alt="Scheduled Date 10/12/2026 and Assigned Personnel Design Manager. The subject matter expert is Business Industry Expert, from Business Chamber, role Engagement Lead, email businessexpert@rtoradar.com.au, with a Select Existing Contact button." loading="lazy"><figcaption>Scheduled for 10 December 2026, assigned to the Design Manager.</figcaption></figure></li>' +
+        '<li>Set the <b>Priority</b>, <b>Type</b> and <b>Estimated Hours</b>. Optionally choose a <b>Feedback Form</b> to send to the industry representative, and add <b>Notes</b> on what to cover. Then select <b>Schedule</b>.' +
+          '<figure class="shot shot-small" data-marks="78.7,88.8,arrow-down,small"><img src="assets/img/ev-ic-form-details.png" alt="Priority Medium, Type Periodic Review, Estimated Hours 2, and the Industry Feedback form selected, with its public link. The notes ask to confirm the BSB50120 electives and assessment tasks reflect current business practice, including digital marketing, financial reporting and workplace health and safety obligations, and to check the workplace project brief and simulated business documents are still realistic. An arrow points down at Schedule." loading="lazy"><figcaption>The feedback form and what the consultation should cover. Select Schedule.</figcaption></figure>' +
+          '<p>The consultation appears in the scheduler and on the calendar.</p></li>' +
+      '</ol>' +
+      '<h2 id="open">View scheduled consultations</h2>' +
+      '<p>On the <b>Schedule</b> tab, under <b>Consultations</b>, select <b>Open</b> beside <b>View Scheduled Consultations</b>.</p>' +
+      '<figure class="shot" data-marks="91.8,24.6,5,9.3,oval,#"><img src="assets/img/ev-consult-actions.png" alt="Consultations, with View Scheduled Consultations, Add New, Record Evidence and View Evidence. Open, beside View Scheduled Consultations, is circled." loading="lazy"><figcaption>Select Open (circled) beside View Scheduled Consultations.</figcaption></figure>' +
+      '<p>The Industry Consultation Scheduler lists every consultation with its due date, priority, assigned person, programs, teams, status and when each program was last consulted. Overdue consultations are highlighted. Search, filter, select <b>Export</b>, or select <b>Schedule</b> to schedule another.</p>' +
+      '<figure class="shot" data-marks="1.4,88.3,96.9,8.4,zone,#"><img src="assets/img/ev-ic-scheduled.png" alt="The Industry Consultation Scheduler on Scheduled, with 7 consultations listed by due date, priority, assigned personnel, program, teams, status, last consulted and evidence, each with a ⋮ menu. One, from April 2026, is Overdue, two are Completed, each with evidence, and four are Scheduled. The newly scheduled consultation, for BSB50120 Diploma of Business on 10 Dec 2026, assigned to the Design Manager and never consulted before, is outlined at the bottom." loading="lazy"><figcaption>The new BSB50120 consultation (outlined) at the bottom of the scheduler.</figcaption></figure>' +
+      '<h2 id="complete">Mark a consultation complete</h2>' +
+      '<ol class="steps-list">' +
+        '<li>In the scheduler, select <b>⋮</b> (1) › <b>Mark Complete</b> (2) on the consultation.' +
+          '<figure class="shot" data-marks="94.6,13,1.8,17,oval,#1; 87.4,59,8.4,16,oval,#2"><img src="assets/img/ev-ic-row-menu.png" alt="The new BSB50120 Diploma of Business consultation, due 10 Dec 2026, Medium priority, assigned to the Design Manager, in the Business Faculty and Scheduled. Its ⋮ is circled as 1, and Mark Complete in the open menu, between Edit and Delete, as 2." loading="lazy"><figcaption>Select ⋮ (1), then Mark Complete (2).</figcaption></figure></li>' +
+        '<li>Choose the <b>Completion Method</b> and the <b>Completion Date</b>:' +
+          '<div class="sub-steps">' +
+            '<div><h4><span class="sn">A</span>Set Date</h4><p>Marks the consultation complete against its schedule in the scheduler, on the date you choose.</p>' +
+              '<figure class="shot shot-medium" data-marks="3.3,26.4,11.5,19.5,oval,#"><img src="assets/img/ev-ic-setdate.png" alt="Completion Method with Set Date selected and circled, beside Link to Recorded Evidence and Link Feedback, and a Completion Date of 10/12/2026." loading="lazy"><figcaption>Set Date (circled), with the completion date.</figcaption></figure></div>' +
+            '<div><h4><span class="sn">B</span>Link to Recorded Evidence</h4><p>Links the consultation to evidence already recorded for the course. It’s only available once evidence has been recorded against that course. Choose the evidence record from the list. See <a href="article.html?id=ev-consultation-history">View and manage consultation evidence</a>.</p>' +
+              '<figure class="shot shot-medium" data-marks="16.4,26.6,28.1,20.2,oval,#"><img src="assets/img/ev-ic-linkevidence.png" alt="Completion Method with Link to Recorded Evidence selected and circled. Below, the recorded evidence chosen is dated 04 Nov 2026, a periodic review with no subject matter expert selected." loading="lazy"><figcaption>Link to Recorded Evidence (circled), with the evidence record to link.</figcaption></figure></div>' +
+            '<div><h4><span class="sn">C</span>Link Feedback</h4><p>Attaches feedback form submissions as evidence. Select <b>Link Feedback</b> (1), choose the form, tick its submissions, then select <b>Add selected</b> (2).</p>' +
+              '<figure class="shot shot-medium" data-marks="47.3,10.5,17.5,7.8,oval,above,#1; 76.9,53.3,19.2,5.7,oval,above,#2"><img src="assets/img/ev-ic-linkfeedback.png" alt="Completion Method with Link Feedback selected, circled as 1. Under Search Feedback Forms and Submissions, the Industry Feedback form’s submissions are shown, with FS-0006 ticked, and Add 1 selected is circled as 2." loading="lazy"><figcaption>Select Link Feedback (1), tick the submissions, then Add selected (2).</figcaption></figure></div>' +
+          '</div></li>' +
+        '<li>Add any <b>Completion notes</b>. They’re kept with the notes from when the consultation was scheduled. Then select <b>Complete</b>.' +
+          '<figure class="shot shot-medium" data-marks="89.6,78,arrow-down,small"><img src="assets/img/ev-ic-complete.png" alt="The notes from when this consultation was scheduled, asking to confirm the BSB50120 electives and assessment tasks reflect current business practice and to check the workplace project brief and simulated business documents. The completion notes read: Consulted with the Business Chamber. Electives confirmed as current; add a cyber security awareness task to the workplace project. Feedback form attached. They are added to the scheduling notes, and an arrow points down at Complete." loading="lazy"><figcaption>The scheduling notes are kept. Add any completion notes, then select Complete.</figcaption></figure>' +
+          '<p>The consultation is marked complete, and the program’s last consultation date is updated.</p></li>' +
+      '</ol>' +
+      '<h2 id="coverage">Coverage and recommendations</h2>' +
+      '<p>In the scheduler, select <b>Coverage</b> to see how many programs have been consulted, how many never have, how many need attention and how many are scheduled.</p>' +
+      '<figure class="shot" data-marks="87.4,5.9,4.4,5.4,oval,#"><img src="assets/img/ev-ic-cov-cards.png" alt="The Industry Consultation Scheduler on Coverage, which is circled. The summary cards show 4 of 15 programs consulted, 11 never consulted, 0 needing attention and 5 scheduled. A note explains risk-based industry consultation: high-risk programs every 6 months, medium risk every 12 to 18 months and low risk every 24 months, with programs never consulted prioritised." loading="lazy"><figcaption>Select Coverage (circled).</figcaption></figure>' +
+      '<p>How often each program needs consulting depends on its risk: every 6 months for high-risk programs, every 12 to 18 months for medium-risk and every 24 months for low-risk. Programs that have never been consulted should come first.</p>' +
+      '<ol class="ov-list">' +
+        '<li><h4>Programs</h4><p>Each program’s units, risk score, last consultation and next due date, and its status: <b>Completed</b> once it’s been consulted, <b>Scheduled</b> when a consultation is booked, or its risk level, such as <b>High</b>, when one is due. Select <b>›</b> on a program to see the recommendations for that program.</p>' +
+          '<figure class="shot" data-marks="1.7,3.3,7.7,4.9,oval,#"><img src="assets/img/ev-ic-cov-programs.png" alt="Program Consultation Coverage. BSB50120 Diploma of Business, 12 units, risk 6.2, last consulted 04 Nov 2026, next due 04 Nov 2027, Completed. SIT50422 Diploma of Hospitality Management, 28 units, risk 5.4, never consulted, next due 30 Nov 2026, Scheduled. CHC50121 Diploma of Early Childhood Education and Care, 28 units, risk 7.8, last consulted 27 Oct 2026, next due 27 Apr 2027, Completed. CHC30121 Certificate III in Early Childhood Education and Care, 17 units, risk 7.4, never consulted, High. ICT50220 Diploma of Information Technology, 20 units, risk 5.1, never consulted, Medium. Each has a › to open its recommendations." loading="lazy"><figcaption>The Programs tab (circled). A high-risk program is consulted every 6 months, so CHC50121’s next consultation is due in April.</figcaption></figure></li>' +
+        '<li><h4>Recommendations</h4><p>Programs suggested for consultation across all your programs, with the type, risk score, when they were last consulted, the reason and a priority. Select <b>Generate Recommendations</b> to refresh them, and <b>Schedule</b> to book one.</p>' +
+          '<figure class="shot" data-marks="10.3,3.6,10.3,4.9,oval,#; 89.2,43.1,3.1,0.1,underline,#"><img src="assets/img/ev-ic-cov-recs.png" alt="Consultation Recommendations. CHC30121, never consulted, risk 74 of 100, High priority. CPC30220 Certificate III in Carpentry, overdue, risk 78 of 100, last consulted 12 Mar 2026, a high-risk program last consulted over 6 months ago, High priority. ICT50220, never consulted, risk 51 of 100, Medium. SIS30321 Certificate III in Fitness and BSB20120 Certificate II in Workplace Skills, never consulted, Low. Each has Schedule and a snooze icon." loading="lazy"><figcaption>The Recommendations tab (circled), with the most urgent at the top. Select Schedule (underlined) on a program to book its consultation.</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>When it’s done, record the evidence. See <a href="article.html?id=ev-record-consultation">Record industry consultation evidence</a>.</p>',
+
+    'ev-record-consultation':
+      '<p class="lead">Record each industry consultation as evidence of industry engagement, with the feedback received and any improvements it leads to.</p>' +
+      '<h2 id="ways">Two ways to record a consultation</h2>' +
+      '<ol class="ov-list">' +
+        '<li><h4>New Consultation</h4><p>For a past consultation that wasn’t scheduled. If it did have a schedule, mark that schedule complete afterwards and link it to this evidence. See <a href="article.html?id=ev-consultation#complete">Mark a consultation complete</a>.</p></li>' +
+        '<li><h4>From Scheduled Consultations</h4><p>Records the evidence against a scheduled consultation and marks that schedule complete, in one step.</p></li>' +
+      '</ol>' +
+      '<h2 id="steps">Record a consultation</h2>' +
+      '<ol class="steps-list">' +
+        '<li>On the <b>Schedule</b> tab, under <b>Consultations</b>, select <b>Record</b>.' +
+          '<figure class="shot" data-marks="88.7,63,7.8,7.7,oval,#"><img src="assets/img/ev-rec-actions.png" alt="Consultations, with View Scheduled Consultations, Add New, Record Evidence and View Evidence. Record, beside Record Evidence, is circled." loading="lazy"><figcaption>Select Record (circled) beside Record Evidence.</figcaption></figure></li>' +
+        '<li>Choose how to record it:' +
+          '<div class="sub-steps">' +
+            '<div><h4><span class="sn">A</span>New Consultation</h4><p>Select <b>New Consultation</b> to record a consultation that isn’t in the scheduler.</p>' +
+              '<figure class="shot" data-marks="2.2,65.9,95.9,28.5,zone,#"><img src="assets/img/ev-rec-new.png" alt="Record Evidence, to record a new consultation or select from your scheduled consultations. New Consultation, to record evidence for a consultation not in the scheduler, is outlined." loading="lazy"><figcaption>New Consultation (outlined).</figcaption></figure></div>' +
+            '<div><h4><span class="sn">B</span>From Scheduled Consultations</h4><p>Select <b>Record Evidence</b> beside the scheduled consultation. Its programs, date and subject matter expert are filled in, and the schedule is marked complete when you save.</p>' +
+              '<figure class="shot" data-marks="80.8,45,12.6,24,oval,#"><img src="assets/img/ev-rec-scheduled.png" alt="A scheduled consultation for CHC22015 Certificate II in Community Services, due 04 Nov 2026, Medium priority, assigned to the Training Manager, with the Community Services Expert as subject matter expert, status Scheduled. Record Evidence is circled." loading="lazy"><figcaption>Select Record Evidence (circled) beside the scheduled consultation.</figcaption></figure>' +
+              '<figure class="shot shot-medium"><img src="assets/img/ev-rec-linked.png" alt="Record Evidence from Scheduled Consultation for CHC22015, with CHC22015 Certificate II in Community Services under Linked Programs." loading="lazy"><figcaption>The scheduled consultation’s program is already linked.</figcaption></figure></div>' +
+          '</div></li>' +
+        '<li>For a new consultation, select the programs it relates to, or leave them blank to record an organisation-wide consultation.' +
+          '<figure class="shot shot-medium" data-marks="4.9,79.5,2.1,3.6,oval,#"><img src="assets/img/prog-ic-programs.png" alt="Industry Consultation, to document industry engagement for this course. Under Program Selection, with a search box, CHC22015 Certificate II in Community Services is ticked, with its tick box circled, and shown as a chip below the list. BSB50120 Diploma of Business, in System Default and in Business Faculty, is not ticked." loading="lazy"><figcaption>Tick the programs the consultation relates to (circled).</figcaption></figure>' +
+        '</li>' +
+        '<li>Enter the <b>Consultation Date</b> and <b>Method</b>, and the industry representative’s details.' +
+          '<figure class="shot shot-medium"><img src="assets/img/prog-ic-details.png" alt="Consultation Details: Consultation Date 27/10/2026 and Consultation Method Video conference." loading="lazy"><figcaption>The consultation date and method.</figcaption></figure>' +
+          '<figure class="shot shot-medium" data-marks="75.4,4.6,23.8,11.4,oval,#"><img src="assets/img/prog-ic-rep.png" alt="Q1: Industry Representative Details, with a Select Existing Contact button, which is circled. Representative Name Community Services Expert, Organisation RTO Radar, Role or Position Subject Expert, and Email communityservicesexpert@rtoradar.com." loading="lazy"><figcaption>The industry representative’s details. Use Select Existing Contact (circled) to choose someone you’ve recorded before.</figcaption></figure>' +
+        '</li>' +
+        '<li>Tick the <b>Topics Discussed</b>, and add any others.' +
+          '<figure class="shot shot-medium"><img src="assets/img/prog-ic-topics.png" alt="Q2: Topics Discussed. Ticked: training content relevance to current industry practices, assessment methods and industry standards, equipment and technology requirements, emerging skills and knowledge requirements, workplace health and safety considerations, and employment pathways and job roles. Industry licensing or regulatory requirements is not ticked. Other Topics: work placement availability and supervision; digital literacy for client records." loading="lazy"><figcaption>The topics covered in the consultation.</figcaption></figure>' +
+        '</li>' +
+        '<li>Under <b>Key Feedback Received</b>, summarise the insights, suggestions and gaps identified.' +
+          '<figure class="shot shot-medium"><img src="assets/img/prog-ic-feedback.png" alt="Q3: Key Feedback Received, to document the main insights, suggestions and outcomes from the consultation. The feedback covers relevant core content, digital client records and case notes, de-escalation and boundary-setting in role-plays, working alone and home-visit safety, pathways to further study, and an offer to host two placement students per term." loading="lazy"><figcaption>The key feedback from the consultation.</figcaption></figure>' +
+        '</li>' +
+        '<li>Optionally, link feedback and attach evidence. Feedback comes from forms built in <b>Complaints &amp; Suggestions</b>, such as an industry feedback form for a course. You can build a form for anything in RTO Radar you want feedback on, and embed it on your website. See <a href="article.html?id=fb-overview">How feedback forms work</a> and <a href="article.html?id=fb-embed">Embed a form on your website</a>.' +
+          '<div class="sub-steps">' +
+            '<div><h4><span class="sn">1</span>Link feedback submissions</h4><p>Under <b>Link Feedback Submissions</b>, select <b>Show Feedback Search</b> to find feedback form submissions to attach as evidence.</p>' +
+              '<figure class="shot shot-medium" data-marks="75.3,23.6,23.6,52.5,oval,#"><img src="assets/img/prog-ic-feedback-search.png" alt="Link Feedback Submissions, to optionally attach feedback form submissions as evidence, with a Show Feedback Search button, which is circled." loading="lazy"><figcaption>Select Show Feedback Search (circled).</figcaption></figure></div>' +
+            '<div><h4><span class="sn">2</span>Choose a feedback form</h4><p>On the <b>Forms</b> tab, search for or select the feedback form the submissions came from, such as the course’s industry feedback form.</p>' +
+              '<figure class="shot shot-medium" data-marks="5.4,18.2,8.7,9.2,oval,#; 47,71.3,arrow-left,small"><img src="assets/img/prog-ic-forms.png" alt="Link Feedback Submissions, with a Hide Feedback Search button. The Forms tab, which is circled, is selected beside Submissions, with a search box and a list of feedback forms: CHC33021 - CHCCCS031 - Student Evaluation, a general form; CHC22015 - Industry Feedback, a suggestion form, with an arrow pointing to it; and End of Program Survey - ICT50220 Diploma of Information Technology, a general form." loading="lazy"><figcaption>On the Forms tab (circled), select the course’s industry feedback form.</figcaption></figure></div>' +
+            '<div><h4><span class="sn">3</span>Add submissions</h4><p>The <b>Submissions</b> tab lists the submissions made against that form. Tick the ones to link, then select <b>Add selected</b>. The button shows how many you’ve chosen.</p>' +
+              '<figure class="shot shot-medium" data-marks="10.9,6.3,13.4,12.9,oval,right,#1; 5.9,71,2.6,6.9,oval,#2; 80.4,6.3,18.6,12.9,oval,#3"><img src="assets/img/prog-ic-submissions.png" alt="The Submissions tab, circled as marker 1, viewing the Industry Feedback form, with a Back to all submissions link and a search box. Submission FS-0006, in the Other category and Open, is ticked, and its tick box is circled as marker 2. The Add 1 selected button is circled as marker 3." loading="lazy"><figcaption>On Submissions (1), tick the submissions (2), then select Add selected (3).</figcaption></figure></div>' +
+            '<div><h4><span class="sn">4</span>Check the linked feedback</h4><p>The submissions you added appear under <b>Linked Feedback Evidence</b>, with each response. You can link submissions from several forms: repeat sub-steps 2 and 3 to add more. Select <b>Clear linked feedback</b> to remove them all.</p>' +
+              '<figure class="shot shot-medium"><img src="assets/img/prog-ic-linked.png" alt="Linked Feedback Evidence: submission FS-0006, Other, open, from RTO Radar, role Subject Expert, email communityservicesexpert@rtoradar.com. Asked whether the course prepares students for entry-level roles, the response is yes, with more practice using digital client records. A Clear linked feedback link is below." loading="lazy"><figcaption>A linked feedback submission.</figcaption></figure></div>' +
+            '<div><h4><span class="sn">5</span>Or attach supporting documents</h4><p>Instead of linking feedback from an RTO Radar form, you can attach a document from outside RTO Radar. Under <b>Attachment</b>, select <b>Choose File</b> to attach meeting notes, signed feedback forms or other supporting documents, up to 20 MB.</p>' +
+              '<figure class="shot shot-medium"><img src="assets/img/prog-ic-attach.png" alt="Attachment (Optional), with a Choose File button and Industry_Consultation_Feedback_Form_CHC22015.pdf attached. A hint says meeting notes, signed feedback forms or other supporting documents, up to 20MB." loading="lazy"><figcaption>A signed feedback form, attached.</figcaption></figure></div>' +
+          '</div></li>' +
+        '<li>Optionally, add action items to the Continuous Improvement Register, then save the consultation:' +
+          '<div class="sub-steps">' +
+            '<div><h4><span class="sn">1</span>Show action items</h4><p>Under <b>Action Items</b>, select <b>Show Action Items</b>.</p>' +
+              '<figure class="shot shot-medium" data-marks="79.5,30,20.3,47.5,oval,#"><img src="assets/img/prog-ic-show-actions.png" alt="Action Items, to add improvement actions to the Continuous Improvement Register, with a Show Action Items button, which is circled." loading="lazy"><figcaption>Select Show Action Items (circled).</figcaption></figure></div>' +
+            '<div><h4><span class="sn">2</span>Add each action, then save</h4><p>For each action, enter its <b>Description</b>, <b>Person Responsible</b>, <b>Due Date</b> and <b>Priority</b>. Each action becomes an item in the <a href="feature.html?m=cir">Continuous Improvement Register</a>. Then select <b>Save Consultation</b>.</p>' +
+              '<figure class="shot shot-medium" data-marks="87.6,91.8,arrow-down,small"><img src="assets/img/prog-ic-actions.png" alt="Action Items with two actions. Action Item 1: add a simulated client record-keeping task, with case notes in a digital system, to the assessment, assigned to the Training Manager, due 31/01/2027, medium priority. Action Item 2: add working-alone and home-visit safety scenarios to WHS materials, assigned to Staff Demo, due 28/02/2027. An arrow points down to the Save Consultation button, beside Cancel." loading="lazy"><figcaption>Two action items from the consultation. Select Save Consultation.</figcaption></figure></div>' +
+          '</div></li>' +
+      '</ol>' +
+      '<p>You can also record a consultation from a course. See <a href="article.html?id=prog-industry-consultation">Record an industry consultation</a>.</p>',
+
+    'ev-consultation-history':
+      '<p class="lead">Every recorded consultation is kept in the consultation evidence history, ready for audit.</p>' +
+      '<h2 id="open">Open the evidence history</h2>' +
+      '<p>On the <b>Schedule</b> tab, under <b>Consultations</b>, select <b>View</b> beside <b>View Evidence</b>.</p>' +
+      '<figure class="shot" data-marks="90.2,82.5,6.6,7,oval,#"><img src="assets/img/ev-hist-open.png" alt="Consultations, with View Scheduled Consultations, Add New, Record Evidence and View Evidence. View, beside View Evidence, is circled." loading="lazy"><figcaption>Select View (circled) beside View Evidence.</figcaption></figure>' +
+      '<p>Each record shows its date, method, representative, programs, teams and topics. Search by representative or program, or filter the list.</p>' +
+      '<figure class="shot" data-marks="73.3,57,#1; 75.3,73.5,#2; 86.5,57,#3; 91.1,57,#4; 95.5,57,#5"><img src="assets/img/ev-hist-list.png" alt="Consultation Evidence History, showing 4 records. A consultation on 27 Oct 2026 by video conference with the Community Services Expert from RTO Radar, for CHC22015 Certificate II in Community Services, in Community and Health, with seven topics discussed. Its icons are numbered: view 1, edit 2, download 3, action items 4, with a badge showing 3, and delete 5." loading="lazy"><figcaption>View (1), edit (2), download (3), action items (4) and delete (5).</figcaption></figure>' +
+      '<h2 id="actions">Record actions</h2>' +
+      '<ol class="ov-list">' +
+        '<li><h4>View</h4><p>Opens the full record: the representative, programs, topics, key feedback with any linked feedback submissions, the attachment and the action items.</p>' +
+          '<figure class="shot shot-medium" data-marks="84.2,6.5,9.6,4,oval,#"><img src="assets/img/ev-hist-view.png" alt="Consultation Details, with an Edit button at the top right, which is circled. The record is for 27 October 2026, by video conference with the Community Services Expert, Subject Expert at RTO Radar, for CHC22015 Certificate II in Community Services. Topics discussed are listed, followed by the key feedback, with linked feedback evidence FS-0010 from Training Delivery." loading="lazy"><figcaption>The full consultation record. Select Edit (circled) to change it.</figcaption></figure></li>' +
+        '<li><h4>Edit</h4><p>Select the pencil, or <b>Edit</b> in the full record. Change the date, method, representative, topics or key feedback, then select <b>Save Changes</b>. Linked programs and attachments aren’t changed here.</p>' +
+          '<figure class="shot shot-medium" data-marks="87.3,92.6,arrow-down,small"><img src="assets/img/ev-hist-edit.png" alt="Edit Consultation Details, noting that linked programs and attachments are not changed here. The date, method, representative name, organisation, role and email are filled in, six topics are ticked, other topics are added, and Key Feedback has formatting options. An arrow points down at Save Changes." loading="lazy"><figcaption>Edit the record, then select Save Changes.</figcaption></figure></li>' +
+        '<li><h4>Download</h4><p>Downloads the record, with its attachment, for your audit evidence.</p></li>' +
+        '<li><h4>Action items</h4><p>Shows the improvement items raised from the consultation, with who’s responsible, the due date, priority and status. Edit or delete each, or select <b>Add Action Item</b>. They’re tracked in the <a href="feature.html?m=cir">Continuous Improvement Register</a>.</p>' +
+          '<figure class="shot" data-marks="2.6,87.4,7.2,7.6,oval,#"><img src="assets/img/ev-hist-actions.png" alt="Action Items (3): add a simulated client record-keeping task to the assessment, assigned to the Training Manager, due 31 Jan 2027, Medium, open; add working-alone and home-visit safety scenarios to WHS materials, Staff Demo, 28 Feb 2027, Medium, open; and publish pathway information in course marketing and pre-enrolment info, Student Services Coordinator, 15 Dec 2026, Low, open. Each has edit and delete icons, and Add Action Item is circled." loading="lazy"><figcaption>The consultation’s action items. Select Add Action Item (circled) to add another.</figcaption></figure></li>' +
+        '<li><h4>Delete</h4><p>Deletes the record. Any improvement items raised from it are set to <b>Removed</b>. They stay in the Continuous Improvement Register for audit, marked as removed. Deleting can’t be undone, so only delete a record entered by mistake.</p>' +
+          '<figure class="shot shot-medium" data-marks="80.4,83.4,arrow-down,small"><img src="assets/img/ev-hist-delete.png" alt="Delete Consultation Record, asking whether to delete this consultation with the Community Services Expert from RTO Radar. 3 linked CIR items will be set to Removed status and remain visible in the CI Register for audit purposes. This action cannot be undone. An arrow points down at Delete Consultation, beside Cancel." loading="lazy"><figcaption>Its 3 linked improvement items will be set to Removed. Select Delete Consultation.</figcaption></figure></li>' +
+      '</ol>',
+
+    'ev-validation':
+      '<p class="lead">Plan unit validations across your programs, focusing on the units that carry the most risk.</p>' +
+      '<h2 id="open">Open the Validation Scheduler</h2>' +
+      '<p>Go to <b>Events</b> (1) › <b>Schedule</b> (2). Under <b>Unit Validation</b>, select <b>Schedule</b> (3) beside <b>Schedule Validation</b>.</p>' +
+      '<figure class="shot" data-marks="1.6,85.4,3.7,6.5,oval,right,#1; 54.9,49.5,4.2,6.6,oval,#2"><img src="assets/img/ev-schedule-open.png" alt="The Events page for RTO Radar Demo, with Events in the navigation bar circled as 1 and the Schedule tab circled as 2." loading="lazy"><figcaption>Select Events (1), then the Schedule tab (2).</figcaption></figure>' +
+      '<figure class="shot" data-marks="87.9,58.8,8.1,18.6,oval,#3"><img src="assets/img/ev-val-card.png" alt="Unit Validation, to schedule unit validations to ensure assessment quality, with Schedule Validation and its Schedule button, circled as 3." loading="lazy"><figcaption>Select Schedule (3) beside Schedule Validation.</figcaption></figure>' +
+      '<h2 id="scheduled">Scheduled validations</h2>' +
+      '<p>The <b>Scheduled</b> view lists each validation with its unit, team, program, status, validator, due date, when it was last validated and its priority. A validation can be <b>Scheduled</b>, <b>In progress</b>, <b>Completed</b>, <b>Overdue</b> or <b>Cancelled</b>. A validation in progress shows its version under the validator, and overdue validations are highlighted. Search, filter, or select <b>Export</b>.</p>' +
+      '<figure class="shot"><img src="assets/img/ev-val-scheduled.png" alt="The Validation Scheduler on Scheduled, with 24 validations. CHCECE046 in CHC50121, Completed by the Compliance Officer, last validated 26 Oct 2026. CHCECE042 in CHC50121, In progress, Version 2, validated by the Design Manager, due 20 Nov 2026. CHCECE055 in CHC30121, Overdue since 30 Oct 2026, validator Training Coordinator, High priority, highlighted. SITXCCS015 in SIT50422, Scheduled for 27 Nov 2026 with the Design Manager. BSBLDR523 in BSB50120, Scheduled for 10 Dec 2026 with the Compliance Officer, last validated 14 Nov 2024. ICTSAS527 in ICT50220, Scheduled for 22 Jan 2027 with the IT Faculty Manager, High priority. BSBCRT511 in BSB50120, Cancelled." loading="lazy"><figcaption>Validations at each status, with the overdue one highlighted.</figcaption></figure>' +
+      '<div class="callout tip"><b>Tip</b><span>Choose a validator who didn’t deliver or assess the unit, so the validation is independent.</span></div>' +
+      '<h2 id="coverage">Coverage and recommendations</h2>' +
+      '<p>In the Validation Scheduler, select <b>Coverage</b> to see your average validation coverage, overdue validations, high-risk units and how many are scheduled.</p>' +
+      '<figure class="shot" data-marks="77.5,8.8,4.3,4.6,oval,#"><img src="assets/img/ev-val-coverage.png" alt="The Validation Scheduler on Coverage, which is circled, beside Scheduled (24). The summary cards show 42% average coverage, 1 overdue validation, 12 high-risk units and 18 scheduled. A note explains risk-based validation sampling: all high-risk units, a 30% sample of medium-risk units and 10% of low-risk units, and always validate units never validated or overdue." loading="lazy"><figcaption>Select Coverage (circled).</figcaption></figure>' +
+      '<p>Not every unit needs validating in each cycle. Validate all high-risk units, a 30% sample of medium-risk units and 10% of low-risk units, and always validate units that have never been validated or are overdue.</p>' +
+      '<ol class="ov-list">' +
+        '<li><h4>Programs</h4><p>Each program’s units, high-risk units, how many are validated and overdue, its coverage and its risk status, with high-risk programs first. Select <b>Schedule</b> to book a validation for a program, or <b>›</b> to see the recommendations for that program.</p>' +
+          '<figure class="shot" data-marks="1.8,3.4,9.1,4.8,oval,#"><img src="assets/img/ev-val-cov-programs.png" alt="Program Validation Coverage on the Programs tab, which is circled. CHC30121 Certificate III in Early Childhood Education and Care: 17 units, 5 high risk, 6 of 17 validated, 1 overdue, 35% coverage, High. CHC50121 Diploma of Early Childhood Education and Care: 28 units, 4 high risk, 12 of 28 validated, 43%, High. ICT50220 Diploma of Information Technology: 20 units, 3 high risk, 5 of 20 validated, 25%, High. BSB50120 Diploma of Business: 12 units, 1 high risk, 6 of 12 validated, 50%, Medium. SIT50422 Diploma of Hospitality Management: 28 units, 2 high risk, 9 of 28 validated, 32%, Medium. Each has Schedule and a ›." loading="lazy"><figcaption>The Programs tab (circled), with high-risk programs first.</figcaption></figure></li>' +
+        '<li><h4>Recommendations</h4><p>Units recommended for validation across all your programs, based on risk score, validation history and sampling requirements, with high-risk units first. Each shows the reason, such as <b>Overdue</b> or <b>Never validated</b>, and a priority. Select <b>Schedule</b> <svg class="ui-icon" viewBox="0 0 24 24" aria-label="calendar" role="img"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg> to book it, or the clock <svg class="ui-icon" viewBox="0 0 24 24" aria-label="clock" role="img"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 7v5l3 2"/></svg> to defer the recommendation for now. Select <b>Generate Recommendations</b> <svg class="ui-icon" viewBox="0 0 24 24" aria-label="trend" role="img"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg> to refresh the list.</p>' +
+          '<figure class="shot" data-marks="12.4,3.6,12.8,4.9,oval,#"><img src="assets/img/ev-val-cov-recs.png" alt="Validation Recommendations on the Recommendations tab, which is circled. CHCECE055 in CHC30121, risk 78, last validated 30 Oct 2026, Overdue, High. CHCECE054 in CHC30121, risk 72, never validated, High. ICTSAS527 in ICT50220, risk 64, never validated, High. CHCPRT001 in CHC50121, risk 61, last validated 12 Aug 2024, Overdue, High. SITXFSA005 in SIT50422, risk 48, never validated, Medium. Each has Schedule and a clock to defer it." loading="lazy"><figcaption>The Recommendations tab (circled), with high-risk units first.</figcaption></figure></li>' +
+      '</ol>' +
+      '<h2 id="schedule">Schedule a validation</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Events</b> (1) › <b>Schedule</b> (2), and select <b>Schedule</b> (3) beside <b>Schedule Validation</b>. This opens the Validation Scheduler, where you select <b>Schedule</b> (4) at the top right.' +
+          '<figure class="shot" data-marks="1.3,48.2,4.6,2.6,oval,right,#1; 57,2.8,4.3,2.4,oval,right,#2; 84,85,7.7,4.2,oval,#3"><img src="assets/img/ev-val-open.png" alt="The Events page on the Schedule tab, showing Quick Actions. Events in the navigation bar is circled as 1, the Schedule tab as 2, and Schedule beside Schedule Validation, under Unit Validation, as 3." loading="lazy"><figcaption>Select Events (1), the Schedule tab (2), then Schedule (3) beside Schedule Validation.</figcaption></figure>' +
+          '<figure class="shot" data-marks="91.9,30,6.8,34,oval,#4"><img src="assets/img/ev-val-header.png" alt="The Validation Scheduler header, with Scheduled (24), Coverage and Export. Schedule, at the top right, is circled as 4." loading="lazy"><figcaption>In the Validation Scheduler, select Schedule (4).</figcaption></figure></li>' +
+        '<li>Choose the <b>Program</b>, then the <b>Unit</b>.</li>' +
+        '<li>Choose the <b>Scheduled Date</b> and the <b>Assigned Validator</b>.</li>' +
+        '<li>Set the <b>Priority Level</b>, and add <b>Notes</b> for the validator, such as what to check and which assessments to sample.' +
+          '<figure class="shot shot-medium" data-marks="74.6,92,22.4,5.4,oval,#"><img src="assets/img/ev-val-form.png" alt="Schedule Validation for BSB50120 Diploma of Business, in the Business Faculty, and the unit BSBFIN501 Manage budgets and financial plans. The scheduled date is 20/11/2026, the assigned validator is Staff Demo and the priority is Medium. The notes read: Annual validation for the 2027 intake. Check the budget project and marking guide cover all performance and knowledge evidence. Sample 5 completed assessments: 2 satisfactory, 2 not yet satisfactory and 1 resubmission. The Schedule Validation button is circled." loading="lazy"><figcaption>A validation for BSBFIN501, with notes for the validator. Select Schedule Validation (circled).</figcaption></figure></li>' +
+        '<li>Select <b>Schedule Validation</b>. It appears in the scheduler, on the calendar and in the validator’s courses.</li>' +
+      '</ol>' +
+      '<p>You can also schedule a validation from a course. See <a href="article.html?id=prog-schedule-validation">Schedule, start or continue a unit validation</a>.</p>',
+
+    'pd-overview':
+      '<p class="lead">Professional development (PD) keeps your staff’s skills and industry knowledge current. In RTO Radar, Admins set up PD sessions and assign them, staff enrol in and complete PD with evidence, and Admins approve that evidence so it can be used in evidence maps.</p>' +
+      '<h2 id="where">Where PD appears</h2>' +
+      '<ul>' +
+        '<li><b>Settings</b> › <b>Professional Development</b>: where Admins choose PD settings and add providers and sessions. See <a href="article.html?id=pd-configure">Set up Professional Development</a>.</li>' +
+        '<li><b>Workforce Management</b> › <b>PD Calendar</b>: each staff member’s PD. Admins assign PD here, and mark their own PD complete. See <a href="article.html?id=pd-assign">Assign PD to a staff member</a>.</li>' +
+        '<li><b>Events</b> › <b>Professional Development</b>: where staff see their PD, browse the catalogue, enrol, request approval for paid PD and complete PD. See <a href="article.html?id=pd-enrol">Find and enrol in PD</a>.</li>' +
+        '<li><b>My Documents</b> and the <b>Documents</b> tab: where PD evidence is kept, and where Admins approve it. See <a href="article.html?id=pd-complete#approve">Approve PD evidence</a>.</li>' +
+      '</ul>' +
+      '<h2 id="flow">How PD flows through RTO Radar</h2>' +
+      '<ol class="ov-list">' +
+        '<li><h4>Set up</h4><p>An Admin chooses the PD settings, adds the providers who deliver PD, then schedules PD sessions. See <a href="article.html?id=pd-configure">Set up Professional Development</a>.</p></li>' +
+        '<li><h4>Assign or enrol</h4><p>An Admin assigns a session to a staff member, or staff enrol themselves from the catalogue. See <a href="article.html?id=pd-assign">Assign PD to a staff member</a> and <a href="article.html?id=pd-enrol">Find and enrol in PD</a>.</p></li>' +
+        '<li><h4>Request approval for paid PD</h4><p>If your RTO uses approvals, staff send an expression of interest (EOI) request before enrolling in a paid session. See <a href="article.html?id=pd-eoi">Request approval for paid PD</a>.</p></li>' +
+        '<li><h4>Complete</h4><p>After the session, staff mark it complete, describe what they learnt and attach evidence, such as a certificate. See <a href="article.html?id=pd-complete">Complete PD and attach evidence</a>.</p></li>' +
+        '<li><h4>Approve the evidence</h4><p>An Admin approves the evidence. Approved documents can then be used in the staff member’s evidence maps. See <a href="article.html?id=pd-complete#approve">Approve PD evidence</a>.</p></li>' +
+      '</ol>' +
+      '<div class="callout note"><b>Note</b><span>Only approved documents can be used as evidence in an evidence map. See <a href="article.html?id=wf-evidence-map">Create an evidence map for a trainer</a>.</span></div>',
+
+    'pd-configure':
+      '<p class="lead">Before PD can be assigned or enrolled in, an Admin sets it up in <b>Settings</b> › <b>Professional Development</b>: the <b>settings</b> that decide how PD works at your RTO, the <b>providers</b> who deliver PD, and the <b>sessions</b> themselves.</p>' +
+      '<h2 id="settings">Choose your PD settings</h2>' +
+      '<p>Go to <b>Settings</b> › <b>Professional Development</b>. The <b>Settings</b> tab opens first.</p>' +
+      '<figure class="shot" data-marks="0.9,89.4,6.8,6.8,oval,right,#1; 61,48,14.2,7.2,oval,above,#2"><img src="assets/img/pd-settings-open.png" alt="Organisation Settings, with Settings on the navigation bar circled as 1 and the Professional Development tab, beside Integrations, User Management, Security and Customisation, circled as 2. Professional Development is open on its Settings tab, beside Sessions and Providers." loading="lazy"><figcaption>Select Settings (1), then Professional Development (2).</figcaption></figure>' +
+      '<figure class="shot" data-marks="14.5,7.4,8.2,3.2,oval,#; 25.5,14.8,#1; 24.5,28.7,#2; 26.5,47,#3; 28,65.3,#4; 18.5,85.6,#5"><img src="assets/img/pd-settings.png" alt="Professional Development settings on the Settings tab, which is circled, beside the Sessions and Providers tabs. 1: PD Calendar Module, with Enable PD Calendar on. 2: Catalogue Visibility, with Show Global Catalogue and Show Organisation Catalogue both on. 3: Paid PD Configuration, with Show Paid PD Items on and Require Approval for Paid PD off. 4: Evidence Requirements, with Require Completion Evidence on and the allowed evidence types certificate, receipt, screenshot, reflection and other. 5: Default Tags SRTO 2025, Assessment, Training Delivery, Industry Currency and Compliance, with a box to add a new tag." loading="lazy"><figcaption>The Settings tab (circled), with its five groups of PD settings (1–5).</figcaption></figure>' +
+      '<ol class="ov-list">' +
+        '<li><h4>PD Calendar Module</h4><p>Turn on <b>Enable PD Calendar</b> so staff can browse and enrol in PD in <b>Events</b> › <b>Professional Development</b>. While it’s off, staff can’t find or enrol in PD.</p></li>' +
+        '<li><h4>Catalogue Visibility</h4><p>Choose which PD staff see in <b>Browse Catalogue</b>: the <b>Global Catalogue</b>, platform-wide PD from global providers, and the <b>Organisation Catalogue</b>, the sessions your RTO adds below. See <a href="article.html?id=pd-enrol">Find and enrol in PD</a>.</p></li>' +
+        '<li><h4>Paid PD Configuration</h4><p><b>Show Paid PD Items</b> lets staff see paid sessions in the catalogue. Turn on <b>Require Approval for Paid PD</b> if staff must send an EOI request before registering for paid PD. See <a href="article.html?id=pd-eoi">Request approval for paid PD</a>.</p></li>' +
+        '<li><h4>Evidence Requirements</h4><p>Turn on <b>Require Completion Evidence</b> if staff must attach evidence to mark PD complete. <b>Allowed Evidence Types</b> lists the types staff can attach: certificate, receipt, screenshot, reflection and other. See <a href="article.html?id=pd-complete">Complete PD and attach evidence</a>.</p></li>' +
+        '<li><h4>Default Tags</h4><p>The tags offered for PD sessions, which help staff find them. Type a tag and select <b>+</b> to add it, or select <b>×</b> on a tag to remove it. Tags that match the Standards, such as SRTO 2025 or Industry Currency, make PD easier to find for evidence.</p></li>' +
+      '</ol>' +
+      '<div class="callout tip"><b>Tip</b><span>Keep <b>Require Completion Evidence</b> on. Only approved evidence can be used in an evidence map, so PD completed without evidence can’t support a trainer’s currency.</span></div>' +
+      '<h2 id="provider">Add a provider</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Settings</b> (1) › <b>Professional Development</b> (2), open the <b>Providers</b> tab (3) and select <b>Add Provider</b> (4).' +
+          '<figure class="shot" data-marks="0.9,90.2,6.8,6.9,oval,right,#1; 61,48.6,14.2,7.3,oval,above,#2; 79,87,6.8,6.2,oval,right,#3"><img src="assets/img/pd-providers-open.png" alt="Organisation Settings, with Settings on the navigation bar circled as 1, the Professional Development tab circled as 2, and the Providers tab of Professional Development, beside Settings and Sessions, circled as 3." loading="lazy"><figcaption>Select Settings (1), Professional Development (2), then the Providers tab (3).</figcaption></figure>' +
+          '<figure class="shot" data-marks="82.9,29.2,13.6,7.8,oval,#4"><img src="assets/img/pd-providers.png" alt="PD Providers, listing each provider with its scope, website and actions. RTO Logic, Velg Training and VETQI Learning Hub are Global, each with a switch and a view icon. RTO Radar is Organisation, with a view icon and a menu. Add Provider, at the top right, is circled as 4." loading="lazy"><figcaption>On the Providers tab, select Add Provider (4).</figcaption></figure></li>' +
+        '<li>Enter the <b>Provider Name</b>, and optionally a <b>Description</b> and the provider’s <b>Website URL</b>. Then select <b>Add Provider</b>.' +
+          '<figure class="shot shot-small" data-marks="72.6,87,23.6,9.4,oval,#"><img src="assets/img/pd-provider-add.png" alt="Add Provider, to add a new professional development provider. The Provider Name is VET Practice Network. The description reads: Professional development for VET trainers and assessors, covering the Standards for RTOs 2025, assessment design and validation, and strategies for maintaining industry currency. Workshops are delivered online and face to face. The Website URL is https://www.vetpracticenetwork.com.au. The Add Provider button is circled." loading="lazy"><figcaption>A provider with a description and website. Select Add Provider (circled).</figcaption></figure></li>' +
+        '<li>The provider appears in the list with the scope <b>Organisation</b>. You can now choose it when you add a session.' +
+          '<figure class="shot" data-marks="4,83.4,92.2,10,zone,#"><img src="assets/img/pd-providers-added.png" alt="PD Providers, now listing VET Practice Network, outlined, below RTO Radar. Its scope is Organisation, with Visit, a view icon and a menu." loading="lazy"><figcaption>VET Practice Network, added as an Organisation provider (outlined).</figcaption></figure></li>' +
+      '</ol>' +
+      '<div class="callout note"><b>Note</b><span>Providers marked <b>Global</b>, and their sessions, are set up by the RTO Radar team for all RTOs, and appear in the Global Catalogue. Providers you add are marked <b>Organisation</b> and are only for your RTO. If you don’t want your organisation and its members to see a global provider’s PD, turn off its switch under <b>Actions</b>.</span></div>' +
+      '<h2 id="manage">View, edit or delete a provider</h2>' +
+      '<p>On the <b>Providers</b> tab, under <b>Actions</b>, select:</p>' +
+      '<ol>' +
+        '<li><svg class="ui-icon" viewBox="0 0 24 24" aria-label="eye" role="img"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6a3 3 0 1 0 0-6z"/></svg> to view the provider’s details.</li>' +
+        '<li><b>⋯</b> on a provider you added, then <b>Edit</b> to change its details, or <b>Delete</b> to remove it.</li>' +
+      '</ol>' +
+      '<figure class="shot" data-marks="85.4,26.6,#1; 95.6,26.6,#2"><img src="assets/img/pd-provider-menu.png" alt="VET Practice Network on the Providers tab, an Organisation provider, with the view icon marked 1 and the ⋯ menu marked 2, open on Edit and Delete." loading="lazy"><figcaption>View (1), and the ⋯ menu (2) with Edit and Delete.</figcaption></figure>' +
+      '<h2 id="session">Add a PD session</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Settings</b> (1) › <b>Professional Development</b> (2), open the <b>Sessions</b> tab (3) and select <b>Add Session</b> (4).' +
+          '<figure class="shot" data-marks="0.9,91.4,6.8,7.6,oval,right,#1; 61,49.6,14.2,7.4,oval,above,#2; 55.9,88.6,6.6,7.4,oval,right,#3"><img src="assets/img/pd-sessions-open.png" alt="Organisation Settings, with Settings on the navigation bar circled as 1, the Professional Development tab circled as 2, and the Sessions tab of Professional Development, between Settings and Providers, circled as 3." loading="lazy"><figcaption>Select Settings (1), Professional Development (2), then the Sessions tab (3).</figcaption></figure>' +
+          '<figure class="shot" data-marks="85,16.4,13.4,5.4,oval,#4"><img src="assets/img/pd-sessions.png" alt="The Sessions tab: schedule PD sessions for staff to enrol in. A search box and filters for status, delivery, cost, source and provider sit above the list of sessions, each with its date and time, delivery, cost, status and source. Most are Global sessions from RTO Logic, Velg Training and VETQI Learning Hub, free or paid, with view and open icons. RTO Radar Review, from RTO Radar, is a Tenant session with view, open, edit and delete icons. Add Session, at the top right, is circled as 4." loading="lazy"><figcaption>On the Sessions tab, select Add Session (4).</figcaption></figure></li>' +
+        '<li>In <b>Schedule Session</b>, enter the <b>Title</b>, which is required. Choose the <b>Provider</b> you added (circled), and add a <b>Description</b> of what the session covers.' +
+          '<figure class="shot shot-medium" data-marks="51.3,40.2,45,12.6,oval,#"><img src="assets/img/pd-session-details.png" alt="Schedule Session. The title is Assessment validation under the Standards for RTOs 2025, and the provider, circled, is VET Practice Network. The description reads: A practical workshop for trainers and assessors on planning and conducting assessment validation under the Standards for RTOs 2025. Covers risk-based sampling, reviewing assessment tools against unit requirements, checking assessment judgements, and recording outcomes and improvement actions. Participants receive a certificate of attendance." loading="lazy"><figcaption>The title, provider (circled) and description.</figcaption></figure></li>' +
+        '<li>Choose the <b>Start Date/Time</b>, which is required, and enter the <b>Duration (hours)</b>. The end time is shown below it. Then choose the <b>Delivery Mode</b>, such as Online or Face to Face, and the <b>Cost Type</b>. For a paid session, enter the <b>Estimated Cost ($)</b>.' +
+          '<figure class="shot shot-medium"><img src="assets/img/pd-session-when.png" alt="Start Date/Time 26/11/2026 10:00 AM, Duration 3 hours, ending at 1:00 PM. Delivery Mode is Online, Cost Type is Paid, and the Estimated Cost is 195 dollars." loading="lazy"><figcaption>A 3-hour online session on 26 November 2026, costing $195.</figcaption></figure></li>' +
+        '<li>Enter the <b>Registration URL</b>, the page where staff register for the session. Under <b>Tags</b>, type a tag and select <b>Add</b> (arrow). Tags help staff find the session. Then select <b>Create Session</b> (circled).' +
+          '<figure class="shot shot-medium" data-marks="86.8,50.1,arrow-right,small; 76.2,77.6,20.6,16.4,oval,#"><img src="assets/img/pd-session-tags.png" alt="The Registration URL is https://www.vetpracticenetwork.com.au/events/assessment-validation-2027. The tags SRTO 2025 and Assessment are added, and Compliance is typed in the Tags box beside Add, with an arrow pointing at Add. The Create Session button is circled." loading="lazy"><figcaption>Select Add (arrow) for each tag, then Create Session (circled).</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>The session appears on the <b>Sessions</b> tab as <b>Upcoming</b>, with the source <b>Tenant</b>, meaning it belongs to your RTO. It can now be assigned to staff. See <a href="article.html?id=pd-assign">Assign PD to a staff member</a>.</p>' +
+      '<h2 id="manage-sessions">View, edit or delete a session</h2>' +
+      '<p>On the <b>Sessions</b> tab, under <b>Action</b>, select:</p>' +
+      '<ul>' +
+        '<li><svg class="ui-icon" viewBox="0 0 24 24" aria-label="eye" role="img"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6a3 3 0 1 0 0-6z"/></svg> to view the session’s details.</li>' +
+        '<li><svg class="ui-icon" viewBox="0 0 24 24" aria-label="open link" role="img"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg> to open its registration link.</li>' +
+        '<li><svg class="ui-icon" viewBox="0 0 24 24" aria-label="pencil" role="img"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/></svg> to edit it.</li>' +
+        '<li><svg class="ui-icon" viewBox="0 0 24 24" aria-label="bin" role="img"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg> to delete it.</li>' +
+      '</ul>' +
+      '<figure class="shot" data-marks="86.4,27,13,46,oval,#"><img src="assets/img/pd-session-actions.png" alt="Assessment validation under the Standards for RTOs 2025, from VET Practice Network, on 26 Nov 2026 10:00 am to 1:00 pm (GMT+11), Online, 195 dollars, Upcoming and Tenant. Its view, open link, edit and delete icons are circled." loading="lazy"><figcaption>The new session, with its actions circled.</figcaption></figure>' +
+      '<p>You can edit or delete only your RTO’s own sessions. <b>Global</b> sessions, set up by the RTO Radar team, can only be viewed and opened.</p>',
+
+    'pd-assign':
+      '<p class="lead">Assign a PD session to a staff member from their <b>PD Calendar</b> in Workforce Management. It then appears in their PD in Events, with any notes you add.</p>' +
+      '<h2 id="assign">Assign a PD session</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Workforce Management</b> (1) › <b>Workforce</b> (2), and select the staff member (3).' +
+          '<figure class="shot" data-marks="1,38.6,11.2,3.8,oval,right,#1; 19,33.4,5.4,4,oval,above,#2; 35.1,90.3,arrow-left,#3"><img src="assets/img/wf-landing.png" alt="Workforce Management, circled as 1 on the navigation bar, with the Workforce tab circled as 2. The Workforce list shows three trainers, Ken Lombardo, John Doe and Staff Demo, with an arrow, marked 3, pointing left at Staff Demo." loading="lazy"><figcaption>Select Workforce Management (1), the Workforce tab (2), then the staff member (3), such as Staff Demo here.</figcaption></figure></li>' +
+        '<li>Open the <b>PD Calendar</b> tab (1) and select <b>Assign PD</b> (2).' +
+          '<figure class="shot" data-marks="14.4,22.4,5.4,3.4,oval,right,#1; 90.3,31.2,8.4,5.2,oval,above,#2"><img src="assets/img/wf-pd-open.png" alt="Staff Demo’s profile in Workforce Management, with the PD Calendar tab circled as 1. Professional Development shows 5 total PD, 1 completed, 4 pending and 2 overdue, and a list of sessions. The Assign PD button at the top right is circled as 2." loading="lazy"><figcaption>Open the PD Calendar tab (1), then select Assign PD (2).</figcaption></figure></li>' +
+        '<li>Under <b>Session</b>, find the session. Search by title, provider or location, and narrow the list with the <b>Mode</b> and <b>Cost</b> filters. Tick <b>Include past events</b> to see sessions that have already run.' +
+          '<figure class="shot shot-medium" data-marks="8.9,36.2,#1; 19.6,57.9,#2; 23.2,73.7,#3; 91.7,91.2,arrow-down,small"><img src="assets/img/pd-assign-form.png" alt="Assign Professional Development, assigning a PD session to Staff Demo, with 3 sessions listed. Assessment validation under the Standards for RTOs 2025, on 26 Nov 2026 at 10:00 am, Online, 195 dollars, from VET Practice Network, is selected, its radio button marked 1. Below the list: Due 26 Nov 2026 at 10:00 am. Requirement Type, marked 2, is Recommended. Admin Notes, marked 3, read: Supports your role as an assessment validator. Attach your certificate of attendance when you complete it, so it can be approved and used in your evidence map. An arrow points down at Assign PD." loading="lazy"><figcaption>The session (1), requirement type (2) and admin notes (3). Then select Assign PD.</figcaption></figure></li>' +
+        '<li>Select the session’s radio button (1). Each session shows its date, mode, cost and provider, and its due date is shown below the list.</li>' +
+        '<li>Choose the <b>Requirement Type</b> (2): Optional, Recommended or Mandatory. Optionally, add <b>Admin Notes</b> (3), such as why the session is needed.' +
+          '<div class="callout note"><b>Note</b><span>Mandatory PD is flagged as overdue if it isn’t completed by its due date.</span></div></li>' +
+        '<li>Select <b>Assign PD</b>.</li>' +
+      '</ol>' +
+      '<h2 id="calendar">View and manage assigned PD</h2>' +
+      '<p>The session now appears on the staff member’s PD Calendar, marked <b>Admin assigned</b>, with your notes, its requirement type, due date and status. Under <b>Actions</b>, select:</p>' +
+      '<ul>' +
+        '<li><svg class="ui-icon" viewBox="0 0 24 24" aria-label="open link" role="img"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg> to open the session’s registration page.</li>' +
+        '<li><svg class="ui-icon" viewBox="0 0 24 24" aria-label="tick" role="img"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM8 12l3 3 5-6"/></svg> to mark it complete. Then fill in the event description and evidence. See <a href="article.html?id=pd-complete#complete-details">Complete PD in Events</a>, from step 3.</li>' +
+        '<li><svg class="ui-icon" viewBox="0 0 24 24" aria-label="cross" role="img"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM9 9l6 6M15 9l-6 6"/></svg> to remove the PD assignment.</li>' +
+      '</ul>' +
+      '<figure class="shot"><img src="assets/img/pd-assigned-row.png" alt="On Staff Demo’s PD Calendar: Assessment validation under the Standards for RTOs 2025, Admin assigned, with the note: Supports your role as an assessment validator. Attach your certificate of attendance when you complete it, so it can be approved and used in your evidence map. It runs 26 Nov 2026 10:00 am to 1:00 pm (GMT+11), is Recommended, due 26 Nov 2026 and Planned, with open link, tick and cross icons under Actions." loading="lazy"><figcaption>The assigned session, with your note and its actions.</figcaption></figure>' +
+      '<div class="callout tip"><b>Tip</b><span>Staff see PD you assign in <b>Events</b> › <b>Professional Development</b>, with your notes and a <b>Register</b> button that opens the session’s registration page. See <a href="article.html?id=pd-enrol#view">View enrolled PDs and register</a>.</span></div>',
+
+    'pd-enrol':
+      '<p class="lead">Staff find their PD in <b>Events</b>, in the Trainer/Assessor portal. You can browse the catalogue of sessions available to your RTO, enrol yourself, and see all the PD you’re enrolled in or assigned.</p>' +
+      '<h2 id="enrol">Enrol in a PD session</h2>' +
+      '<ol class="steps-list">' +
+        '<li>In the Trainer/Assessor portal, go to <b>Events</b> (1) › <b>Professional Development</b> (2), and select <b>Browse Catalogue</b> (3).' +
+          '<figure class="shot" data-marks="0.7,47.9,5.2,5.6,oval,right,#1; 70.8,45.4,12,7,oval,right,#2; 26.7,79.4,6.6,5,oval,#; 30,90.6,#3"><img src="assets/img/pd-staff-events.png" alt="Events in the Trainer/Assessor Portal, with Events circled on the navigation bar as 1, the Professional Development tab circled as 2, and the Browse Catalogue tab, between My PD and EOI Requests, circled as 3." loading="lazy"><figcaption>Select Events (1), the Professional Development tab (2), then Browse Catalogue (3).</figcaption></figure></li>' +
+        '<li>Search for a session (1), or select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="filter" role="img"><path d="M3 4h18l-7 8.5V19l-4 2v-8.5z"/></svg> <b>Filters</b> to narrow the list, for example by date, delivery mode or provider. Tick <b>Include past events</b> to see sessions that have already run. Then select <b>Enrol</b> (2) on the session. It’s added to your PD.' +
+          '<figure class="shot" data-marks="2.2,17.6,36.8,4.8,oval,#; 32,19.9,#1; 91.2,60.6,4.8,4.4,oval,#2"><img src="assets/img/pd-catalogue-enrol.png" alt="Browse Catalogue with Velg typed in the search box, circled as 1, beside Filters and Include past events. It shows 4 of 4 sessions from Velg Training as cards, each with its format, tags and price. Two show Enrolled, and VET Workforce Week: The FUNdamentals for Creating Engaging Face-to-Face Training, $67, has its Enrol button circled as 2." loading="lazy"><figcaption>Search the catalogue (1), then select Enrol (2).</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>Enrolling adds the session to your PD in RTO Radar, so it’s tracked across the platform, such as on your PD Calendar and in your evidence. It doesn’t register you with the provider. To do that, select <b>Register</b> on the session in <b>My PD</b>. See <a href="#view">View enrolled PDs and register</a>.</span></div></li>' +
+      '</ol>' +
+      '<div class="callout note"><b>Note</b><span>If your RTO uses approvals for paid PD, a paid session shows <b>Request EOI</b> instead of <b>Enrol</b>. See <a href="article.html?id=pd-eoi">Request approval for paid PD</a>.</span></div>' +
+      '<h2 id="view">View enrolled PDs and register</h2>' +
+      '<ol class="steps-list">' +
+        '<li>In the Trainer/Assessor portal, select <b>Events</b> (1) on the navigation bar, then open the <b>Professional Development</b> tab (2). <b>My PD</b> (3) opens first.' +
+          '<figure class="shot" data-marks="0.7,47.9,5.2,5.6,oval,right,#1; 70.8,45.4,12,7,oval,right,#2; 22.3,79.4,2.8,5,oval,#; 23.7,90.6,#3"><img src="assets/img/pd-staff-events.png" alt="Events in the Trainer/Assessor Portal, with Events circled on the navigation bar as 1 and the Professional Development tab, beside Calendar, circled as 2. Professional Development is open on My PD, circled as 3, beside Browse Catalogue and EOI Requests." loading="lazy"><figcaption>Select Events (1), then the Professional Development tab (2). My PD (3) opens first.</figcaption></figure></li>' +
+        '<li><b>My PD</b> lists your PD, with its status and requirement type, such as Interested and Recommended. PD assigned by an Admin shows here too, with any notes they added (1) and a <b>Register</b> button (2) that opens the session’s registration page.' +
+          '<figure class="shot" data-marks="2.4,46,81,10.6,zone,#1; 76.6,27.8,9.6,8.4,oval,above,#2"><img src="assets/img/pd-staff-mypd.png" alt="My PD, listing Assessment validation under the Standards for RTOs 2025, tagged Interested and Recommended, with its description. The Admin’s note, outlined as 1, reads: Supports your role as an assessment validator. Attach your certificate of attendance when you complete it, so it can be approved and used in your evidence map. It runs 26 Nov 2026 at 10:00 am (GMT+11) and is due 26 Nov 2026. Register is circled as 2, beside Complete. Below is VET Workforce Week: AI for Trainers, Planned and Recommended." loading="lazy"><figcaption>An assigned session, with the Admin’s note (1) and Register (2).</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span><b>Register</b> opens the provider’s website, where you register for the session itself. Enrolling in RTO Radar is different: it adds the session to your PD so RTO Radar can track it. See <a href="feature.html?m=pd#faq">the Professional Development FAQ</a>.</span></div></li>' +
+      '</ol>' +
+      '<p>Once you’ve done the session, mark it complete. See <a href="article.html?id=pd-complete">Complete PD and attach evidence</a>.</p>',
+
+    'pd-eoi':
+      '<p class="lead">Some RTOs ask staff to get approval before enrolling in paid PD. You do this with an expression of interest (EOI) request, which goes to the approver you choose. You send and track requests in <b>Events</b>, in the Trainer/Assessor portal.</p>' +
+      '<div class="callout note"><b>Note</b><span>EOI requests are needed only when an Admin turns on <b>Require Approval for Paid PD</b>. If it’s off, paid sessions show <b>Enrol</b> like any other. See <a href="article.html?id=pd-configure#settings">Choose your PD settings</a>.</span></div>' +
+      '<h2 id="request">Request approval</h2>' +
+      '<ol class="steps-list">' +
+        '<li>In the Trainer/Assessor portal, go to <b>Events</b> (1) › <b>Professional Development</b> (2), and select <b>Browse Catalogue</b> (3).' +
+          '<figure class="shot" data-marks="0.7,47.9,5.2,5.6,oval,right,#1; 70.8,45.4,12,7,oval,right,#2; 26.7,79.4,6.6,5,oval,#; 30,90.6,#3"><img src="assets/img/pd-staff-events.png" alt="Events in the Trainer/Assessor Portal, with Events circled on the navigation bar as 1, the Professional Development tab circled as 2, and the Browse Catalogue tab, between My PD and EOI Requests, circled as 3." loading="lazy"><figcaption>Select Events (1), the Professional Development tab (2), then Browse Catalogue (3).</figcaption></figure></li>' +
+        '<li>Find the paid session and select <b>Request EOI</b> (circled). Paid sessions show their price, such as $59.' +
+          '<figure class="shot" data-marks="20.6,88.6,10.8,5.4,oval,#"><img src="assets/img/pd-catalogue-eoi.png" alt="Browse Catalogue, showing sessions 13 to 20 of 20 as cards, with a search box, Filters and Include past events ticked. Free sessions show Enrol, and sessions already enrolled show Enrolled. Focus Week: AI - Designing Assessment Tasks that Support Authentic AI Use, by Velg Training, 22 July 2026, costs $59, and its Request EOI button is circled." loading="lazy"><figcaption>A paid session, with Request EOI (circled).</figcaption></figure></li>' +
+        '<li>In <b>EOI Request</b>, choose who should approve it under <b>Select Approver</b>. Optionally, add <b>Approving Notes</b> explaining why you need the PD. Then select <b>Submit EOI Request</b> (circled).' +
+          '<figure class="shot shot-small" data-marks="59.2,88.4,35.6,7.8,oval,#"><img src="assets/img/pd-eoi-form.png" alt="EOI Request: submit an expression of interest for approval before enrolling in this paid session. The session is Focus Week: AI - Designing Assessment Tasks that Support Authentic AI Use, by Velg Training, $59. The approver is Admin Demo. The approving notes read: This masterclass will help me redesign our BSB50120 assessment tasks for AI use, an action from our last validation. The Submit EOI Request button is circled." loading="lazy"><figcaption>The approver and your notes. Select Submit EOI Request (circled).</figcaption></figure></li>' +
+      '</ol>' +
+      '<h2 id="track">Track PD requests</h2>' +
+      '<ol class="steps-list">' +
+        '<li>In the Trainer/Assessor portal, go to <b>Events</b> (1) › <b>Professional Development</b> (2), and select <b>EOI Requests</b> (3).' +
+          '<figure class="shot" data-marks="0.7,47.9,5.2,5.6,oval,right,#1; 70.8,45.4,12,7,oval,right,#2; 35,79.4,5.8,5,oval,#; 37.9,90.6,#3"><img src="assets/img/pd-staff-events.png" alt="Events in the Trainer/Assessor Portal, with Events circled on the navigation bar as 1, the Professional Development tab circled as 2, and the EOI Requests tab, beside My PD and Browse Catalogue, circled as 3." loading="lazy"><figcaption>Select Events (1), the Professional Development tab (2), then EOI Requests (3).</figcaption></figure></li>' +
+        '<li><b>EOI Requests</b> lists your requests, with who submitted them, the approver, the date and the status: <b>Pending</b>, <b>Approved</b> or <b>Declined</b>. A pending request shows <b>Awaiting approval</b>.' +
+          '<figure class="shot" data-marks="80.4,80.6,7.2,9.2,oval,#"><img src="assets/img/pd-eoi-list.png" alt="The EOI Requests tab, listing three requests submitted by Staff Demo on 04 Nov 2026, each with Admin Demo as approver and a View button. VET Workforce Week: The FUNdamentals is Approved, Focus Week - Revised Standards is Declined, and Focus Week: AI - Designing Assessment Tasks is Pending, Awaiting approval. Its View button is circled." loading="lazy"><figcaption>Requests that are approved, declined and pending. Select View (circled) to see a request’s details.</figcaption></figure></li>' +
+        '<li>Select <b>View</b> on a request to see its details, including the session, its cost, your approving notes and its status. The approver reviews the details, then selects <b>Decline</b> or <b>Approve</b> (circled).' +
+          '<figure class="shot shot-medium" data-marks="65.6,90.6,31.6,6.6,oval,#"><img src="assets/img/pd-eoi-details.png" alt="EOI Request Details: review all session details before approving or declining. Submitted by Staff Demo on 04 Nov 2026, with Admin Demo as approver. The session is Focus Week: AI - Designing Assessment Tasks that Support Authentic AI Use, from Velg Training, with its description, on 22 July 2026 from 1:00 am to 2:00 am (GMT+10), Online, 1 hour, $59, and its registration link. The approving notes read: This masterclass will help me redesign our BSB50120 assessment tasks for AI use, an action from our last validation. Status is Pending. Decline and Approve are circled." loading="lazy"><figcaption>The request’s details, with Decline and Approve (circled).</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>Only Admins with permission to create or edit PD can approve or decline an EOI request.</span></div></li>' +
+        '<li>Once your request is approved, go back to <b>Browse Catalogue</b> and select <b>Enrol</b> on the session.' +
+          '<figure class="shot" data-marks="26.2,89.4,4.8,5.2,oval,#"><img src="assets/img/pd-catalogue-approved.png" alt="Browse Catalogue, showing sessions 13 to 20 of 20 as cards. Focus Week: AI - Designing Assessment Tasks that Support Authentic AI Use, by Velg Training, $59, now shows Enrol, circled, in place of Request EOI. Other sessions show Enrol or Enrolled." loading="lazy"><figcaption>The approved paid session now shows Enrol (circled).</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>Once you’ve enrolled, register for the session with the provider. See <a href="article.html?id=pd-enrol#view">View enrolled PDs and register</a>.</p>',
+
+    'pd-complete':
+      '<p class="lead">After a PD session, mark it complete, describe what you learnt and attach your evidence, such as a certificate. Your evidence is then kept in your documents, ready for an Admin to approve. Staff complete PD and upload evidence in the Trainer/Assessor portal.</p>' +
+      '<h2 id="staff">Complete PD in Events</h2>' +
+      '<ol class="steps-list">' +
+        '<li>In the Trainer/Assessor portal, go to <b>Events</b> (1) › <b>Professional Development</b> (2). <b>My PD</b> (3) opens first.' +
+          '<figure class="shot" data-marks="0.7,47.9,5.2,5.6,oval,right,#1; 70.8,45.4,12,7,oval,right,#2; 22.3,79.4,2.8,5,oval,#; 23.7,90.6,#3"><img src="assets/img/pd-staff-events.png" alt="Events in the Trainer/Assessor Portal, with Events circled on the navigation bar as 1, the Professional Development tab circled as 2, and My PD, beside Browse Catalogue and EOI Requests, circled as 3." loading="lazy"><figcaption>Select Events (1), then the Professional Development tab (2). My PD (3) opens first.</figcaption></figure></li>' +
+        '<li>Once the session has run, select <b>Complete</b> on it (circled).' +
+          '<figure class="shot" data-marks="86.4,72.8,9.8,6.6,oval,#"><img src="assets/img/pd-mypd-complete.png" alt="My PD, listing three sessions, each with Register and Complete buttons: Focus Week: AI - Designing Assessment Tasks that Support Authentic AI Use, Planned; VET Workforce Week: The FUNdamentals for Creating Engaging Face-to-Face Training, Interested; and Assessment validation under the Standards for RTOs 2025, Interested and Recommended, with the Admin’s note, 26 Nov 2026 at 10:00 am and due 26 Nov 2026. Its Complete button is circled." loading="lazy"><figcaption>Select Complete (circled) on the session.</figcaption></figure></li>' +
+        '<li id="complete-details">Under <b>Event Description</b>, describe the outcome or key takeaways. This also serves as your reflection on the session.' +
+          '<figure class="shot"><img src="assets/img/pd-complete-description.png" alt="Complete PD Session for Assessment validation under the Standards for RTOs 2025. The Event Description reads: Completed a 3-hour online workshop on assessment validation under the Standards for RTOs 2025. My key takeaways were how to use risk-based sampling to choose units for validation, review assessment tools against unit requirements, and check that assessment judgements are consistent. I will apply this when validating BSB50120 Diploma of Business units with the Business Faculty." loading="lazy"><figcaption>An event description with the key takeaways.</figcaption></figure></li>' +
+        '<li>Under <b>Attach Evidence</b>, select <b>Add file</b> (circled).' +
+          '<figure class="shot" data-marks="89.9,10,8.6,46,oval,#"><img src="assets/img/pd-complete-addfile.png" alt="Attach Evidence, marked Required, with no files attached yet. Click Add file to upload evidence. The Add file button is circled." loading="lazy"><figcaption>Select Add file (circled).</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>Evidence shows as <b>Required</b> when an Admin has turned on <b>Require Completion Evidence</b> in the PD settings. Otherwise it’s optional. See <a href="article.html?id=pd-configure#settings">Choose your PD settings</a>.</span></div></li>' +
+        '<li>Choose the document type, such as <b>Certificate</b>, and your file. To name the document yourself, choose <b>Other</b> and type a name. Write a detailed description of the file, and set the <b>Issue Date</b>. Then select <b>Complete PD</b>.' +
+          '<figure class="shot" data-marks="93.5,91.6,arrow-down,small"><img src="assets/img/pd-complete-evidence.png" alt="Attach Evidence with a Certificate attached: Certificate_of_Attendance_Assessment_Validation_2026.pdf. The file description reads: Certificate of Attendance – Assessment validation under the Standards for RTOs 2025, VET Practice Network. Completed 26 November 2026, 3 hours, online. Topics covered include: planning validation with risk-based sampling; reviewing assessment tools against unit requirements, including performance evidence, knowledge evidence and assessment conditions; checking the consistency of assessment judgements; recording validation outcomes and improvement actions. Strengthened my ability to plan and conduct assessment validation for BSB50120 Diploma of Business units, including BSBFIN501 Manage budgets and financial plans, in line with the Standards for RTOs 2025. The Issue Date is 26/11/2026. An arrow points down at Complete PD." loading="lazy"><figcaption>A certificate with a detailed description. Then select Complete PD.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>Each file’s description combines the Event Description with its own description. RTO Radar’s AI reads the descriptions, not the files, so describe what the PD covered and how it supports your delivery. See <a href="#description">Write a good description</a>.</span></div></li>' +
+        '<li>Trainers and assessors find their attached files in <b>My Documents</b>. Each stays <b>Pending</b> (circled) until an Admin approves it.' +
+          '<figure class="shot" data-marks="57.4,81.4,7,11.6,oval,#"><img src="assets/img/pd-mydocs-pending.png" alt="My Documents, showing 16 of 16 documents, with Category and Status filters and an Upload Document button. Assessment validation under the Standards for RTOs 2025 - Certificate is listed with the status Pending, circled, and expiry Not Applicable." loading="lazy"><figcaption>The certificate in My Documents, Pending approval (circled).</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span><b>My Documents</b> is part of the Trainer/Assessor portal. Admins see a staff member’s documents in <b>Workforce Management</b> › <b>Workforce</b> › the staff member’s profile › <b>Documents</b>. See <a href="#approve">Approve PD evidence</a>.</span></div></li>' +
+      '</ol>' +
+      '<h2 id="description">Write a good description</h2>' +
+      '<p>When an evidence map is created, RTO Radar’s AI writes your vocational competency and industry currency statements from your documents. To protect your personal information, the AI reads only the description, not the file itself, so the more detail you give, the stronger your evidence.</p>' +
+      '<p>Describe what the PD covered and how it improves your delivery. For a qualification, list the units it covers, with their codes and titles.</p>' +
+      '<div class="demo demo-text"><span class="demo-label">Example description</span>' +
+        '<p>This workshop on digital learning tools has equipped me with skills to integrate technology effectively into my classroom instruction.</p>' +
+        '<p>Units completed include:<br>CHCCOM005 Communicate and work in health or community services</p>' +
+        '<p>Developed communication skills, awareness of diversity, safe work practices and introductory client support skills.</p>' +
+      '</div>' +
+      '<p>For more, see <a href="article.html?id=wf-description">Write a good document description</a>.</p>' +
+      '<h2 id="upload">Upload PD evidence directly</h2>' +
+      '<p>Already have evidence of PD you’ve done, such as a certificate from an outside course? Upload it straight to <b>My Documents</b> in the Trainer/Assessor portal, as Professional Development.</p>' +
+      '<ol class="steps-list">' +
+        '<li>In the Trainer/Assessor portal, go to <b>My Documents</b> (1) and select <b>Upload Document</b> (2).' +
+          '<figure class="shot" data-marks="1,24.4,9.4,4.6,oval,right,#1; 81.4,68.4,13.2,5.8,oval,#2"><img src="assets/img/pd-mydocs.png" alt="My Documents in the Trainer/Assessor Portal, circled as 1 on the navigation bar. Cards show 16 total documents, 14 verified, 1 pending review and 1 rejected, above the My Documents and My Document Checklist tabs and the Document Categories Guide. Upload Document is circled as 2." loading="lazy"><figcaption>Select My Documents (1), then Upload Document (2).</figcaption></figure></li>' +
+        '<li>Select your file (1). Under <b>Category</b>, choose <b>Professional Development</b> (2).' +
+          '<figure class="shot" data-marks="24.6,56.6,47,11,oval,#1; 2,84.6,15.6,11.4,oval,right,#2"><img src="assets/img/pd-upload-file.png" alt="Upload Professional Development: upload PD certificates, workshop completions and training records. The selected file, Staff_Demo_Webinar_Certificate_The_Widened_RTO_Legislation_Lens_17_Mar_2026.pdf, is circled as 1, and the Category, Professional Development, as 2." loading="lazy"><figcaption>The file (1) and the Professional Development category (2).</figcaption></figure></li>' +
+        '<li>Enter the <b>Document Name</b>, then write a detailed <b>Description</b>. RTO Radar’s AI reads the description, not the file, to write your evidence statements. See <a href="#description">Write a good description</a>.' +
+          '<figure class="shot"><img src="assets/img/pd-upload-details.png" alt="The Document Name is The Widened RTO Legislation Lens - Webinar Certificate. The description, 1,043 of 5,000 characters, reads: Attending the webinar The Widened RTO Legislation Lens supported my professional development as a trainer and assessor by strengthening my understanding of the legislative and regulatory environment governing Registered Training Organisations (RTOs). The session provided valuable insights into current compliance expectations, the responsibilities of trainers and assessors, and the importance of aligning training and assessment practices with national standards and regulatory requirements. This knowledge assists me in ensuring that my training delivery, assessment decisions, and documentation meet quality assurance expectations and support continuous improvement within the RTO framework. The webinar also highlighted practical approaches to maintaining compliance while promoting effective, evidence-based training practices. As a result, it has enhanced my ability to contribute to quality training outcomes, uphold professional standards, and remain informed about legislative updates that affect my training and assessment practice." loading="lazy"><figcaption>A document name and a detailed description.</figcaption></figure></li>' +
+        '<li>Pick the <b>Completion/Issue Date</b>. Set the <b>Document Expiry</b> if it has one, or tick <b>This document does not expire</b>. Then select <b>Upload Document</b>.' +
+          '<figure class="shot" data-marks="91.5,80,arrow-down,small"><img src="assets/img/pd-upload-date.png" alt="The Completion/Issue Date is 17/03/2026. Document Expiry is empty, with This document does not expire ticked. An arrow points down at Upload Document." loading="lazy"><figcaption>The completion date, with no expiry. Then select Upload Document.</figcaption></figure></li>' +
+        '<li>Find your document in <b>My Documents</b>. It shows as <b>Pending</b> (circled), which means it’s awaiting approval by an Admin.' +
+          '<figure class="shot" data-marks="57.4,71,7,8.4,oval,#"><img src="assets/img/pd-mydocs-uploaded.png" alt="My Documents, showing 16 of 16 documents. Implement AI Ethically in VET Settings - Certificate is Approved, The Widened RTO Legislation Lens - Webinar Certificate is Pending, circled, and Working With Children Check (WWCC) - Victoria is Approved, expiring 29/03/2026." loading="lazy"><figcaption>The uploaded certificate, Pending approval (circled).</figcaption></figure></li>' +
+      '</ol>' +
+      '<div class="callout note"><b>Note</b><span>Uploaded documents stay Pending until an Admin approves them. Only approved documents can be used as evidence of vocational competency and industry currency in an evidence map. See <a href="#approve">Approve PD evidence</a>.</span></div>' +
+      '<h2 id="approve">Approve PD evidence</h2>' +
+      '<p>Evidence attached to PD stays Pending until an Admin approves it. Approving it confirms it’s the right document, that it hasn’t expired, and that its description is detailed enough to use as evidence.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Workforce Management</b> › <b>Workforce</b>, select the staff member, then open the <b>Documents</b> tab. On the Pending PD document’s row, select the tick.' +
+          '<figure class="shot" data-marks="92.1,78.7,2.7,7.1,oval,#"><img src="assets/img/wf-doc-details.png" alt="The Documents tab of the Staff Demo profile, listing three documents. On the row of a Pending Professional Development certificate, the tick under Actions is circled." loading="lazy"><figcaption>Select the tick on the Pending document.</figcaption></figure></li>' +
+        '<li>Check the document against its description. Add any <b>Verification Notes</b>, then select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="tick" role="img"><path d="M5 12l5 5 9-10"/></svg> <b>Approve</b>, or <svg class="ui-icon" viewBox="0 0 24 24" aria-label="cross" role="img"><path d="M6 6l12 12M18 6L6 18"/></svg> <b>Reject</b> to send it back.' +
+          '<figure class="shot" data-marks="78.7,93.2,arrow-down,small; 85.8,93.2,arrow-down,small"><img src="assets/img/wf-doc-verify.png" alt="A Pending PD certificate opened for verification, with the document, its description, its details and a Verification Notes box. Arrows point at the Reject and Approve buttons." loading="lazy"><figcaption>Check the document, then select Approve or Reject.</figcaption></figure></li>' +
+      '</ol>' +
+      '<div class="callout note"><b>Note</b><span>Only approved documents can be used in an evidence map. Pending documents also appear under <b>Admin Action</b> on the Workforce Dashboard. See <a href="article.html?id=wf-documents">Upload and manage staff documents</a>.</span></div>',
+
+    'pd-export':
+      '<p class="lead">Download PD records for one staff member, or for your whole workforce.</p>' +
+      '<h2 id="one">One staff member’s PD</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Workforce Management</b> (1) › <b>Workforce</b> (2), and select the staff member (3).' +
+          '<figure class="shot" data-marks="1,38.6,11.2,3.8,oval,right,#1; 19,33.4,5.4,4,oval,above,#2; 35.1,90.3,arrow-left,#3"><img src="assets/img/wf-landing.png" alt="Workforce Management, circled as 1 on the navigation bar, with the Workforce tab circled as 2. The Workforce list shows three trainers, Ken Lombardo, John Doe and Staff Demo, with an arrow, marked 3, pointing left at Staff Demo." loading="lazy"><figcaption>Select Workforce Management (1), the Workforce tab (2), then the staff member (3), such as Staff Demo here.</figcaption></figure></li>' +
+        '<li>Open their <b>PD Calendar</b> tab (1) and select <b>Export CSV</b> (2).' +
+          '<figure class="shot" data-marks="15.6,11.6,5.2,2.4,oval,right,#1; 81.4,19.4,8,3.2,oval,#2"><img src="assets/img/pd-calendar-export.png" alt="Staff Demo’s PD Calendar tab, circled as 1, showing 8 total PD, 2 completed, 6 pending and 3 overdue, and the list of sessions with their date, requirement, due date, status and actions. Export CSV, beside Assign PD at the top right, is circled as 2." loading="lazy"><figcaption>Open the PD Calendar tab (1), then select Export CSV (2).</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>Staff can download their own PD the same way, with <b>Export CSV</b> on <b>My PD</b> in Events.</p>' +
+      '<h2 id="all">Your whole workforce</h2>' +
+      '<p>Go to <b>Workforce Management</b> (1), select <b>Export</b> (2) at the top, then <b>Workforce PD Log</b> (3).</p>' +
+      '<figure class="shot" data-marks="1,40,11,4.2,oval,right,#1; 76.8,18,7.8,4.6,oval,#2; 71.6,25.2,7.6,3.8,oval,#3"><img src="assets/img/wf-export-pdlog.png" alt="Workforce Management, circled as 1 on the navigation bar, with the Export list open: Workforce PD Log, Evidence Map, Complete Delivery Assignment, Document Checklist Status and Workforce Document Report. Export is circled as 2 and Workforce PD Log as 3." loading="lazy"><figcaption>Select Workforce Management (1), Export (2), then Workforce PD Log (3).</figcaption></figure>',
+
     'prog-overview':
       '<p class="lead">Program Management is where your courses and units live. You add courses from training.gov.au, assess each course’s risk, validate its units, and build its Training and Assessment Strategy (TAS).</p>' +
       '<h2 id="open">Open Program Management</h2>' +
@@ -794,7 +2168,7 @@
       '<p>Along the top of the page are three buttons:</p>' +
       '<ul>' +
         '<li><b>Schedule</b> opens your validation schedule and the industry consultation scheduler from <a href="feature.html?m=events">Events</a>.</li>' +
-        '<li><b>View Archived</b> shows archived courses and validations. See <a href="article.html?id=prog-archive">Archive and restore courses</a>.</li>' +
+        '<li><b>View Archived</b> shows archived courses and validations. See <a href="article.html?id=prog-archive">Archive and restore courses and unit validations</a>.</li>' +
         '<li><b>Add Course</b> adds a course from training.gov.au, or a custom program. See <a href="article.html?id=prog-add-course">Add a course</a>.</li>' +
       '</ul>' +
       '<h2 id="courses">The Courses tab</h2>' +
@@ -819,12 +2193,12 @@
             '<div><h4><span class="sn">2.1</span>View Details</h4><p>Shows the course’s details: its title, code, accreditation, level, team and when it was created. Select the pencil to change its title or team. Under <b>Program Risk Summary</b> are its risk level, risk score, validation frequency and the risk factors selected.</p>' +
               '<figure class="shot shot-medium"><img src="assets/img/prog-details.png" alt="Program Details for CPC30220 Certificate III in Carpentry: TGA Accredited, a Qualification, created 2 months ago, in the Construction team, with pencils to edit the title and team. The Program Risk Summary shows a High risk level, a risk score of 7.8 out of 10, a validation frequency of every 36 months, and the selected risk factor Face-to-face delivery mode." loading="lazy"><figcaption>A course’s details and risk summary.</figcaption></figure></div>' +
             '<div><h4><span class="sn">2.2</span>Risk Assessment</h4><p>Complete the risk assessment for a course marked <b>Risk Assessment Pending</b>, or change one that needs amending. See <a href="article.html?id=prog-add-course#risk">Course Risk Assessment</a>.</p></div>' +
-            '<div><h4><span class="sn">2.3</span>Archive</h4><p>Archives the course. See <a href="article.html?id=prog-archive">Archive and restore courses</a>.</p><p>There’s no delete option here. To prevent accidental deletion of a course that may have unit validations and other evidence recorded against it, a course can only be deleted once it’s archived, from <b>View Archived</b>.</p></div>' +
+            '<div><h4><span class="sn">2.3</span>Archive</h4><p>Archives the course. See <a href="article.html?id=prog-archive">Archive and restore courses and unit validations</a>.</p><p>There’s no delete option here. To prevent accidental deletion of a course that may have unit validations and other evidence recorded against it, a course can only be deleted once it’s archived, from <b>View Archived</b>.</p></div>' +
           '</div></li>' +
         '<li id="bulk"><h4>Select boxes</h4><p>Select multiple courses to assign them to a team or archive them. Tick the box before each course’s program code, or the box in the header to select every course. A bar shows how many programs are selected:</p>' +
           '<ul>' +
             '<li><b>Assign Team</b> moves the selected courses to a team.</li>' +
-            '<li><b>Archive Selected</b> archives them. See <a href="article.html?id=prog-archive">Archive and restore courses</a>.</li>' +
+            '<li><b>Archive Selected</b> archives them. See <a href="article.html?id=prog-archive">Archive and restore courses and unit validations</a>.</li>' +
             '<li><b>Clear</b> unticks them all.</li>' +
           '</ul>' +
           '<figure class="shot" data-marks="53.3,20.2,44.9,14.4,zone,#; 2.6,57,2.2,38,oval,#"><img src="assets/img/prog-bulk.png" alt="The Courses list with BSB50420 Diploma of Leadership and Management and BSB40320 Certificate IV in Entrepreneurship and New Business ticked, both in the Business Faculty, and their ticked boxes are circled. A bar beside the search, Filters and Team reads 2 programs selected, with Clear, Assign Team and Archive Selected buttons, and is outlined." loading="lazy"><figcaption>Two courses selected, ready to assign to a team or archive.</figcaption></figure></li>' +
@@ -859,7 +2233,7 @@
           '<figure class="shot"><img src="assets/img/gs-courses-list.png" alt="The Courses list in Program Management, showing three courses with their program code, title, team, number of units, a Manage button for units, risk status from Low to High, and when each was created." loading="lazy"><figcaption>Each course shows its team, number of units and risk status.</figcaption></figure></li>' +
       '</ol>' +
       '<p>Next, add the course’s units. See <a href="article.html?id=prog-add-units">Add and manage a course’s units</a>.</p>' +
-      '<div class="callout tip"><b>Tip</b><span>Using aXcelerate? You can import your courses and their units from it instead. See <a href="article.html?id=gs-connect-axcelerate">Import via aXcelerate</a>.</span></div>',
+      '<div class="callout tip"><b>Tip</b><span>Using aXcelerate? You can import your courses and their units from it instead. See <a href="article.html?id=connect-axcelerate#import-courses">Import Courses</a>.</span></div>',
 
     'prog-course-risk':
       '<p class="lead">Each course has its own risk assessment. Together with your organisational risk, it sets how often the course’s units should be validated.</p>' +
@@ -899,7 +2273,7 @@
       '<figure class="shot"><img src="assets/img/prog-unit-frequency.png" alt="The unit BSBAUD411 Participate in quality audits, marked Validation Recommended Every 6 months and Validation not scheduled, with Validate Now, Schedule and ⋮ buttons. It is a Core unit with Medium physical risk, Medium sensitive content, and a completion rate of 70%, set for this unit, with a Use course rate link." loading="lazy"><figcaption>A unit with medium physical risk and sensitive content, recommended for validation every 6 months.</figcaption></figure>' +
       '<p>In this example, the course is validated every 18 months. But this unit has medium physical risk, medium sensitive content and a low completion rate of 70%, so it must be validated more often than the course’s other units: every 6 months.</p>' +
       '<p>A unit’s completion rate starts as its course’s. To set its own, enter it in <b>Completion Rate (%)</b>. Select <b>Use course rate</b> to go back to the course’s. See <a href="article.html?id=prog-add-units#risk">Unit risks configuration</a>.</p>' +
-      '<div class="callout note"><b>Note</b><span>Admins can change how risk scores map to validation frequencies. See <a href="article.html?id=cust-frequency-bands">Validation frequency bands and escalation</a>.</span></div>',
+      '<div class="callout note"><b>Note</b><span>Admins can change how risk scores map to validation frequencies. See <a href="article.html?id=cust-frequency-bands">Set validation frequency and escalation</a>.</span></div>',
 
     'prog-add-units':
       '<p class="lead">A course page lists the course’s units. Here you add units, set each unit’s risk, and validate, schedule or record its validations. Through its training.gov.au (TGA) connection, RTO Radar can load every unit in a nationally recognised course, so you don’t need to enter them yourself.</p>' +
@@ -1071,7 +2445,7 @@
       '<figure class="shot" data-marks="94,6.9,4,12.5,oval,above,#1; 79.6,34,17.6,9.7,oval,#2"><img src="assets/img/prog-complete-menu.png" alt="The unit CHCECE041 with its ⋮ menu open: Complete Validation, Unit Validation History, Assessment Judgement, Post Validation History, Edit Unit Details and Delete Unit. The ⋮ button is circled as marker 1, and Unit Validation History as marker 2." loading="lazy"><figcaption>Select the ⋮ (1), then Unit Validation History (2).</figcaption></figure>' +
       '<p>Each time a unit is validated, a new version is added, numbered from Version 1. The newest is at the top.</p>' +
       '<figure class="shot"><img src="assets/img/prog-history.png" alt="Unit Validation History for CHCECE046 Implement strategies for the inclusion of all children. Version 5 is completed, with uploaded evidence, shared with 2 programs, completed by Admin Demo on 26/10/2026, with its validation report file and completion notes, and Archive, View and Download buttons. Version 4 is completed in RTO Radar, shared with 2 programs, with a linked schedule. Versions 3 and 1 are in progress, and Version 2 is completed in RTO Radar." loading="lazy"><figcaption>Each version, newest first.</figcaption></figure>' +
-      '<p>A version with uploaded evidence has a <b>Download</b> <svg class="ui-icon" viewBox="0 0 24 24" aria-label="download" role="img"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg> button for its validation report, along with any completion notes. <b>Shared with programs</b> shows how many programs the validation covers. To archive a version, select the archive icon <svg class="ui-icon" viewBox="0 0 24 24" aria-label="archive" role="img"><path d="M3 5h18v4H3zM5 9v10h14V9M10 13h4"/></svg>. Find archived validations under <b>View Archived</b> at the top of the Program Management page. See <a href="article.html?id=prog-archive">Archive and restore courses</a>.</p>' +
+      '<p>A version with uploaded evidence has a <b>Download</b> <svg class="ui-icon" viewBox="0 0 24 24" aria-label="download" role="img"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg> button for its validation report, along with any completion notes. <b>Shared with programs</b> shows how many programs the validation covers. To archive a version, select the archive icon <svg class="ui-icon" viewBox="0 0 24 24" aria-label="archive" role="img"><path d="M3 5h18v4H3zM5 9v10h14V9M10 13h4"/></svg>. Find archived validations under <b>View Archived</b> at the top of the Program Management page. See <a href="article.html?id=prog-archive">Archive and restore courses and unit validations</a>.</p>' +
       '<h2 id="share">Share unit validations</h2>' +
       '<p>If the same unit is in more than one of your programs and they use the same assessment tools, one validation can cover them all. Choose the programs it covers under <b>Programs covered by this validation</b>, in Phase 4 of the validation. See <a href="article.html?id=prog-validation-phases#phase4">Phase 4: Add Improvement Items</a>. For a validation completed outside RTO Radar, choose them in <b>Complete Validation</b>. See <a href="article.html?id=prog-complete-validation">Record a validation completed outside RTO Radar</a>.</p>',
 
@@ -1094,8 +2468,11 @@
         '<li>Tick the <b>Declaration</b>, then select <b>Save Validation</b>.' +
           '<figure class="shot shot-medium" data-marks="3.3,30.2,2.2,9.8,oval,#; 90.7,69.3,arrow-down,small"><img src="assets/img/prog-aj-declaration.png" alt="The Declaration, confirming this assessment validation was conducted in accordance with the Standards for RTOs, ticked, with its tick box circled. An arrow points down to the Save Validation button, beside Cancel." loading="lazy"><figcaption>Tick the declaration (circled), then select Save Validation.</figcaption></figure></li>' +
       '</ol>' +
-      '<p>To see past assessment judgements, select <b>⋮</b> › <b>Post Validation History</b>.</p>' +
-      '<figure class="shot" data-marks="94.6,5.3,3.9,10.2,oval,above,#1; 79.4,41.6,19.6,8.7,oval,#2"><img src="assets/img/prog-aj-menu.png" alt="The unit CHCECE041 with its ⋮ menu open: Complete Validation, Unit Validation History, Assessment Judgement, Post Validation History, Edit Unit Details and Delete Unit. The ⋮ button is circled as marker 1, and Post Validation History as marker 2." loading="lazy"><figcaption>Select the ⋮ (1), then Post Validation History (2).</figcaption></figure>',
+      '<h2 id="history">Post validation history</h2>' +
+      '<p>To see past assessment judgements for a unit, select <b>⋮</b> (1) › <b>Post Validation History</b> (2).</p>' +
+      '<figure class="shot" data-marks="94.6,5.3,3.9,10.2,oval,above,#1; 79.4,41.6,19.6,8.7,oval,#2"><img src="assets/img/prog-aj-menu.png" alt="The unit CHCECE041 with its ⋮ menu open: Complete Validation, Unit Validation History, Assessment Judgement, Post Validation History, Edit Unit Details and Delete Unit. The ⋮ button is circled as marker 1, and Post Validation History as marker 2." loading="lazy"><figcaption>Select the ⋮ (1), then Post Validation History (2).</figcaption></figure>' +
+      '<p><b>Assessment Judgement History</b> lists each version, newest first, with its status, such as <b>Declared</b>. Each shows the validation date, validator and their role, delivery mode, assessment period, the assessment tools reviewed and how many submissions were reviewed. Select <b>Evidence</b> to download what was uploaded.</p>' +
+      '<figure class="shot shot-medium" data-marks="77.6,34.3,15.4,7.6,oval,#"><img src="assets/img/prog-aj-history.png" alt="Assessment Judgement History for CHCECE041 Maintain a safe and healthy environment for children. Version 1, Declared: validation date 26 Oct 2026, validator Admin Demo, an Internal Validator, blended delivery, assessment period 01 Jan 2026 to 30 Sep 2026. The tools reviewed were knowledge questions, practical observation tools, projects or case studies, marking guides and benchmarks, and third party reports, with 20 submissions reviewed. Recorded 04 Nov 2026 at 13:32. Evidence, at the top right, is circled." loading="lazy"><figcaption>A declared assessment judgement. Select Evidence (circled) to download its evidence.</figcaption></figure>',
 
     'prog-industry-consultation':
       '<p class="lead">Record each industry consultation as evidence of industry engagement. Consultations feed the Industry &amp; Feedback section of your TAS.</p>' +
@@ -1331,7 +2708,17 @@
         '<li>When you approve, <b>QMS Document Settings</b> opens. Choose the <b>Next Review Date</b> and check the <b>Compliance Framework Mappings</b>, then select <b>Save &amp; Continue</b>. The approved TAS appears in <a href="feature.html?m=qms">Document Management</a>, with its review date and mappings.' +
           '<figure class="shot shot-medium" data-marks="76.9,87.4,18.8,7.6,oval,#"><img src="assets/img/tas-qms-settings.png" alt="QMS Document Settings, to set the review date and compliance framework mappings for the QMS document record. The Next Review Date is 28/10/2027. Under Compliance Framework Mappings, the Standards for RTOs 2025 has 10 selected, carried over from the submission, and Demo Custom Framework is below. Skip, and Save and Continue, which is circled." loading="lazy"><figcaption>Set the next review date and mappings, then select Save &amp; Continue (circled).</figcaption></figure></li>' +
       '</ol>' +
-      '<div class="callout note"><b>Note</b><span>An approved TAS is read-only. To change it, open it in the TAS Builder and select <b>Create New Version</b>. This creates a draft of the next version, such as draft v2. Make your changes, then submit it for review again.<br><br>A declined TAS shows as Rejected. Open it in the TAS Builder, read the reviewer’s comment, make the changes, then select <b>Submit for Review</b> again.</span></div>' +
+      '<h2 id="new-version">Change a TAS after a decision</h2>' +
+      '<p>Approved and rejected TAS are read-only. To change one, create a new version: a draft of the next version, such as draft v2. Make your changes, then submit it for review again.</p>' +
+      '<ol class="steps-list">' +
+        '<li>On the <b>TAS Builder</b> tab, open the TAS from the <b>Master TAS</b> or <b>Cohort TAS</b> tab. Its status shows whether it was approved or rejected.' +
+          '<figure class="shot" data-marks="2.1,85.2,96.3,14.4,zone,#"><img src="assets/img/tas-list-rejected.png" alt="The TAS Builder on the Master TAS tab, beside Cohort TAS, Submissions and Submission Management. CPC30220 Certificate III in Carpentry, in the Construction team, version 1, is marked Rejected, updated 29/10/2026, and is outlined." loading="lazy"><figcaption>A rejected Master TAS (outlined).</figcaption></figure></li>' +
+        '<li>For a rejected TAS, read the reviewer’s comment, then select <b>Create New Version</b>.' +
+          '<figure class="shot" data-marks="7.9,72.8,62.6,0.3,underline,#; 73.2,71.5,#1; 20.5,42.4,13.5,7.9,oval,right,#2"><img src="assets/img/tas-rejected.png" alt="The Master TAS for CPC30220 Certificate III in Carpentry, Construction team, marked Rejected, rejected v1, with Export and Create New Version. A message says the TAS was rejected: review the comments, make changes and submit again. The reviewer comment, underlined as 1, reads: Elective units show 6 selected, but the packaging rules require 3. Remove the extra electives and resubmit. Rejected on 28/10/2026. A note says the TAS is read-only and to create a new version. Create New Version is circled as 2." loading="lazy"><figcaption>Read the reviewer’s comment (1), then select Create New Version (2).</figcaption></figure></li>' +
+        '<li>The new version opens as a draft, such as <b>draft v2</b>. Make the changes, then select <b>Submit for Review</b>. See <a href="#submit">Submit a TAS for review</a>.' +
+          '<figure class="shot" data-marks="4.4,77.8,5.4,10.3,oval,#1; 32.2,75.6,13,14.6,oval,#2"><img src="assets/img/tas-draft-v2.png" alt="The Master TAS for CPC30220 Certificate III in Carpentry, now Draft, draft v2, with Refresh from TGA, Export, Submit for Review and Save. Draft v2 is circled as 1, and Submit for Review as 2." loading="lazy"><figcaption>The new draft v2 (1). When it’s ready, select Submit for Review (2).</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>Previous versions, and their reviews, stay in <b>Submissions</b> for audit.</p>' +
       '<h2 id="history">Past submissions</h2>' +
       '<p>The <b>Submissions</b> tab lists every submission and decision, with its type, qualification, team, action, comments and date. Filter by qualification or comments, action, type and team. Select <b>ZIP</b> to download a submission with its records.</p>' +
       '<figure class="shot" data-marks="18.8,30.9,6.9,3.8,oval,#"><img src="assets/img/tas-submissions.png" alt="The Submissions tab of the TAS Builder, which is circled, with a filter box, All Actions, All Types and a Team filter. Three submissions are listed with their type, qualification, team, action, comments and date: a Master TAS for CHC50121 Diploma of Early Childhood Education and Care, approved 28/10/2026; a Cohort TAS for CHC22015 Certificate II in Community Services, rejected 27/10/2026; and a Master TAS for CHC30121 Certificate III in Early Childhood Education and Care, approved 27/10/2026. Each has a ZIP download and a bin." loading="lazy"><figcaption>The Submissions tab (circled) keeps every submission and decision for audit.</figcaption></figure>' +
@@ -1372,6 +2759,188 @@
       '<figure class="shot" data-marks="2.4,77,92.8,15.5,zone,#"><img src="assets/img/tas-wil-cohort.png" alt="7.1 Workplace Integrated Learning in the Semester 1 2027 Cohort TAS. It keeps the Master TAS wording on workplace assessment evidence and the four assessment types, and adds an outlined paragraph: Students complete the 280 hours of work placement at three partner long day care services near the Melbourne Campus, each a regulated education and care service with a current service approval. Each student is placed at one service for the whole placement and supervised by a qualified educator nominated by the service. Placement agreements are signed before the placement starts." loading="lazy"><figcaption>The Cohort TAS keeps the Master wording and adds this intake’s placement arrangements (outlined).</figcaption></figure>' +
       '<p>A Cohort TAS is submitted, reviewed and approved in the same way as a Master TAS. See <a href="article.html?id=prog-tas-review">Submit, review and approve a TAS</a>.</p>',
 
+    'cust-overview':
+      '<p class="lead">Organisation settings apply to everyone in your RTO. Only Admins can change them.</p>' +
+      '<p>Select <b>Settings</b> (circled) in the navigation bar.</p>' +
+      '<figure class="shot shot-tiny" data-marks="3.4,91.9,93.2,6.8,oval,#"><img src="assets/img/settings-nav.png" alt="The navigation bar under RTO Admin, Organisation Management: Dashboard, Document Management, Program Management, Continuous Improvement, Workforce Management, Risk Assessment, Complaints &amp; Suggestions, Events and Settings, which is circled." loading="lazy"><figcaption>Select Settings (circled).</figcaption></figure>' +
+      '<p><b>Organisation Settings</b> opens, with five tabs (outlined). <b>Customisation</b> has six tabs of its own.</p>' +
+      '<figure class="shot" data-marks="16.8,74.6,66.4,16,zone,#"><img src="assets/img/settings-tabs.png" alt="Organisation Settings: configure your organisation’s settings and integrations, with the tabs Integrations, User Management, Security, Professional Development and Customisation outlined." loading="lazy"><figcaption>The five Organisation Settings tabs (outlined).</figcaption></figure>' +
+      '<table><thead><tr><th>Tab</th><th>What you set</th></tr></thead><tbody>' +
+        '<tr><td>Integrations</td><td>Connect aXcelerate to import courses, units and staff. See <a href="article.html?id=connect-axcelerate">aXcelerate integration</a>.</td></tr>' +
+        '<tr><td>User Management</td><td>Invitations, roles and teams. See <a href="feature.html?m=users">Users, Roles &amp; Teams</a>.</td></tr>' +
+        '<tr><td>Security</td><td>MFA for the whole organisation. See <a href="article.html?id=mfa-set-organisation">Set up MFA for your organisation</a>.</td></tr>' +
+        '<tr><td>Professional Development</td><td>PD settings. See <a href="article.html?id=pd-configure">Set up Professional Development</a>.</td></tr>' +
+        '<tr><td>Customisation › Risk</td><td>Course and unit risk scoring, validation frequency, risk categories and register versioning.</td></tr>' +
+        '<tr><td>Customisation › QMS</td><td>Compliance health weighting and document types.</td></tr>' +
+        '<tr><td>Customisation › Dashboard</td><td>The dashboard widgets everyone sees, and where teams show.</td></tr>' +
+        '<tr><td>Customisation › CIR</td><td>Custom CI registers, importing items, sources and reminders.</td></tr>' +
+        '<tr><td>Customisation › TAS Templates</td><td>TAS boilerplate wording, unit table columns and default standards.</td></tr>' +
+        '<tr><td>Customisation › Branding</td><td>Your logo on exports and in the navigation bar.</td></tr>' +
+      '</tbody></table>',
+
+    'cust-course-risk-weights':
+      '<p class="lead">Set the points used to score course and unit risk. They’re your RTO’s defaults for every program, and the course score sets how often its units are validated.</p>' +
+      '<p>Go to <b>Settings</b> (1) › <b>Customisation</b> (2) › <b>Risk</b> (3) › <b>Calculation</b> (4). Change any value, then save at the bottom of the page.</p>' +
+      '<figure class="shot" data-marks="0.6,79,15.2,6.8,oval,right,#1; 72.9,42.2,9.2,7.6,oval,above,#2; 21.4,75.4,12.4,7.6,oval,right,#3; 21.4,87.8,24.6,7.6,oval,right,#4"><img src="assets/img/cust-risk-calc.png" alt="Settings in the navigation, circled as 1. Organisation Settings on the Customisation tab, circled as 2, open on Risk, circled as 3, beside QMS, Dashboard, CIR, TAS Templates and Branding. Under Risk, Calculation is circled as 4, beside Frequency and Risk Register." loading="lazy"><figcaption>Settings (1), Customisation (2), Risk (3), then Calculation (4).</figcaption></figure>' +
+      '<h2 id="course">Course risk score</h2>' +
+      '<p>A course scores points for its completion rate and enrolment volume over the past 12 months, its delivery mode, how much RPL is used, and how much assessment is unsupervised. Change the points for any option.</p>' +
+      '<p>The completion rate and enrolment volume are scored in bands, and you can change the bands too. Edit a band’s range and score, select <b>Add band</b> (circled) to add one, or the bin to remove one.</p>' +
+      '<figure class="shot" data-marks="1.6,37.1,10.6,4.4,oval,right,#"><img src="assets/img/cust-risk-course.png" alt="Course Risk Assessment - Risk Score: set the organisation-wide weights and bands used to score course risk and recommend validation frequency, which apply to every program as the default. Numeric bands: course completion rate over the past 12 months, 75 to 100% scores 0, 50 to 74% scores 1 and 0 to 49% scores 2; student enrolment volume over the past 12 months, 0 to 100 students scores 0, 101 to 200 scores 1 and 201 or more scores 2. Each band has a bin, and Add band under the completion rate is circled. Scored choices: delivery mode, Face-to-face 0, Blended 1 and Online only 2; RPL, None 0, Minimal 0, Moderate 1 and Extensive 2; unsupervised assessments, None 0, Some 1 and Extensive 2." loading="lazy"><figcaption>The default course risk points. Add band (circled) adds a band.</figcaption></figure>' +
+      '<p><b>Risk triggers</b> add points when a program is flagged with them. Most add 1 point. Offshore delivery and compliance history concerns add 2. Set a trigger to 0 to turn it off.</p>' +
+      '<figure class="shot shot-medium"><img src="assets/img/cust-risk-triggers.png" alt="Yes/No triggers. Risk triggers (yes/no factors): points added when a program flags the trigger; set to 0 to disable a factor. Delivery below nominal hours / volume of learning, 1; Structured work placement or employer-based assessment, 1; New or recently updated assessment tools, 1; Course is new to the RTO or assigned to new assessors, 1; Delivery to international (CRICOS) students, 1; Offshore delivery (ESOS / ASQA scrutiny), 2; Government funded delivery, 1; Apprenticeship or traineeship pathway, 1; Compliance history concerns, 2." loading="lazy"><figcaption>The default points for each risk trigger.</figcaption></figure>' +
+      '<h2 id="unit">Unit risk score</h2>' +
+      '<p>Each unit scores points for its <b>Physical risk</b> and <b>Sensitive content</b>. They feed into the unit’s total risk score and recommended validation frequency.</p>' +
+      '<figure class="shot"><img src="assets/img/cust-risk-unit.png" alt="Unit risk assessment - risk score: points awarded for each level of the per-unit risk factors, which feed into the unit’s total risk score and recommended validation frequency. Physical risk, the risk of physical harm or trauma during delivery or assessment of the unit, and Sensitive content, exposure to sensitive, distressing or potentially triggering content within the unit, each score None 0, Low 1, Medium 2 and High 3." loading="lazy"><figcaption>The default unit risk points.</figcaption></figure>' +
+      '<h2 id="save">Save and apply</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Optionally, explain the change under <b>Rationale</b> (1). It’s kept as an audit trail.</li>' +
+        '<li>Select <b>Save baseline</b> (2). It applies to new assessments, and to assessments when they’re next saved.' +
+          '<figure class="shot" data-marks="1.6,21.5,58.6,36,zone,#1; 85,68.5,13.4,21,oval,above,#2"><img src="assets/img/cust-risk-save.png" alt="Rationale (optional), outlined as 1, reading Increased weighting for offshore delivery after ASQA guidance. Below are Reset to defaults, Discard changes, and Save baseline, circled as 2." loading="lazy"><figcaption>A rationale (1), then Save baseline (2).</figcaption></figure></li>' +
+        '<li>To update every program now, select <b>Recalculate all program risk scores</b> (circled). See <a href="feature.html?m=custom&find=What%E2%80%99s%20the%20difference%20between%20Save%20baseline#faq">Save baseline or recalculate?</a>' +
+          '<figure class="shot" data-marks="1.8,57.5,24.8,30,oval,#"><img src="assets/img/cust-risk-recalc.png" alt="Apply baseline to existing assessments: saving the baseline only affects new or re-saved assessments; use this action to recompute every stored program risk score using the current baseline and frequency bands. Recalculate all program risk scores is circled." loading="lazy"><figcaption>Select Recalculate all program risk scores (circled).</figcaption></figure></li>' +
+        '<li>Select <b>Recalculate now</b> to confirm. Each program’s inputs, such as its delivery mode and completion rate, are kept. Only its score, risk level and recommended frequency change.' +
+          '<figure class="shot shot-small" data-marks="82.3,76,arrow-down,small"><img src="assets/img/cust-risk-recalc-confirm.png" alt="Recalculate program risk scores? This will recompute 26 stored assessments using the current Risk Baseline and Validation Frequency settings. Existing inputs (delivery mode, completion rate, factors) are preserved; only the computed score, risk level, and recommended frequency will change. Cancel, and Recalculate now, with an arrow pointing down at it." loading="lazy"><figcaption>Confirm with Recalculate now (arrow).</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>Select <b>Reset to defaults</b> to go back to RTO Radar’s values.</p>',
+
+    'cust-frequency-bands':
+      '<p class="lead">Set how often units are validated, and how many are sampled, at each level of course risk.</p>' +
+      '<p>Go to <b>Settings</b> (1) › <b>Customisation</b> (2) › <b>Risk</b> (3) › <b>Frequency</b> (4).</p>' +
+      '<figure class="shot" data-marks="0.6,79.4,15.2,6.8,oval,right,#1; 72.9,42.6,9.2,7.6,oval,above,#2; 21.4,75.8,12.4,7.6,oval,right,#3; 45.8,88.2,24.6,7.6,oval,right,#4"><img src="assets/img/cust-freq-open.png" alt="Settings in the navigation, circled as 1. Organisation Settings on the Customisation tab, circled as 2, open on Risk, circled as 3. Under Risk, Frequency is circled as 4, between Calculation and Risk Register." loading="lazy"><figcaption>Settings (1), Customisation (2), Risk (3), then Frequency (4).</figcaption></figure>' +
+      '<p>The bands match the <b>Total Risk Score</b> on the Course Risk Assessment, a blend of the provider and course scores scaled from 1 to 10. The defaults reflect SRTO 2025 best practice and risk-based sampling.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Change a band’s <b>Validation Frequency</b>, <b>Recommendation Sampling</b> or <b>Priority Label</b>. A changed value is marked <b>Custom</b> (circled), and the <b>Recommended</b> column shows the default.' +
+          '<figure class="shot" data-marks="43.6,56.6,7.4,6.4,oval,#"><img src="assets/img/cust-freq-bands.png" alt="Course Risk Assessment - Frequency. Bands are matched against the Total Risk Score on the Course Risk Assessment, a blended Provider and Course score scaled to 1 to 10. A note says your organisation is using custom validation settings, with default values shown for reference. 8 to 10, Very High Risk: 6 months, 100%, High. 6 to 7, High Risk: 6 months, marked Custom and circled, 100%, Medium, with 12mo / 100% / Medium recommended. 4 to 5, Medium Risk: 18 months, 30%, Low. 2 to 3, Low-Medium Risk: 24 months, 20%, Low. 1, Low Risk: 36 months, 10%, Minimal." loading="lazy"><figcaption>High Risk changed to 6 months, marked Custom (circled). The default was 12 months.</figcaption></figure></li>' +
+        '<li>Under <b>Override Options</b> (1), choose whether to always include units that have never been validated, and units that are overdue, whatever the sampling.</li>' +
+        '<li>Under <b>Priority Escalation Settings</b> (2), choose when units move up a priority. A unit escalates when its risk score <b>or</b> days overdue reaches the threshold: by default, Urgent at 80+ or 1 year, High at 60+ or 6 months, and Medium at 40+ or 90 days.</li>' +
+        '<li>Select <b>Save frequency</b> (3).' +
+          '<figure class="shot" data-marks="2.4,0.4,95.6,19.8,zone,#1; 2.4,23.6,95.6,54.4,zone,#2; 84.3,83.4,13.8,7,oval,above,#3"><img src="assets/img/cust-freq-escalation.png" alt="Override Options, outlined as 1: always include units that have never been validated, and always include units that are overdue for validation, both ticked. Priority Escalation Settings, outlined as 2: units escalate to a priority level if their risk score or days overdue meets the threshold. Urgent at 80+ or 1 year, High at 60+ or 6 months, Medium at 40+ or 90 days, and Low below the Medium thresholds automatically. Reset to defaults, Discard changes, and Save frequency, circled as 3. A note says changes apply to new validation recommendations, and existing scheduled validations aren’t automatically updated." loading="lazy"><figcaption>Override Options (1), Priority Escalation Settings (2), then Save frequency (3).</figcaption></figure></li>' +
+      '</ol>' +
+      '<div class="callout note"><b>Note</b><span>Changes apply to new validation recommendations. Validations already scheduled aren’t updated.</span></div>',
+
+    'cust-risk-categories':
+      '<p class="lead">Choose whether the risk register is saved as named versions, and set up the categories risks are grouped into.</p>' +
+      '<p>Go to <b>Settings</b> (1) › <b>Customisation</b> (2) › <b>Risk</b> (3) › <b>Risk Register</b> (4).</p>' +
+      '<figure class="shot" data-marks="0.6,78.9,15.2,7,oval,right,#1; 72.9,42.2,9.2,7.6,oval,above,#2; 21.4,75.4,12.4,7.6,oval,right,#3; 70.1,88.2,24.8,7.6,oval,#4"><img src="assets/img/cust-riskreg-open.png" alt="Settings in the navigation, circled as 1. Organisation Settings on the Customisation tab, circled as 2, open on Risk, circled as 3. Under Risk, Risk Register is circled as 4, beside Calculation and Frequency." loading="lazy"><figcaption>Settings (1), Customisation (2), Risk (3), then Risk Register (4).</figcaption></figure>' +
+      '<h2 id="versions">Register versioning</h2>' +
+      '<p>Every time the risk register is saved, RTO Radar keeps a <b>revision</b>. A <b>version</b> is a revision you’ve finalised as a named, permanent copy, such as the register your governance meeting approved.</p>' +
+      '<ul>' +
+        '<li><b>Enable risk register versioning</b> (1): finalise saved revisions into named versions. When it’s off, the register keeps its Revision History only, and the Versions tab is hidden.</li>' +
+        '<li><b>Create a version automatically for every revision</b> (2): each save also publishes a version. Turn it off to choose which revisions to finalise. You can only turn it on when versioning is on.</li>' +
+      '</ul>' +
+      '<p>Select <b>Save changes</b> (arrow). See <a href="article.html?id=risk-versions">Risk register revisions and versions</a>.</p>' +
+      '<figure class="shot" data-marks="92.2,26.2,5.2,8.2,oval,#1; 92.2,56.2,5.2,8.2,oval,#2; 91.8,85.2,arrow-down,tiny"><img src="assets/img/cust-riskreg-versions.png" alt="Risk Register Versions: control whether your organisation finalises the risk register into named versions, and whether those versions are created automatically. Enable risk register versioning, switched on and circled as 1: a version is a finalised, named snapshot taken from a saved revision; when this is off, the Risk Register keeps its Revision History only and the Versions sub tab is hidden. Create a version automatically for every revision, switched on and circled as 2: when on, saving the risk register also publishes a matching version; turn this off to make versioning a manual process, where you choose the revision to finalise. Discard changes, and Save changes, with an arrow pointing down at it." loading="lazy"><figcaption>Both switches on (1, 2). Select Save changes (arrow).</figcaption></figure>' +
+      '<h2 id="categories">Risk categories</h2>' +
+      '<p>Each category shows how many risks and treatment plans use it (1). Select <b>Edit</b> (2) to change its name, subtitle or example.</p>' +
+      '<figure class="shot" data-marks="67.4,24,12.6,6.4,zone,#; 65.2,27.2,#1; 80.4,23.6,7.4,5.8,oval,above,#2"><img src="assets/img/cust-riskcat-list.png" alt="Configure Risk Categories: review the categories used by your Risk Register, adjust their names and subtitles, add your own, and archive any you no longer use; archiving is only available for categories with no risks and no treatment plans. A search box and Filters, showing 11 of 12 categories. Strategic Risk, Default, with 3 risks and 3 treatment plans outlined as 1, and Edit circled as 2. Financial Risk, Operational and Educational Risk, and ICT and Cyber-Security Risk follow, each Default with its risks, treatment plans, a description and an example. Archive is unavailable on each, as they have risks." loading="lazy"><figcaption>Risks and treatment plans in each category (1), and Edit (2).</figcaption></figure>' +
+      '<h3 id="add-category">Add a category</h3>' +
+      '<ol class="steps-list">' +
+        '<li>Below the list, select <b>Add custom category</b> (circled).' +
+          '<figure class="shot" data-marks="1.6,46,17.6,22.8,oval,right,#"><img src="assets/img/cust-riskcat-add.png" alt="Page 1 of 2, 11 records, with Rows per page, Previous and Next. Add custom category is circled, above Archived categories (1)." loading="lazy"><figcaption>Select Add custom category (circled).</figcaption></figure></li>' +
+        '<li>Enter its <b>Category name</b>, a <b>Subtitle</b> describing what it covers, and optionally an <b>Example</b>. Then select <b>Add category</b> (circled).' +
+          '<figure class="shot" data-marks="1.2,87,13.6,11.4,oval,right,#"><img src="assets/img/cust-riskcat-form.png" alt="New custom category: Category name Third Party Delivery Risk; Subtitle: Training or assessment delivered by a third party doesn’t meet the Standards; Example: A partner’s trainers lack current industry experience. Add category is circled." loading="lazy"><figcaption>A new category for third-party delivery. Select Add category (circled).</figcaption></figure></li>' +
+        '<li>The category is added to the list, marked <b>Custom</b> (1). Select <b>Save changes</b> (2).' +
+          '<figure class="shot" data-marks="2,39.6,96,18.2,zone,#1; 85,85.4,13.4,6.2,oval,above,#2"><img src="assets/img/cust-riskcat-added.png" alt="Configure Risk Categories, showing 12 of 13 categories, on page 2: Governance Risk, Default, with 3 risks, and Third Party Delivery Risk, Custom, with 0 risks and 0 treatment plans, its subtitle and example, and Edit, Archive and a bin, outlined as 1. Below are Add custom category, Archived categories (1), Discard changes, and Save changes, circled as 2." loading="lazy"><figcaption>Third Party Delivery Risk added as a Custom category (1). Select Save changes (2).</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>Custom categories can also be deleted with the bin.</p>' +
+      '<h3 id="archive">Archive or restore a category</h3>' +
+      '<p>Archive a category you no longer use to hide it from the risk register. You can only archive a category with no risks or treatment plans.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Select <b>Archive</b> (circled) on the category.' +
+          '<figure class="shot" data-marks="89.2,11,10,28.6,oval,#"><img src="assets/img/cust-riskcat-archive.png" alt="Political Risk, Default: funding cuts from government policy changes, with 0 risks and 0 treatment plans, and Edit and Archive, which is circled." loading="lazy"><figcaption>Political Risk has no risks or treatment plans, so it can be archived. Select Archive (circled).</figcaption></figure></li>' +
+        '<li>Answer why you want to archive it, and the actions that led to the decision. Your answers are kept permanently, and included in risk register exports and the audit trail. Then select <b>Archive category</b> (circled).' +
+          '<figure class="shot shot-medium" data-marks="71.6,87,25.6,9.4,oval,#"><img src="assets/img/cust-riskcat-archive-confirm.png" alt="Archive this risk category? Political Risk will be hidden from the Risk Register, so no new risks can be added to it; your answers are recorded permanently against your RTO and included in the risk register exports and audit trail. 1. Why do you want to archive this risk category, Political Risk? A recent risk review determined the category is no longer relevant to current operations. 2. Please detail the actions taken that resulted in the decision to archive the category: the risk register was reviewed to confirm no active risks or treatment plans were associated with Political Risk, existing categories were reviewed for overlap, and future political or government related risks could be classified under Strategic or External Risk, so the category was approved for archiving. Cancel, and Archive category, which is circled." loading="lazy"><figcaption>Both questions answered. Select Archive category (circled).</figcaption></figure></li>' +
+        '<li>The category moves to <b>Archived categories</b> (underlined), with when it was archived, who archived it, and your answers (1). Select <b>Restore</b> (2) to bring it back.' +
+          '<figure class="shot" data-marks="4.2,14.6,12.6,3.2,underline,#; 3,38.8,64,33.4,zone,#1; 87.5,21,9.4,6.6,oval,#2"><img src="assets/img/cust-riskcat-archived.png" alt="Archived categories (1), underlined, open on Political Risk, Default and Archived, with 0 risks and 0 treatment plans: funding cuts from government policy changes. Date archived 01/09/2026, 3:38 PM, by Admin Demo, admindemo@rtoradar.com.au, RTO Admin, outlined as 1. Why do you want to archive this risk category, Political Risk? A recent risk review determined the category is no longer relevant to current operations. Please detail the actions taken that resulted in the decision to archive the category: the risk register was reviewed to confirm no active risks or treatment plans were associated with Political Risk, and future political or government-related risks could be classified under Strategic or External Risk. Edit, and Restore, circled as 2." loading="lazy"><figcaption>An archived category, with its archive record (1). Select Restore (2) to bring it back.</figcaption></figure></li>' +
+      '</ol>',
+
+    'cust-compliance-health':
+      '<p class="lead">Set how much each part of the compliance health score counts. The score shows on the QMS dashboard.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Settings</b> (1) › <b>Customisation</b> (2) › <b>QMS</b> (3) › <b>Compliance Health</b> (4).' +
+          '<figure class="shot" data-marks="0.3,79.6,12.8,8.4,oval,right,#1; 68.9,42.6,7.9,8.4,oval,above,#2; 36.2,76.4,10.6,8.6,oval,above,#3; 26.1,89,30.9,8.6,oval,right,#4"><img src="assets/img/cust-qms-open.png" alt="Settings in the navigation, circled as 1. Organisation Settings on the Customisation tab, circled as 2, open on QMS, circled as 3. Under QMS, Compliance Health is circled as 4, beside Document Types." loading="lazy"><figcaption>Settings (1), Customisation (2), QMS (3), then Compliance Health (4).</figcaption></figure></li>' +
+        '<li>Drag the sliders. The weights must add up to 100%, shown as the <b>Total</b>. A changed weight is marked <b>Custom</b>, with its default beside it. The defaults are <b>Standards Coverage</b> 50%, how well your documents cover the standards; <b>Review Timeliness</b> 30%, whether documents are reviewed on schedule; and <b>Document Freshness</b> 20%, the age and currency of documents.</li>' +
+        '<li>Select <b>Save Weights</b> (arrow).' +
+          '<figure class="shot" data-marks="91.6,89.4,arrow-down,small"><img src="assets/img/cust-qms-health.png" alt="Compliance Health Weighting: configure how the compliance health score is calculated; weights must sum to 100%. Standards Coverage, how well your documents cover required standards, 40%, marked Custom, with Default: 50%. Review Timeliness, whether documents are reviewed on schedule, 40%, Custom, default 30%. Document Freshness, age and currency of your documents, 20%, default 20%. Total 100%. Discard Changes, Reset to Defaults, and Save Weights, with an arrow pointing down at it." loading="lazy"><figcaption>Standards Coverage and Review Timeliness changed, each marked Custom. Select Save Weights (arrow).</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>Select <b>Discard Changes</b> to undo changes you haven’t saved, or <b>Reset to Defaults</b> to go back to 50, 30 and 20. See <a href="article.html?id=qms-health">compliance health</a>.</p>',
+
+    'cust-document-types':
+      '<p class="lead">Document types sort documents in the Document Management System. RTO Radar has ten built-in types, such as Policy, Procedure and TAS. Add your own for anything else.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Settings</b> (1) › <b>Customisation</b> (2) › <b>QMS</b> (3) › <b>Document Types</b> (4).' +
+          '<figure class="shot" data-marks="0.3,76.8,12.8,8.2,oval,right,#1; 68.9,41.2,7.9,8.2,oval,above,#2; 36.2,73.8,10.6,8.4,oval,above,#3; 56.5,85.8,31,8.4,oval,#4"><img src="assets/img/cust-doctypes-open.png" alt="Settings in the navigation, circled as 1. Organisation Settings on the Customisation tab, circled as 2, open on QMS, circled as 3. Under QMS, Document Types is circled as 4, beside Compliance Health." loading="lazy"><figcaption>Settings (1), Customisation (2), QMS (3), then Document Types (4).</figcaption></figure></li>' +
+        '<li>Enter the <b>Document type name</b>, such as Audit Report, and optionally a <b>Description</b> of when to use it. Then select <b>Add document type</b> (circled).' +
+          '<figure class="shot" data-marks="3.1,73.6,16,17.6,oval,right,#"><img src="assets/img/cust-doctypes-add.png" alt="Document Types: every document type available in the Document Management System; create your own types, edit or archive them, and drag the list into the order you want it to appear in for uploads, type changes and filters. Custom types are shared with any RTOs linked to this one, and renaming a type updates every document already using it. Document type name Audit Report, Description: Internal and external audit reports, and their findings. Add document type is circled." loading="lazy"><figcaption>A new Audit Report type. Select Add document type (circled).</figcaption></figure></li>' +
+        '<li>Drag each type by its handle (1) into the order you want. It’s the order used for uploads, type changes and filters. Your own types show <b>Edit</b>, <b>Archive</b> and the bin (2). Built-in types can only be reordered.' +
+          '<figure class="shot" data-marks="0.6,55.4,3.6,6.8,oval,above,#1; 82.6,55.6,17.2,9.8,oval,above,#2"><img src="assets/img/cust-doctypes-list.png" alt="The document type list, with each type’s drag handle, description, how many documents use it, status and actions: Policy, built-in, 2 documents; Procedure, built-in, 1 document; Form, built-in; Audit Report, Internal and external audit reports, and their findings, 0 documents, Active, with its drag handle circled as 1 and Edit, Archive and a bin circled as 2; Template and Training Package, built-in. Built-in types show Reorder only." loading="lazy"><figcaption>Audit Report dragged below Form by its handle (1), with Edit, Archive and the bin (2).</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>Renaming a type updates every document already using it, and your types are shared with any RTOs linked to yours.</p>',
+
+    'cust-dashboard-widgets':
+      '<p class="lead">Choose the dashboard widgets everyone in your RTO sees, and where teams appear across RTO Radar.</p>' +
+      '<h2 id="widgets">Dashboard widgets</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Settings</b> (1) › <b>Customisation</b> (2) › <b>Dashboard</b> (3) › <b>Admin Dashboard</b> (4).' +
+          '<figure class="shot" data-marks="0.3,78.6,12.8,8.4,oval,right,#1; 68.9,42,7.9,8.4,oval,above,#2; 46.4,75.6,10.4,8.6,oval,above,#3; 26.1,88,30.9,8.6,oval,right,#4"><img src="assets/img/cust-dash-open.png" alt="Settings in the navigation, circled as 1. Organisation Settings on the Customisation tab, circled as 2, open on Dashboard, circled as 3. Under Dashboard, Admin Dashboard is circled as 4, beside Teams." loading="lazy"><figcaption>Settings (1), Customisation (2), Dashboard (3), then Admin Dashboard (4).</figcaption></figure></li>' +
+        '<li>Tick the widgets to show, and untick any to hide, such as Workforce Table (1). Drag a widget by its handle, or use its arrows (2), to change the order.' +
+          '<figure class="shot" data-marks="4.6,53.6,3.8,4.4,oval,above,#1; 94,52,3,7.4,oval,above,#2; 23.4,90.8,arrow-down,tiny"><img src="assets/img/cust-dash-widgets.png" alt="Admin Dashboard: choose which widgets appear on the dashboard and in what order; changes apply to every user in this organisation. Risk Matrix Dashboard, Continuous Improvement and Workforce Statistics are ticked. Workforce Table, a searchable table of all organisation users, is unticked, circled as 1, with its up and down arrows circled as 2. QMS Overview and Upcoming Events are ticked. Each widget has a drag handle. Reset to Default, and Save Changes, with an arrow pointing down at it." loading="lazy"><figcaption>Workforce Table hidden (1), with its arrows to move it (2). Select Save Changes (arrow).</figcaption></figure></li>' +
+        '<li>Select <b>Save Changes</b> (arrow). Select <b>Reset to Default</b> to go back to the default widgets and order.</li>' +
+      '</ol>' +
+      '<p>See <a href="article.html?id=dash-tour">The dashboard</a>.</p>' +
+      '<h2 id="teams">Teams</h2>' +
+      '<p>Go to <b>Settings</b> (1) › <b>Customisation</b> (2) › <b>Dashboard</b> (3) › <b>Teams</b> (4).</p>' +
+      '<figure class="shot" data-marks="0.3,78.4,12.8,8.4,oval,right,#1; 69,42,7.9,8.4,oval,above,#2; 46.5,75.4,10.4,8.6,oval,above,#3; 56.7,87.6,31,8.6,oval,#4"><img src="assets/img/cust-dash-teams.png" alt="Settings in the navigation, circled as 1. Organisation Settings on the Customisation tab, circled as 2, open on Dashboard, circled as 3. Under Dashboard, Teams is circled as 4, beside Admin Dashboard." loading="lazy"><figcaption>Settings (1), Customisation (2), Dashboard (3), then Teams (4).</figcaption></figure>' +
+      '<p>Turn each of these on or off for everyone:</p>' +
+      '<table><thead><tr><th>Switch</th><th>When it’s on</th></tr></thead><tbody>' +
+        '<tr><td>Org chart on Workforce Teams page</td><td>The Workforce Teams page shows the organisation chart.</td></tr>' +
+        '<tr><td>Team colour badges across the app</td><td>Records tagged to a team show its coloured badge.</td></tr>' +
+        '<tr><td>Team filter in CI Register</td><td>The register has a team filter.</td></tr>' +
+        '<tr><td>Team columns in TAS tables</td><td>The Available TAS and Available Programs lists in the TAS Builder show a Team column.</td></tr>' +
+        '<tr><td>Team members in org chart</td><td>The org chart shows each member, not just teams.</td></tr>' +
+        '<tr><td>Org chart shows entire organisation</td><td>Everyone sees the whole chart. When it’s off, staff see only their own chain of command. Admins and System Default members always see the whole chart.</td></tr>' +
+      '</tbody></table>',
+
+    'cust-cir-settings':
+      '<p class="lead">Set up the Continuous Improvement Register to suit your RTO: create custom CI registers, import existing items, manage sources and choose reminders.</p>' +
+      '<p>Go to <b>Settings</b> (1) › <b>Customisation</b> (2) › <b>CIR</b> (3). It has four tabs: <b>Import</b>, <b>Sources</b>, <b>Custom Items</b> and <b>Reminders</b>.</p>' +
+      '<figure class="shot" data-marks="0.3,89,12.8,9.4,oval,right,#1; 69,47.4,7.9,9.4,oval,above,#2; 56.6,85.2,10.6,9.6,oval,above,#3"><img src="assets/img/cust-cir-open.png" alt="Settings in the navigation, circled as 1. Organisation Settings on the Customisation tab, circled as 2, open on CIR, circled as 3, beside Risk, QMS, Dashboard, TAS Templates and Branding." loading="lazy"><figcaption>Settings (1), Customisation (2), then CIR (3).</figcaption></figure>' +
+      '<h2 id="custom">Create a custom CI register</h2>' +
+      '<p>A custom CI register adds your own fields to improvement items. For example, an <b>Audit Finding</b> register, with fields for the type of audit, the standard and how serious the finding is. Each custom register appears under <b>Add Item</b> in the register.</p>' +
+      '<ol class="steps-list">' +
+        '<li>On the <b>Custom Items</b> tab (1), select <b>Create Item</b> (2), or <b>Edit</b> beside an existing one.' +
+          '<figure class="shot" data-marks="49.8,5,24.2,13.6,oval,right,#1; 86.4,27.4,12,17,oval,#2"><img src="assets/img/cust-cir-customitems.png" alt="The Custom Items tab, circled as 1, beside Import, Sources and Reminders. Create Custom CIR Item: create custom item templates for different types of continuous improvement register items, with Create Item circled as 2. External CI Register, with 10 fields: Person Responsible, Due Date, Title, Description, Priority, Status, Source, Tags, Attachment and Supervisor Comments, with Edit and a bin." loading="lazy"><figcaption>On the Custom Items tab (1), select Create Item (2).</figcaption></figure></li>' +
+        '<li>Enter the <b>Item Name</b>, such as Audit Finding. It’s the name shown under <b>Add Item</b>. Select <b>Add Field</b> (circled) to add your own fields (step 4). To change the fields every item has, select <b>Default Fields (9)</b> (step 3).' +
+          '<figure class="shot" data-marks="1.6,66.4,10.6,11.4,oval,right,#"><img src="assets/img/cust-cir-newtype.png" alt="New CIR Item Type, with the Item Name Audit Finding. Under Fields, Default Fields (9), then Add Field, which is circled, and Cancel and Save." loading="lazy"><figcaption>Audit Finding entered. Add Field (circled) adds your own fields.</figcaption></figure></li>' +
+        '<li>Optionally, select <b>Default Fields (9)</b> to change the fields every item in this register has. You can rename a field, change its type, make it required, and add or remove options. For example, add <b>External Audit</b> (circled) as a <b>Source</b> option. Sources you’ve added on the Sources tab, such as Internal Review, are already listed.' +
+          '<figure class="shot shot-medium" data-marks="3.6,86.8,93,6.4,oval,#"><img src="assets/img/cust-cir-defaultfields.png" alt="The Source default field, Single Choice and Required, with its options: Ad Hoc, Audit, Complaint, Evidence Map, Feedback, Industry Consultation, Internal Review, Post Assessment Validation, Risk Register, TAS Builder and Validation, each with a cross to remove it, and the new option External Audit, circled, above Add Option." loading="lazy"><figcaption>External Audit added as a Source option (circled).</figcaption></figure></li>' +
+        '<li>Under <b>Custom Fields</b>, select <b>Add Field</b> (1) for each field you need. Enter its <b>Field label</b>, choose its type (2), and tick <b>Required</b> (3) if it must be filled in. For <b>Single Choice</b> and <b>Multiple Choice</b>, select <b>Add Option</b> for each choice. The types are Short Text, Long Text, Rich Text, Single Choice, Multiple Choice, Date, Custom Tags, Staff Select and Attachment. Use the arrows to reorder fields, and the bin to remove one.' +
+          '<figure class="shot" data-marks="1.8,87.6,10,4.4,oval,right,#1; 72.6,33.8,14.4,4.8,oval,#2; 87.2,34.6,6.6,3.2,oval,above,#3; 93.9,93.6,arrow-down,tiny"><img src="assets/img/cust-cir-customfields.png" alt="Custom Fields for Audit Finding: Audit Type, Single Choice, Required, with the options Internal audit, ASQA audit, Funding body audit and Third-party audit; Standard, Short Text, Required, with its type circled as 2 and Required as 3; Finding Rating, Single Choice, Required, with the options Observation, Minor non-compliance and Major non-compliance; Auditor, Short Text; Date Rectified, Date; and Rectification Evidence, Attachment. Each has reorder arrows and a bin. Add Field is circled as 1, and an arrow points down at Save." loading="lazy"><figcaption>Six custom fields for Audit Finding. Add Field (1), a field’s type (2) and Required (3). Then select Save (arrow).</figcaption></figure></li>' +
+        '<li>Select <b>Save</b> (arrow).</li>' +
+      '</ol>' +
+      '<h2 id="import">Import items</h2>' +
+      '<p>Bulk import improvement items on the <b>Import</b> tab, as default items or into a custom CI register. See <a href="article.html?id=cir-add-item#import">Bulk import items</a>.</p>' +
+      '<h2 id="sources">Sources</h2>' +
+      '<p>On the <b>Sources</b> tab (1), enter a <b>Source label</b> (2), such as Internal Review, and select <b>Add</b> (arrow). Your sources appear alongside the <b>System</b> sources RTO Radar sets automatically, which can’t be deleted. See <a href="article.html?id=cir-sources">Where improvement items come from</a>.</p>' +
+      '<figure class="shot" data-marks="26,1.8,24.2,6,oval,right,#1; 4.4,23.8,81.8,6.6,oval,#2; 93.2,24.6,arrow-down,small"><img src="assets/img/cust-cir-sources.png" alt="The Sources tab, circled as 1, beside Import, Custom Items and Reminders. Continuous Improvement Sources: manage the source categories available in the CIR; system sources cannot be deleted. Internal Review is typed in the source label box, circled as 2, with an arrow pointing down at Add. Below, a search box and the System sources: Ad Hoc, Audit, Complaint, Evidence Map, Feedback, Industry Consultation, Post Assessment Validation, Risk Register and TAS Builder, each with its code and a System badge." loading="lazy"><figcaption>On the Sources tab (1), type a source label (2), then select Add (arrow).</figcaption></figure>' +
+      '<h2 id="reminders">Reminders</h2>' +
+      '<p>On the <b>Reminders</b> tab, turn on <b>Send due date reminders</b> (1) to email the person responsible for each item, including items of custom types. Items with no due date or person responsible, and completed or removed items, are skipped.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Under <b>Reminder lead times</b> (2), tick when to send them: 30, 14, 7, 3 or 1 days before, or on the due date. Each person gets one email a day covering all their items.</li>' +
+        '<li>Turn on <b>Keep reminding while overdue</b> (3) to send a weekly reminder while an item is overdue and open.</li>' +
+        '<li>Select <b>Save settings</b> (arrow).' +
+          '<figure class="shot" data-marks="91.8,25,4.6,5.8,oval,#1; 3.4,46.6,74,10.8,zone,#; 1.6,51.8,#2; 91.8,66.4,4.6,5.8,oval,#3; 83.4,89.6,arrow-right,small"><img src="assets/img/cust-cir-reminders.png" alt="The Reminders tab, Due date reminders: email reminders for every item in the Continuous Improvement Register, including items created from custom item types. Send due date reminders is on, circled as 1; reminders go to the person responsible for each item, and items with no due date, no person responsible, or a status of Completed or Removed are skipped. Reminder lead times, outlined as 2: 14 days before, 3 days before and On the due date are ticked; one email per person per day covers all of their items. Keep reminding while overdue is on, circled as 3, sending a weekly reminder while an item stays overdue and open. Reminders are sent each morning, and staff can turn them off on their profile page. Not saved yet, with an arrow pointing at Save settings." loading="lazy"><figcaption>Reminders on (1), sent 14 and 3 days before and on the due date (2), and weekly while overdue (3). Select Save settings (arrow).</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>Reminders are sent each morning. Staff can turn them off for themselves. See <a href="article.html?id=profile-notifications">Choose your email notifications</a>.</p>',
+
+    'cust-branding':
+      '<p class="lead">Make RTO Radar your own. Your export logo appears on PDF and Word exports in place of the RTO Radar logo, and your sidebar icon replaces the default icon in the navigation for everyone in your RTO.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Settings</b> › <b>Customisation</b> › <b>Branding</b>.' +
+          '<figure class="shot" data-marks="0.2,52.6,11,8,oval,right,#1; 77.6,0.2,13.4,6,oval,right,#2; 85,22.2,13.6,6.6,oval,right,#3; 91.9,22,arrow-down; 65.6,60.6,arrow-left,#4"><img src="assets/img/gs-org-branding.png" alt="The Branding page in Settings. Marker 1 circles Settings in the navigation, marker 2 the Customisation tab along the top, and marker 3 the Branding tab under Customisation, with an arrow pointing down at it. Marker 4 is an arrow pointing left at Click to upload under Export Logo. The page shows two upload areas, Export Logo and Sidebar Icon, each with Click to upload." loading="lazy"><figcaption>Select Settings (1), then the Customisation tab (2), then Branding (3), then Click to upload (4).</figcaption></figure></li>' +
+        '<li>Under <b>Export Logo</b>, select <b>Click to upload</b> (4) to upload your logo. Under <b>Sidebar Icon</b>, select <b>Click to upload</b> to upload your icon.</li>' +
+      '</ol>',
+
     'cust-tas-templates':
       '<p class="lead">TAS templates set the boilerplate wording in every new TAS, and the standards a TAS is mapped to on approval. Changes apply to new TAS documents only. Existing TAS documents keep their content.</p>' +
       '<h2 id="boilerplate">TAS Boilerplate Templates</h2>' +
@@ -1384,12 +2953,20 @@
       '</ol>' +
       '<div class="callout tip"><b>Tip</b><span>Leave placeholders such as <b>[INSERT ASSESSMENT TOOL NAME]</b> in the boilerplate where the detail differs by qualification, so each TAS prompts for it.</span></div>' +
       '<h2 id="legacy">Legacy aggregate sections</h2>' +
-      '<p>Combined versions of some sections, such as Target Cohort Profile and Delivery Methodology, used by some exports and older TAS layouts. Keep them consistent with the individual sections.</p>' +
+      '<p>Combined versions of some sections, such as Target Cohort Profile and Delivery Methodology, used by some exports and older TAS layouts. Keep them consistent with the individual sections. Open one to edit it.</p>' +
+      '<figure class="shot"><img src="assets/img/tas-bp-legacy.png" alt="Legacy aggregate sections, used by some exports and older TAS layouts, with 5. Target Cohort Profile (aggregate) open for editing, with formatting options. It reads: Learner Cohort Profile (Generic Example - Alter to suit course and specific cohort). The target group for this qualification comprises adults aged between 18 and 45 years who are seeking to establish or advance a career in their chosen industry, followed by Interests, Motivations, and Objectives; Career Outcomes and Vocational Pathways; and Prior Educational Attainment and Industry Experience. Below are 6. Delivery Methodology, 7. Assessment Framework, 9. Support Services, 9.x Reasonable Adjustment, and 10. Credit Transfer and RPL, each an aggregate section." loading="lazy"><figcaption>The Target Cohort Profile aggregate, open for editing.</figcaption></figure>' +
       '<h2 id="custom">Custom boilerplate sections</h2>' +
-      '<p>Select <b>Add Custom Section</b> to add your own section to every new TAS created in your RTO. They appear under H. Additional Sections.</p>' +
-      '<figure class="shot" data-marks="2,57.8,15.4,3.7,oval,#"><img src="assets/img/tas-bp-custom.png" alt="Legacy aggregate sections, used by some exports and older TAS layouts, followed by Custom Boilerplate Sections, with no custom sections yet and an Add Custom Section button, which is circled. Below, TAS Unit Table has three toggles: Disable Delivery Hours column, which is on, Enable Structured and Unstructured Hours columns, and Enable Supervised and Unsupervised Hours columns." loading="lazy"><figcaption>Add Custom Section (circled), and the TAS Unit Table columns.</figcaption></figure>' +
+      '<p>Add your own section to every new TAS created in your RTO. Custom sections appear under H. Additional Sections. Existing TAS documents aren’t changed.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Select <b>Add Custom Section</b> (circled).' +
+          '<figure class="shot" data-marks="2,66.9,15.4,16.7,oval,#"><img src="assets/img/tas-bp-custom.png" alt="Custom Boilerplate Sections, with no custom sections yet and an Add Custom Section button, which is circled." loading="lazy"><figcaption>Select Add Custom Section (circled).</figcaption></figure></li>' +
+        '<li>Enter the <b>Section title</b>, and write the section’s wording. Use <b>[INSERT RTO NAME]</b> where your organisation’s name should go. Leave the section <b>Active</b> to include it in new TAS documents. The bin removes it.' +
+          '<figure class="shot"><img src="assets/img/tas-bp-custom-new.png" alt="Custom Boilerplate Sections: create your own sections that will be added to every new TAS created in this RTO; existing TAS documents are unaffected, and the placeholder [INSERT RTO NAME] is replaced with your organisation name. A new section, Work Health and Safety, Unsaved. Section title Work Health and Safety. The wording: [INSERT RTO NAME] is committed to the health and safety of learners, staff and visitors. All training and assessment is conducted in line with the Work Health and Safety Act 2011 and the [INSERT RTO NAME] WHS Policy. Learners complete a WHS induction before any practical activity. Active, switched on, and a bin." loading="lazy"><figcaption>A Work Health and Safety section, set to Active.</figcaption></figure></li>' +
+        '<li>Select <b>Save All Templates</b>. The section is marked <b>Unsaved</b> until you do.</li>' +
+      '</ol>' +
       '<h2 id="units">TAS Unit Table</h2>' +
-      '<p>Choose the optional columns in the TAS units table and in PDF and Word exports: <b>Delivery Hours</b>, <b>Structured and Unstructured Hours</b>, and <b>Supervised and Unsupervised Hours</b>. Each appears alongside Nominal Hours.</p>' +
+      '<p>Choose the optional columns in the TAS units table and in PDF and Word exports: <b>Delivery Hours</b>, <b>Structured and Unstructured Hours</b>, and <b>Supervised and Unsupervised Hours</b>. Each appears alongside Nominal Hours. Turn on a switch to add its columns. When a column is on, its label changes to <b>Disable</b>.</p>' +
+      '<figure class="shot" data-marks="1.8,36.4,4.6,8.4,oval,#"><img src="assets/img/tas-unit-table.png" alt="TAS Unit Table: choose which optional columns appear in the TAS units table and in PDF and Word exports. The Delivery Hours switch is on and circled, labelled Disable Delivery Hours column: shows a Delivery Hours column alongside Nominal Hours. Enable Structured and Unstructured Hours columns, and Enable Supervised and Unsupervised Hours columns, are off." loading="lazy"><figcaption>Delivery Hours turned on (circled). Its label changes to Disable, to turn it off again.</figcaption></figure>' +
       '<h2 id="standards">TAS compliance standards</h2>' +
       '<p>By default, three Standards for RTOs 2025 standards apply to a new TAS on approval: 1.1, 1.3 and 1.8. Tick more to add them to the default selection across your RTO. Standards that aren’t ticked are hidden from TAS mapping and exports. Custom frameworks are listed too.</p>' +
       '<figure class="shot" data-marks="84.6,95,13.1,3.7,oval,#"><img src="assets/img/tas-standards.png" alt="TAS Compliance Standards. The Standards for RTOs 2025, Default preset, has 3 of 23 selected: 1.1, 1.3 and 1.8, each marked Default, under 1. Training and Assessment, with Select all and Clear. 2. VET Student Support, 3. VET Workforce and 4. Governance have none selected. Demo Custom Framework has 0 of 4 selected. Reset to defaults, Select all and Save selection, which is circled." loading="lazy"><figcaption>Tick the standards, then select Save selection (circled).</figcaption></figure>' +
@@ -1427,6 +3004,264 @@
       '</ol>' +
       '<p>Select <b>Back to Active Courses</b> to return.</p>',
 
+    'faq-users':
+      '<section class="gs-faq">' +
+        '<details><summary>What’s a silent user, and when should I use one?</summary><div class="prose">' +
+          '<p>A silent user has a profile but can’t sign in and isn’t emailed. Use one for staff whose credentials and compliance you track but who don’t use RTO Radar, or to set someone up before inviting them. Silent users are tagged <b>Compliance Only</b> on the Staff tab. See <a href="article.html?id=users-invite#silent">Add a silent user</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>How do I give a silent user access later?</summary><div class="prose">' +
+          '<p>On the <b>Staff</b> tab, open their staff actions and select <b>Send Invitation</b>. They receive an email to set up their sign-in. See <a href="article.html?id=users-manage#actions">Staff actions</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Someone didn’t get their invitation. What do I do?</summary><div class="prose">' +
+          '<p>While they’re marked <b>Pending</b>, open their staff actions and select <b>Resend Invitation</b>. Ask them to check their junk or spam folder too. See <a href="article.html?id=users-manage#actions">Staff actions</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>A user says their password reset link has expired. What now?</summary><div class="prose">' +
+          '<p>A reset link can only be used once. Ask them to try signing in with their new password first. If that doesn’t work, send another with <b>Reset Password</b>. See <a href="article.html?id=users-manage#actions">Staff actions</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What happens to someone’s work when I delete them?</summary><div class="prose">' +
+          '<p>Before you delete someone, reassign their duties and data to other staff. Anything you don’t reassign has its owner set to Unassigned, or is deleted. Deleting a user can’t be undone, so check every tab before you save. See <a href="article.html?id=users-manage#actions">Staff actions</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Who can open User Management?</summary><div class="prose">' +
+          '<p>Only people whose role includes the <b>User Management</b> permission, usually Administrators. See <a href="article.html?id=users-overview">The User Management page</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Why can’t I delete a role?</summary><div class="prose">' +
+          '<p>A role can’t be deleted while people have it. Give them another role first, then delete it. See <a href="article.html?id=users-roles#org">Organisation roles</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Should I build a role from scratch or from a template?</summary><div class="prose">' +
+          '<p>Start from the closest of the nine role templates, then remove the permissions the job doesn’t need. It’s quicker and less likely to miss something. See <a href="article.html?id=users-roles#templates">Role templates</a> and <a href="article.html?id=users-custom-role">Create a custom role</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>How do I stop a TAS reviewer approving a TAS they built?</summary><div class="prose">' +
+          '<p>The TAS Reviewer template includes TAS Builder as well as TAS Builder Review. Untick TAS Builder’s <b>Create</b> and <b>Edit</b> in the role, so reviewers can review but not build. See <a href="article.html?id=users-roles#templates">Role templates</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Who should hold the User Roles permission?</summary><div class="prose">' +
+          '<p>Only one or two Administrators. Anyone with the User Roles permission in Settings can change any role’s permissions, including their own. Keep User Management and Security to the same people. See <a href="article.html?id=users-permissions">What each permission covers</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What’s the difference between roles and teams?</summary><div class="prose">' +
+          '<p>Roles set <b>what</b> someone can do: which features they can view, create, edit and delete. Teams set <b>whose</b> work they can see. See <a href="article.html?id=users-plan-roles#roles-teams">Roles set what, teams set whose</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What is System Default?</summary><div class="prose">' +
+          '<p>System Default sits at the top of the compliance governance chart and oversees everything in your RTO. Anything not assigned to a team, such as a new member, course, TAS or form, goes into System Default, and everyone can see it until it’s assigned. Anyone in System Default can see everyone and every team’s work. See <a href="article.html?id=users-governance#system-default">System Default</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>I can’t find a person or item. Why?</summary><div class="prose">' +
+          '<p>It probably belongs to a team you’re not in. Check the compliance governance chart to see which team it belongs to. If you need to oversee the whole organisation, ask an Admin to add you to System Default in <b>Settings</b> › <b>User Management</b>. See <a href="article.html?id=users-governance#visibility">How teams limit what people see</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Can someone belong to more than one team?</summary><div class="prose">' +
+          '<p>Yes. Tick them in each team’s members. On the chart, a dotted line links them to their second team. For example, a trainer who teaches in both the Business Faculty and the IT Faculty can belong to both. See <a href="article.html?id=users-teams#create">Create a team</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What happens to someone who isn’t in any team?</summary><div class="prose">' +
+          '<p>They’re automatically in System Default, so they can see everyone in the organisation and every team’s work. Add them to the right team to limit what they see. See <a href="article.html?id=users-teams#members">Team actions</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What happens to a team’s members when the team is deleted?</summary><div class="prose">' +
+          '<p>They snap to the parent of the deleted team, so they still sit in the right place in your structure and the compliance governance chart. Deleting a team can’t be undone, so check its members’ teams straight afterwards. See <a href="article.html?id=users-teams#members">Team actions</a>.</p>' +
+        '</div></details>' +
+      '</section>',
+
+    'faq-risk':
+      '<section class="gs-faq">' +
+        '<details><summary>Why should I save the register if nothing has changed?</summary><div class="prose">' +
+          '<p>Saving after a review records that the review took place and resets the <b>Next Review</b> date, even if no risks changed. It also adds a version to the register’s history. See <a href="article.html?id=risk-overview#save">Save Risk Register</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Can I change a risk from the Risk Factors panel?</summary><div class="prose">' +
+          '<p>No. The Risk Factors panel is read-only. To change a risk, select <b>Edit Comprehensive Assessment</b>. See <a href="article.html?id=risk-factors">Browse your risk factors</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Do I need a treatment plan for every risk?</summary><div class="prose">' +
+          '<p>No. A treatment plan is strongly recommended for medium, high and extreme risks, and optional for low risks. The button tells you which applies: <b>Treatment Plan Strongly Recommended</b> or <b>Add Optional Treatment Plan</b>. See <a href="article.html?id=risk-treatment#when">When you need one</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Why can’t I see Existing Controls or the treatment plan?</summary><div class="prose">' +
+          '<p>They only appear after you select <b>Add Risk Factor</b>. Add the risk first, then fill in its existing controls and treatment plan. See <a href="article.html?id=risk-add-score#treatment">Add existing controls and a treatment plan</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What happens to a treatment plan when I complete the assessment?</summary><div class="prose">' +
+          '<p>The responsible person gets an improvement item in the <a href="feature.html?m=cir">Continuous Improvement Register</a>, with the proposed treatment. Until you complete the assessment, these items are queued, and the bar along the bottom shows how many. See <a href="article.html?id=risk-treatment#cir">From treatment plan to improvement item</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>How does our risk score affect validation?</summary><div class="prose">' +
+          '<p>Your organisational risk score sets the baseline validation frequency for every course. Each course’s and unit’s own risk then adds to it. Admins can change the frequency bands in <b>Settings</b> › <b>Risk</b>. See <a href="article.html?id=risk-provider-factors">Risk scores and validation frequency</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Can I use our own risk categories?</summary><div class="prose">' +
+          '<p>Yes. An Admin can set up categories that fit your RTO in Customisation. See <a href="article.html?id=cust-risk-categories">Configure risk categories and register versioning</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>We changed our Escalation Manager. What should we do?</summary><div class="prose">' +
+          '<p>Send the new Escalation Manager a risk report straight away with <b>Email Escalation Manager</b>, so they start with the full picture. See <a href="article.html?id=risk-escalation-manager#change">Changing your Escalation Manager</a> and <a href="article.html?id=risk-escalation#email">Email your Escalation Manager now</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>The risk report went to the wrong email address. What now?</summary><div class="prose">' +
+          '<p>Correct the Escalation Manager’s email in <b>Update RTO Profile</b>, then send the report again. If you notice before sending, select <b>Cancel</b> first. See <a href="article.html?id=risk-escalation#email">Email your Escalation Manager now</a>.</p>' +
+        '</div></details>' +
+      '</section>',
+
+    'faq-feedback':
+      '<section class="gs-faq">' +
+        '<details><summary>Which team can I put a form in?</summary><div class="prose">' +
+          '<p>Provided you have the right permissions, it depends on where you are:</p>' +
+          '<ul>' +
+            '<li><b>In System Default:</b> create it in any team, so only that team’s members can see it, or in System Default, so everyone can see it.</li>' +
+            '<li><b>In a team:</b> create it in your team, or in System Default. If you’re in more than one team, you can choose any of them.</li>' +
+          '</ul>' +
+          '<p>The form’s team decides who sees its submissions. See <a href="article.html?id=fb-plan#choose">Which teams you can choose</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What’s the difference between the Responsible person and Assigned To?</summary><div class="prose">' +
+          '<p>The form’s <b>Responsible person</b>, chosen when the form is created, is emailed about every submission and looks after them by default. <b>Assigned To</b>, on a single submission, makes someone else its owner. They look into it and can give its action items to others. See <a href="article.html?id=fb-create-form">Create and build a form</a> and <a href="article.html?id=fb-submissions#respond">Respond to a submission</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>How do submissions get their category?</summary><div class="prose">' +
+          '<p>From the form’s category question, such as “What is your feedback mainly about?”. The answer shows in the <b>Category</b> column on the Submissions tab, so you can sort and filter by it. See <a href="article.html?id=fb-submissions#list">Find a submission</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What’s the difference between Share Form and Get Embed Code?</summary><div class="prose">' +
+          '<p><b>Share Form</b> gives you the form’s public link to send to people, for example by email. <b>Get Embed Code</b> gives you the code to place the form on your website, plus the same direct link. See <a href="article.html?id=fb-embed">Share or embed a form on your website</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Does someone need an RTO Radar account to fill in a form?</summary><div class="prose">' +
+          '<p>No. Anyone can fill in a form from its public link or from your website, such as students, employers and industry representatives. See <a href="article.html?id=fb-embed">Share or embed a form on your website</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Should I deactivate or delete a form I no longer use?</summary><div class="prose">' +
+          '<p>Deactivate it. It stops taking new submissions, but the form and its submissions stay on record. See <a href="article.html?id=fb-manage-forms">Manage your forms</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Can people stay anonymous?</summary><div class="prose">' +
+          '<p>Yes. Set the form’s <b>Contact Information</b> to <b>Anonymous Only</b>, so no contact details are collected, or <b>Optional</b>, so people can choose. <b>Required</b> asks everyone for their contact details. See <a href="article.html?id=fb-create-form#steps">Create a form</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Who can see a form’s submissions?</summary><div class="prose">' +
+          '<p>Only the owning team’s managers and members whose role includes Complaints &amp; Suggestions. A form in System Default is visible to everyone with that permission. See <a href="article.html?id=fb-plan">Plan your forms: teams, access and uses</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Can one submission have several action items for different people?</summary><div class="prose">' +
+          '<p>Yes. The submission’s owner can add an action item for each task, each with its own Person Responsible. For example, one for the Training Coordinator to update a workbook, and another for the Compliance Officer to check other resources. See <a href="article.html?id=fb-to-cir">Turn a submission into an improvement item</a>.</p>' +
+        '</div></details>' +
+      '</section>',
+
+    'faq-pd':
+      '<section class="gs-faq">' +
+        '<details><summary>How does PD get into My PD?</summary><div class="prose">' +
+          '<p>If an Admin with the right permissions assigns a PD session to a staff member in Workforce Management, the staff member is enrolled automatically, and the session appears in their <b>My PD</b>. See <a href="article.html?id=pd-assign">Assign PD to a staff member</a>.</p>' +
+          '<p>Otherwise, staff can enrol themselves from <b>Browse Catalogue</b>. For a paid session, they might need to send an EOI request for approval first. See <a href="article.html?id=pd-enrol">Find and enrol in PD</a> and <a href="article.html?id=pd-eoi">Request approval for paid PD</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What’s the difference between Register and Enrol?</summary><div class="prose">' +
+          '<p><b>Register</b> opens the provider’s website, where you actually register for the session, such as booking a place or paying.</p>' +
+          '<p><b>Enrol</b> adds the session to your PD in RTO Radar, so the platform tracks it across the system: on your PD Calendar, in reports and exports, and as evidence once you complete it. Enrolling doesn’t register you with the provider.</p>' +
+          '<p>For most sessions, do both: enrol in RTO Radar, then select <b>Register</b> in <b>My PD</b> to book with the provider. See <a href="article.html?id=pd-enrol">Find and enrol in PD</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>How do I write a good description for my PD evidence?</summary><div class="prose">' +
+          '<p>When an evidence map is created, RTO Radar’s AI writes your vocational competency and industry currency statements from your documents. To protect your personal information, it reads only the description, not the file itself, so the more detail you give, the stronger your evidence.</p>' +
+          '<p>Include what the document is, who delivered it, when and for how long, the topics or units it covered, and how it improves your delivery. For a qualification, list the units with their codes and titles.</p>' +
+          '<p>See <a href="article.html?id=pd-complete#description">Write a good description</a>, and <a href="article.html?id=wf-description">Write a good document description</a> for more examples.</p>' +
+        '</div></details>' +
+        '<details><summary>Can I stop my staff seeing PD from a global provider?</summary><div class="prose">' +
+          '<p>Yes. Global providers and their sessions are set up by the RTO Radar team. If you don’t want your organisation and its members to see a global provider’s PD, go to <b>Settings</b> › <b>Professional Development</b> › <b>Providers</b> and turn off the provider’s switch under <b>Actions</b>.</p>' +
+          '<p>To hide all global PD at once, turn off <b>Show Global Catalogue</b> on the <b>Settings</b> tab. See <a href="article.html?id=pd-configure#settings">Choose your PD settings</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Why can’t staff see the PD calendar or catalogue?</summary><div class="prose">' +
+          '<p><b>Enable PD Calendar</b> may be turned off. An Admin can turn it on in <b>Settings</b> › <b>Professional Development</b> › <b>Settings</b>, under <b>PD Calendar Module</b>. While it’s off, staff can’t browse or enrol in PD. See <a href="article.html?id=pd-configure#settings">Choose your PD settings</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Why can’t staff see paid sessions?</summary><div class="prose">' +
+          '<p><b>Show Paid PD Items</b> may be turned off. An Admin can turn it on in <b>Settings</b> › <b>Professional Development</b> › <b>Settings</b>, under <b>Paid PD Configuration</b>. See <a href="article.html?id=pd-configure#settings">Choose your PD settings</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What’s the difference between Global and Organisation providers and sessions?</summary><div class="prose">' +
+          '<p><b>Global</b> providers and their sessions are set up by the RTO Radar team for all RTOs. You can view and open them, but not edit or delete them. To hide a global provider’s PD from your staff, turn off its switch under <b>Actions</b> on the <b>Providers</b> tab.</p>' +
+          '<p>Providers and sessions you add are your RTO’s own: providers are marked <b>Organisation</b>, and sessions <b>Tenant</b>. You can view, edit or delete them. See <a href="article.html?id=pd-configure#manage">View, edit or delete a provider</a> and <a href="article.html?id=pd-configure#manage-sessions">View, edit or delete a session</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>How do I remove PD I assigned to someone?</summary><div class="prose">' +
+          '<p>On their <b>PD Calendar</b> in Workforce Management, select the cross <svg class="ui-icon" viewBox="0 0 24 24" aria-label="cross" role="img"><path d="M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM9 9l6 6M15 9l-6 6"/></svg> under <b>Actions</b> on the session’s row. See <a href="article.html?id=pd-assign#calendar">View and manage assigned PD</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What happens after my EOI is approved?</summary><div class="prose">' +
+          '<p>The session shows <b>Enrol</b> instead of <b>Request EOI</b> in <b>Browse Catalogue</b>. Select <b>Enrol</b> to add it to your PD, then <b>Register</b> on it in <b>My PD</b> to book with the provider. See <a href="article.html?id=pd-eoi#track">Track PD requests</a> and <a href="article.html?id=pd-enrol#view">View enrolled PDs and register</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Do I have to attach evidence to complete PD?</summary><div class="prose">' +
+          '<p>Only if an Admin has turned on <b>Require Completion Evidence</b> in the PD settings. Attach Evidence then shows as <b>Required</b>, and you need at least one file to complete the PD. Otherwise it’s optional. See <a href="article.html?id=pd-complete#staff">Complete PD in Events</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Which file types can I attach as evidence?</summary><div class="prose">' +
+          '<p>The <b>Allowed Evidence Types</b> an Admin has set in the PD settings, such as certificate, receipt, screenshot, reflection or other. Choose <b>Other</b> to name the document yourself. See <a href="article.html?id=pd-configure#settings">Choose your PD settings</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>I did PD outside RTO Radar. How do I add it?</summary><div class="prose">' +
+          '<p>Upload the evidence, such as a certificate, straight to <b>My Documents</b> in the Trainer/Assessor portal, with the category <b>Professional Development</b> and a detailed description. See <a href="article.html?id=pd-complete#upload">Upload PD evidence directly</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>When can my PD evidence be used in an evidence map?</summary><div class="prose">' +
+          '<p>Only once an Admin approves it. Until then, it shows as <b>Pending</b> in <b>My Documents</b>. See <a href="article.html?id=pd-complete#approve">Approve PD evidence</a>.</p>' +
+        '</div></details>' +
+      '</section>',
+
+    'faq-custom':
+      '<section class="gs-faq">' +
+        '<details><summary>Who can change these settings?</summary><div class="prose">' +
+          '<p>Only Admins. Organisation settings apply to everyone in your RTO. See <a href="article.html?id=cust-overview">Organisation settings</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Do changes affect records we already have?</summary><div class="prose">' +
+          '<p>It depends on the setting:</p>' +
+          '<ul>' +
+            '<li><b>Validation frequency</b>: applies to new validation recommendations. Validations already scheduled aren’t changed.</li>' +
+            '<li><b>Course and unit risk scoring</b>: applies to new assessments, and to existing ones when they’re next saved, unless you select <b>Recalculate all program risk scores</b>.</li>' +
+            '<li><b>TAS templates and custom sections</b>: apply to new TAS documents only.</li>' +
+            '<li><b>Document type names</b>: renaming a type updates every document already using it.</li>' +
+          '</ul>' +
+        '</div></details>' +
+        '<details><summary>What’s the difference between Save baseline and Recalculate all program risk scores?</summary><div class="prose">' +
+          '<p><b>Save baseline</b> stores your new points and bands. A program only uses them when its course risk assessment is new, or the next time it’s saved. Until then, it keeps its current score.</p>' +
+          '<p><b>Recalculate all program risk scores</b> applies the current baseline and validation frequency bands to every stored assessment straight away. Each program’s inputs, such as its delivery mode and completion rate, are kept. Only its score, risk level and recommended frequency change.</p>' +
+          '<p>Save the baseline first. Then recalculate if every program should reflect the change now, for example before an audit. See <a href="article.html?id=cust-course-risk-weights#save">Save and apply</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What’s the difference between a revision and a version of the risk register?</summary><div class="prose">' +
+          '<p>Every time the risk register is saved, RTO Radar keeps a <b>revision</b>. A <b>version</b> is a revision you’ve finalised as a named, permanent copy, such as the register your governance meeting approved. Versions are only available when versioning is turned on. See <a href="article.html?id=cust-risk-categories#versions">Register versioning</a> and <a href="article.html?id=risk-versions">Risk register revisions and versions</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Can I delete a built-in document type?</summary><div class="prose">' +
+          '<p>No. Built-in types, such as Policy and Procedure, can only be reordered. You can edit, archive or delete the types you’ve added. See <a href="article.html?id=cust-document-types">Manage document types</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Does renaming a document type change existing documents?</summary><div class="prose">' +
+          '<p>Yes. Every document using that type is updated to the new name. Your document types are also shared with any RTOs linked to yours.</p>' +
+        '</div></details>' +
+        '<details><summary>Will a new custom boilerplate section appear in TAS documents we already have?</summary><div class="prose">' +
+          '<p>No. Custom sections are only added to new TAS documents created after you save them. See <a href="article.html?id=cust-tas-templates#custom">Custom boilerplate sections</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>A staff member lost their phone. How do they sign in?</summary><div class="prose">' +
+          '<p>Go to <b>Settings</b> › <b>Security</b>. Under <b>User MFA Status</b>, select <b>Reset</b> beside them. They can then set up MFA again on their new phone the next time they sign in. See <a href="article.html?id=mfa-set-organisation#reset">Reset MFA</a>.</p>' +
+        '</div></details>' +
+      '</section>',
+
+    'faq-cir':
+      '<section class="gs-faq">' +
+        '<details><summary>How do I see only one team’s items, or items from one source?</summary><div class="prose">' +
+          '<p>Choose a team in the team list above the register. To narrow it further, select <b>Filters</b> and choose a <b>Source</b> or <b>Status</b>, or select <b>Person Responsible</b> and tick the people whose items you want. See <a href="article.html?id=cir-overview#find">Find an item</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Can we add our own sources?</summary><div class="prose">' +
+          '<p>Yes. Admins add them in <b>Settings</b> › <b>Customisation</b> › <b>CIR</b> › <b>Sources</b>. They appear alongside the sources RTO Radar sets automatically, which can’t be deleted. See <a href="article.html?id=cust-cir-settings#sources">Sources</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Is the person responsible told about a new item?</summary><div class="prose">' +
+          '<p>Yes. They’re emailed when the item is created. They can turn these emails off on the <b>Email Notifications</b> tab of their profile. See <a href="article.html?id=profile-notifications">Choose your email notifications</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What’s the difference between Add Item (Default) and a custom CI register?</summary><div class="prose">' +
+          '<p><b>Add Item (Default)</b> uses the standard fields every item has, such as Person Responsible, Due Date and Priority. A custom CI register adds your RTO’s own fields too, such as Audit Type and Finding Rating for an Audit Finding register. Admins set custom registers up in Customisation. See <a href="article.html?id=cust-cir-settings#custom">Create a custom CI register</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Can I bring in our existing CI register from a spreadsheet?</summary><div class="prose">' +
+          '<p>Yes. Admins can bulk import a CSV or Excel file, as default items or into a custom CI register. Download the template, paste in your items, then upload and review them before importing. See <a href="article.html?id=cir-add-item#import">Bulk import items</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>How do I stop CIR reminder emails?</summary><div class="prose">' +
+          '<p>Turn off the continuous improvement reminders on the <b>Email Notifications</b> tab of your profile. See <a href="article.html?id=profile-notifications">Choose your email notifications</a>. Admins choose when reminders are sent for everyone. See <a href="article.html?id=cust-cir-settings#reminders">Reminders</a>.</p>' +
+        '</div></details>' +
+      '</section>',
+
+    'faq-events':
+      '<section class="gs-faq">' +
+        '<details><summary>I held a scheduled consultation. How do I record it?</summary><div class="prose">' +
+          '<p>On the <b>Schedule</b> tab, select <b>Record</b>, then <b>Record Evidence</b> beside the scheduled consultation. Its programs, date and subject matter expert are filled in, and saving marks the schedule complete. You don’t need to mark it complete separately.</p>' +
+        '</div></details>' +
+        '<details><summary>How do I record a consultation that was never scheduled?</summary><div class="prose">' +
+          '<p>On the <b>Schedule</b> tab, select <b>Record</b>, then <b>New Consultation</b>. Use this for past consultations, such as a phone call or site visit with an employer, so the evidence is kept for audit.</p>' +
+        '</div></details>' +
+        '<details><summary>I recorded a new consultation in Record, but it had a schedule. What now?</summary><div class="prose">' +
+          '<p>Mark the schedule complete and choose <b>Link to Recorded Evidence</b>, then the evidence you recorded. The schedule is closed and linked to that evidence, so it isn’t counted twice. Link to Recorded Evidence is only available once evidence has been recorded for that course. See <a href="article.html?id=ev-consultation#complete">Mark a consultation complete</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Can I mark a consultation complete without recording evidence?</summary><div class="prose">' +
+          '<p>Yes. Choose <b>Set Date</b> to mark it complete on a date, or <b>Link Feedback</b> to attach feedback form submissions as evidence. For audit, record full evidence wherever you can, so the representative, topics and feedback are kept.</p>' +
+        '</div></details>' +
+        '<details><summary>Where do I find recorded consultations for an audit?</summary><div class="prose">' +
+          '<p>On the <b>Schedule</b> tab, select <b>View</b> beside <b>View Evidence</b>. Every recorded consultation is listed, with its representative, programs, topics and action items, and you can download each record. See <a href="article.html?id=ev-consultation-history">View and manage consultation evidence</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Why can’t I select Link to Recorded Evidence?</summary><div class="prose">' +
+          '<p>It’s only available once evidence has been recorded against that course. Record the consultation first, then mark the schedule complete and link it. See <a href="article.html?id=ev-record-consultation">Record industry consultation evidence</a> and <a href="article.html?id=ev-consultation#complete">Mark a consultation complete</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>How do I add an event to Outlook or Google Calendar?</summary><div class="prose">' +
+          '<p>When you create an event, an .ics calendar file downloads. Open it to add the event to your own calendar. To add several events at once, select <b>Export Events</b>, then <b>Download Calendar</b>. See <a href="article.html?id=ev-add-event">Add an event</a> and <a href="article.html?id=ev-export">Export events</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>How do I remind people about an event?</summary><div class="prose">' +
+          '<p>When you create the event, choose a <b>Reminder</b>, and tick <b>Email notification</b> to send it by email too. See <a href="article.html?id=ev-add-event">Add an event</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>How do I see only one team’s or one person’s events?</summary><div class="prose">' +
+          '<p>On the calendar, use the <b>Team</b> filter to show one team’s events, or <b>Assigned To</b> to show the events assigned to particular people. See <a href="article.html?id=ev-calendar">Use the calendar</a>.</p>' +
+        '</div></details>' +
+      '</section>',
+
     'faq-programs':
       '<section class="gs-faq">' +
         '<details><summary>How do I get the files someone else uploaded for a unit validation?</summary><div class="prose">' +
@@ -1449,7 +3284,7 @@
         '</div></details>' +
         '<details><summary>What happens to a course’s units and validations when I archive it?</summary><div class="prose">' +
           '<p>Nothing is lost. Archiving only removes the course from your course list, to keep it tidy. Its units, unit validations and any other evidence recorded against it are kept.</p>' +
-          '<p>When you restore the course, it returns to the list with all of them. See <a href="article.html?id=prog-archive">Archive and restore courses</a>.</p>' +
+          '<p>When you restore the course, it returns to the list with all of them. See <a href="article.html?id=prog-archive">Archive and restore courses and unit validations</a>.</p>' +
         '</div></details>' +
         '<details><summary>How do I delete a course?</summary><div class="prose">' +
           '<p>Archive it first, then delete it from the archive:</p>' +
@@ -1458,7 +3293,7 @@
             '<li>Select <b>View Archived</b>.</li>' +
             '<li>On <b>Archived Courses</b>, tick the course and select <b>Delete selected</b>.</li>' +
           '</ol>' +
-          '<p>Deleting is kept under archive to prevent accidental deletion of a course that may have unit validations and other evidence recorded against it. Delete a course only if you’re sure you no longer need it or its records. See <a href="article.html?id=prog-archive">Archive and restore courses</a>.</p>' +
+          '<p>Deleting is kept under archive to prevent accidental deletion of a course that may have unit validations and other evidence recorded against it. Delete a course only if you’re sure you no longer need it or its records. See <a href="article.html?id=prog-archive">Archive and restore courses and unit validations</a>.</p>' +
         '</div></details>' +
         '<details><summary>Why is a course in System Default, and why can my team see it?</summary><div class="prose">' +
           '<p>A course in <b>System Default</b> hasn’t been assigned to a team yet. Until it is, every team can see it.</p>' +
@@ -1515,11 +3350,69 @@
           '<p>Uploading a new version keeps the document’s number, mapping and version history. See <a href="article.html?id=qms-new-version">Upload a new version and read version history</a>.</p>' +
           '<p>You can also delete the document and upload the updated file as a new document, but it then starts a new version history.</p>' +
         '</div></details>' +
+        '<details><summary>Should I upload a new document or a new version?</summary><div class="prose">' +
+          '<p>If the document already exists, upload a new version. It keeps its number, mapping and history, and every earlier version stays on record. See <a href="article.html?id=qms-new-version">Upload a new version and read version history</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What version number should I use?</summary><div class="prose">' +
+          '<p>The new version moves on from the current one, for example from v1.0 to v2.0. You can edit it, so for minor changes or additions you could use v1.1 instead. See <a href="article.html?id=qms-new-version#upload">Upload a new version</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Do I have to enter a document number?</summary><div class="prose">' +
+          '<p>No. Enter your own, such as POL-001, or leave it blank and RTO Radar generates one, such as DOC-20260404-…. See <a href="article.html?id=upload-and-map-a-document#steps">Upload a document</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Can one document evidence several standards?</summary><div class="prose">' +
+          '<p>Yes. Map it to every standard it evidences rather than uploading copies, so a new version updates every standard at once. See <a href="article.html?id=upload-and-map-a-document#steps">Upload a document</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>The document type I need isn’t listed. What do I do?</summary><div class="prose">' +
+          '<p>Ask an Admin to add it in <b>Settings</b> › <b>Customisation</b>. See <a href="article.html?id=cust-document-types">Manage document types</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What’s the difference between Status and Compliance Status?</summary><div class="prose">' +
+          '<p>Every document has both. Its <b>Status</b> shows where it is in your approval process. Its <b>Compliance Status</b> shows whether it meets the standards it’s mapped to. See <a href="article.html?id=upload-and-map-a-document#status">Document status and compliance</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Why won’t my Word document open in the viewer?</summary><div class="prose">' +
+          '<p>Only PDFs open in the viewer. To open a Word document or any other file, select <b>⋮</b> › <b>Download</b> on its row, then open it on your computer. See <a href="article.html?id=qms-edit-download-delete#open">Open a document</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Should I archive or delete an old document?</summary><div class="prose">' +
+          '<p>Both remove the document from your coverage on the Compliance Dashboard. Archive it when you need to keep it as a record for audits, such as a policy that’s no longer in use. Archived documents stay in RTO Radar, and the audit trail export lists them on a separate <b>Archived Documents</b> sheet. Delete a document only when you don’t need any record of it.</p>' +
+          '<p>See <a href="article.html?id=qms-edit-download-delete#archive">Archive a document</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Who changed this document, and who approved it?</summary><div class="prose">' +
+          '<p>Open its version history. It shows who changed each version, when and why, and who approved it. See <a href="article.html?id=qms-new-version#history">Read the version history</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Our standards aren’t listed. What can we do?</summary><div class="prose">' +
+          '<p>Working to standards that aren’t listed, such as state registration standards? Set them up as a custom framework, and they’ll appear when you map documents. See <a href="article.html?id=qms-custom-framework">Create a custom framework</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>How do I hide a framework without deleting it?</summary><div class="prose">' +
+          '<p>Turn it off in <b>Manage Frameworks</b>. Only frameworks that are turned on appear when you map documents and on the Compliance Dashboard. See <a href="article.html?id=qms-frameworks#manage">Manage your frameworks</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Can I edit a predefined framework, such as the Standards for RTOs 2025?</summary><div class="prose">' +
+          '<p>No. Predefined frameworks can only be viewed. To work to your own structure, create a custom framework. See <a href="article.html?id=qms-frameworks#manage">Manage your frameworks</a> and <a href="article.html?id=qms-custom-framework">Create a custom framework</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>How do I fill a missing standard?</summary><div class="prose">' +
+          '<p>Upload a document that evidences it, or edit an existing document and map it to that standard. The Compliance Dashboard lists the standards that still have no documents under <b>Missing Standards</b>. See <a href="article.html?id=qms-compliance-dashboard#parts">What’s on the dashboard</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>How is Policy Compliance Health calculated?</summary><div class="prose">' +
+          '<p>It combines three weighted measures: standards coverage, review timeliness and document freshness. By default they count for 50%, 30% and 20%. Admins can change the weights in <b>Customisation</b>, as long as they add up to 100%. See <a href="article.html?id=qms-health">How Policy Compliance Health is calculated</a> and <a href="article.html?id=cust-compliance-health">Set compliance health weighting</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What do I give an auditor?</summary><div class="prose">' +
+          '<p>Use <b>Export</b> on the Document Management page:</p>' +
+          '<ul>' +
+            '<li><b>Export Audit Trail (Excel)</b> lists every document, with filters on every column, and archived documents on a separate <b>Archived Documents</b> sheet.</li>' +
+            '<li><b>Export All Documents (ZIP)</b> downloads every document file.</li>' +
+          '</ul>' +
+          '<p>See <a href="article.html?id=qms-export">Export the audit trail and documents</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Who can see QMS documents?</summary><div class="prose">' +
+          '<p>People whose role includes the <b>QMS Documents</b> permission, usually Admins and compliance staff. Trainers and assessors can’t see QMS documents unless their role allows it. Teams also limit what people see: documents assigned to a team are only visible to that team, its manager and System Default. See <a href="article.html?id=users-permissions">What each permission covers</a> and <a href="article.html?id=users-governance">Understanding the compliance governance chart</a>.</p>' +
+        '</div></details>' +
       '</section>',
 
     // Workforce Management FAQs, shown on the module page under its guides
     'faq-workforce':
       '<section class="gs-faq">' +
+        '<details><summary>Who can manage staff documents?</summary><div class="prose">' +
+          '<p>An Admin who holds the right permissions and teams can manage each staff member’s documents from <b>Workforce Management</b> › <b>Workforce</b> › the staff member’s profile › <b>Documents</b>, including their own. Teams limit whose profiles they can see. See <a href="article.html?id=users-governance">Understanding the compliance governance chart</a>.</p>' +
+          '<p>Staff can only view their own documents, in <b>My Documents</b>. Depending on the permissions of their role, they may also be able to view QMS documents in Document Management, or Workforce documents. See <a href="article.html?id=users-permissions">What each permission covers</a>.</p>' +
+        '</div></details>' +
         '<details><summary>Why can’t I see a document when I create a trainer’s evidence map or trainer matrix?</summary><div class="prose">' +
           '<p>The document hasn’t been approved yet. Only <b>approved</b> documents can be chosen as verifiable evidence, so a document that’s still <b>Pending</b> or was <b>Rejected</b> doesn’t appear in the list.</p>' +
           '<p>Documents a trainer uploads themselves stay Pending until an Admin approves them. To approve one, open the trainer’s <b>Documents</b> tab, select the tick beside the Pending document, then select <b>Approve</b>. Pending documents are also listed under <b>Admin Action</b> on the Workforce Dashboard.</p>' +
@@ -1531,7 +3424,7 @@
         '</div></details>' +
         '<details><summary>Why can’t I see a staff member to assign an improvement item, courses or units?</summary><div class="prose">' +
           '<p>They’re probably not in your team. Teams form a tree, and you can only see and assign work to people in your own branch of it. A team manager sees the members of the teams they manage and the sub-teams beneath them. Other staff see the people beside them in the same team and those beneath them.</p>' +
-          '<p>Check the compliance governance chart on the <b>Teams</b> tab to see where the person sits. If they should be in your team, ask an Admin to move them in <b>Settings</b> › <b>User Management</b>. See <a href="article.html?id=wf-teams#visibility">Understanding the compliance governance chart</a>.</p>' +
+          '<p>Check the compliance governance chart on the <b>Teams</b> tab to see where the person sits. If they should be in your team, ask an Admin to move them in <b>Settings</b> › <b>User Management</b>. See <a href="article.html?id=users-governance">Understanding the compliance governance chart</a>.</p>' +
         '</div></details>' +
         '<details><summary>What’s the difference between a checklist item’s review frequency and document expiry?</summary><div class="prose">' +
           '<p>They answer two different questions:</p>' +
@@ -1540,6 +3433,49 @@
             '<li><b>Document expiry</b> is for checklist items whose documents have an expiry date of their own, such as a Working With Children Check. When a trainer uploads one that expires in two months, RTO Radar tracks that date so it can be renewed on time.</li>' +
           '</ul>' +
           '<p>In short, review frequency is about the requirement; document expiry is about each staff member’s document. See <a href="article.html?id=wf-checklist">Set up a document checklist for a role</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Where do I add a new staff member?</summary><div class="prose">' +
+          '<p>In <b>Settings</b> › <b>User Management</b> › <b>Staff</b>, not in Workforce Management. That’s also where you set their role and team: roles on the <b>User Roles</b> tab, and teams on the <b>Teams Configuration</b> tab. You can open User Management from the button at the top right of Workforce Management. See <a href="article.html?id=users-invite">Add a user</a>, <a href="article.html?id=users-roles">Organisation roles and role templates</a> and <a href="article.html?id=users-teams">Create teams and set parent teams</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Why can’t I assign a unit to a trainer?</summary><div class="prose">' +
+          '<p>You can only assign units from courses already assigned to that trainer. Assign the course first on <b>Course Assignments</b>, then its units on <b>Unit Assignments</b>. See <a href="article.html?id=wf-assign-units#units">Assign units</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Where do trainers see what’s assigned to them?</summary><div class="prose">' +
+          '<p>In the Trainer/Assessor portal, <b>My Courses</b> lists their assigned courses. Selecting <b>Manage Course</b> opens the course’s <b>Assigned Units</b>, where they work on evidence maps and validations. See <a href="article.html?id=wf-assign-units#trainer-view">What the trainer sees</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Why isn’t a role listed on the Document Checklist tab?</summary><div class="prose">' +
+          '<p>Only roles with staff are listed. Tick <b>Show roles with no assigned personnel</b> to see every role, or select <b>Display all documents</b> to see the documents for all roles together. See <a href="article.html?id=wf-checklist#view">View a role’s checklist</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Why doesn’t a document count towards someone’s checklist?</summary><div class="prose">' +
+          '<p>It needs to be linked to a checklist item when it’s uploaded. The list only shows required documents of the chosen category for the person’s role, so if nothing is listed, no required documents are set up for that category yet. Once linked, the document counts towards the role’s coverage and shows as provided on their profile. See <a href="article.html?id=wf-documents#upload">Upload a document</a> and <a href="article.html?id=wf-checklist">Set up a document checklist for a role</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Why was a document rejected?</summary><div class="prose">' +
+          '<p>Usually because its description doesn’t say enough. The description is what RTO Radar’s AI uses to write evidence statements, so Admins can reject a document whose description is too vague. Describe what it is, when it was completed, and the skills, units or practice it shows, then upload it again. See <a href="article.html?id=wf-description">Write a good document description</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Does the AI read our documents?</summary><div class="prose">' +
+          '<p>No. To protect personal information, the AI reads only each document’s description, never the file itself. That’s why detailed descriptions give stronger evidence statements. See <a href="article.html?id=wf-evidence-map">Create an evidence map for a trainer</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Can I rely on the AI-generated statements?</summary><div class="prose">' +
+          '<p>Treat them as a starting point, not a final answer. The regulator expects you to stay in the loop, so read both statements, check them against the evidence, apply your own judgement and edit them as needed before you approve the map. See <a href="article.html?id=wf-evidence-map">Create an evidence map for a trainer</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Should I assign units or create the evidence map first?</summary><div class="prose">' +
+          '<p>Assign units first. The evidence map is built from the units assigned to the trainer, so a unit that isn’t assigned won’t be in it. See <a href="article.html?id=wf-assign-units">Assign courses and units to a trainer</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What does Needs Revision mean on an evidence map?</summary><div class="prose">' +
+          '<p>An Admin reviewed the trainer’s map and rejected it with notes. In the Trainer/Assessor portal, the trainer selects <b>Edit Map</b>, makes the changes and resubmits it, and it then shows <b>Resubmitted</b>. See <a href="article.html?id=wf-evidence-review">Review evidence maps from trainers</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Can I save an evidence map and finish it later?</summary><div class="prose">' +
+          '<p>Yes. Select <b>Save as Draft</b> instead of <b>Save &amp; Approve</b>. Unfinished maps show on the Workforce Dashboard under <b>Draft Evidence Maps</b>, so they’re easy to come back to. See <a href="article.html?id=wf-evidence-map">Create an evidence map for a trainer</a> and <a href="article.html?id=wf-dashboard">The Workforce Dashboard</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>What does “Trainers Assigned but Unprepared” mean?</summary><div class="prose">' +
+          '<p>It counts trainers who have assigned units they aren’t yet ready to deliver. Select the card on the Workforce Dashboard to see who they are, then check their evidence maps and documents. See <a href="article.html?id=wf-dashboard">The Workforce Dashboard</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>When is PD flagged as overdue?</summary><div class="prose">' +
+          '<p>When PD assigned as <b>Mandatory</b> isn’t completed by its due date. Optional and Recommended PD isn’t flagged. See <a href="article.html?id=wf-pd">Track and assign professional development</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Why can’t I select Generate with AI on an evidence map?</summary><div class="prose">' +
+          '<p><b>Generate with AI</b> isn’t available while there’s text in either statement box. This stops the AI from overwriting what’s already been written, so nothing is lost.</p>' +
+          '<p>To generate new statements, copy anything you want to keep, then clear both boxes and select <b>Generate with AI</b>. Each map in a trainer’s matrix works the same way. See <a href="article.html?id=wf-evidence-map">Create an evidence map for a trainer</a>.</p>' +
         '</div></details>' +
       '</section>',
 
@@ -1572,7 +3508,7 @@
       '<h2 id="export">Export the PD calendar</h2>' +
       '<p>Select <b>Export CSV</b> to download the staff member’s PD calendar. For every staff member’s PD in one file, use <b>Export</b> › <b>Workforce PD Log</b> at the top of Workforce Management.</p>' +
       '<figure class="shot" data-marks="80.8,4.2,9.3,7.4,oval,#"><img src="assets/img/wf-pd-list.png" alt="Professional Development on the PD Calendar tab, with the Export CSV button circled at the top right, beside Assign PD." loading="lazy"><figcaption>Select Export CSV to download the PD calendar.</figcaption></figure>' +
-      '<div class="callout tip"><b>Tip</b><span>The sessions you can assign are set up in <a href="feature.html?m=pd">Professional Development</a>.</span></div>',
+      '<div class="callout tip"><b>Tip</b><span>The sessions you can assign are set up in <b>Settings</b> › <b>Professional Development</b>. See <a href="article.html?id=pd-configure">Set up Professional Development</a>.</span></div>',
 
     'wf-dashboard':
       '<p class="lead">The <b>Workforce Dashboard</b> shows how ready your trainers are to deliver, across your whole RTO, and what needs your attention.</p>' +
@@ -1580,7 +3516,7 @@
       '<figure class="shot" data-marks="0.4,47.2,14.4,6.4,oval,right,#1; 22.8,89.8,9.8,6.2,oval,above,#2"><img src="assets/img/wf-dash-open.png" alt="Workforce Management with Workforce Management circled in the navigation bar as marker 1 and the Workforce Dashboard tab circled as marker 2. The page shows the Show archived units tick box and four summary cards: Trainers Assigned but Unprepared 3, PD Records Awaiting Approval 1, Draft Evidence Maps 3 and Evidence Maps over 2 Years Old 0." loading="lazy"><figcaption>Select Workforce Management (1), then the Workforce Dashboard tab (2).</figcaption></figure>' +
       '<h2 id="sections">What’s on the dashboard</h2>' +
       '<ol class="ov-list">' +
-        '<li><h4>The summary cards</h4><p>On this tab, the cards along the top change to four workforce measures. Select a card to see the items behind it.</p>' +
+        '<li><h4>The summary cards</h4><p>Four summary cards along the top show workforce measures. Select a card to see the items behind it.</p>' +
           '<ul>' +
             '<li><b>Trainers Assigned but Unprepared</b>: trainers with assigned units they aren’t yet ready to deliver.</li>' +
             '<li><b>PD Records Awaiting Approval</b>: PD records to review.</li>' +
@@ -1609,57 +3545,7 @@
       '<p>To open it, go to <b>Workforce Management</b> and select the <b>Teams</b> tab.</p>' +
       '<figure class="shot" data-marks="18.6,0.6,3.9,3.4,oval,#"><img src="assets/img/wf-teams-open.png" alt="The Teams tab, circled. On the left, Teams lists 9 teams, such as System Default, Executive Team, its sub-teams Compliance and Validation, Training Delivery and Programs, Student Services and Administration, and Systems and Digital Services, and the Training Delivery and Programs faculties Business Faculty and Community and Health. On the right, the read-only compliance governance chart shows System Default, managed by Admin Demo, at the top, with the Executive Team and its sub-teams branching beneath it, each with its manager and members." loading="lazy"><figcaption>The Teams tab: your teams on the left and the compliance governance chart on the right.</figcaption></figure>' +
       '<h2 id="visibility">Understanding the compliance governance chart</h2>' +
-      '<p>The chart decides what each person can see and work on in RTO Radar. Where someone sits in it controls which people, courses, TAS and submissions they can reach. It’s a compliance-focused chart, not an organisational chart.</p>' +
-      '<h4>System Default</h4>' +
-      '<p><b>System Default</b> sits at the top of the chart and oversees everything in your RTO. Its manager is usually your RTO’s Compliance Manager, who is often also the Escalation Manager.</p>' +
-      '<p>Anything not assigned to a team when it’s created goes into System Default, such as a new member, course, TAS or form. Everyone in the organisation can see it until it’s assigned to a team.</p>' +
-      '<figure class="shot"><img src="assets/img/wf-gov-default.png" alt="The top of the compliance governance chart. System Default, with the Compliance Manager at the top. Beneath them are Governance Lead, Admin Demo and Quality Assurance Manager, and the Design Manager, who heads the Learning Design team." loading="lazy"><figcaption>System Default, with the Compliance Manager at the top.</figcaption></figure>' +
-      '<h4>How teams limit what people see</h4>' +
-      '<p>Create a team for each area whose records should stay within it. People see the documents, courses, TAS, staff, forms and improvement items of their own team, not those of teams on other branches of the chart. For example:</p>' +
-      '<figure class="shot" data-marks="68.4,18.9,16.4,4.7,oval,#A; 3,18.9,16.4,4.7,oval,right,#B"><img src="assets/img/wf-gov-teams.png" alt="Part of the compliance governance chart. Beneath the Executive Team are Learning Design, managed by Design Manager, circled as B, with three teams beneath it: Business Faculty with Member Demo 1, Hospitality Faculty with Member Demo 2, and IT Faculty, managed by IT Faculty Manager, with Staff Demo; Compliance and Validation, managed by Compliance Manager, circled as A, with Compliance Officer and Compliance Specialist; and Student Services and Administration." loading="lazy"><figcaption>Compliance &amp; Validation (A) and Learning Design (B), each with its own manager and members.</figcaption></figure>' +
-      '<div class="sub-steps">' +
-        '<div><h4><span class="sn">A</span>Compliance &amp; Validation</h4><p>Compliance documents belong to the Compliance &amp; Validation team, so only its manager, the Compliance Manager, and its members, the Compliance Officer and Compliance Specialist, can see them.</p></div>' +
-        '<div><h4><span class="sn">B</span>Learning Design</h4><p>This team manages the training and courses assigned to it, but can’t see administrative documents or the workforce of other teams. Beneath it, the <b>Business Faculty</b>, <b>Hospitality Faculty</b> and <b>IT Faculty</b> teams each see only their own courses, TAS, workforce, forms and improvement items. A Business Faculty trainer never sees a Hospitality Faculty course.</p></div>' +
-      '</div>' +
-      '<h4>Managers and their members</h4>' +
-      '<p>A team’s members report to its manager. The manager can assign them work and review how they’re tracking, such as their delivery readiness, evidence maps and improvement items. A team without a manager reports to the manager of the team above it.</p>' +
-      '<div class="sub-steps">' +
-        '<div><h4><span class="sn">1</span>A team sees its own work</h4><p>A team’s manager can see the members of their team and the manager they report to, and can assign work to their members. Teams on other branches stay out of view.</p></div>' +
-        '<div><h4><span class="sn">2</span>System Default sees everything</h4><p>Anyone in <b>System Default</b> bypasses teams: they can see everyone in the organisation and every team’s work.</p></div>' +
-        '<div><h4><span class="sn">3</span>System Default work is shared</h4><p>Anything in System Default is unassigned, so every team can see and use it until it’s assigned to a team.</p></div>' +
-      '</div>' +
-      '<h4>An example</h4>' +
-      '<p>Design Manager, who is in System Default, also manages the <b>Learning Design</b> team. Learning Design has three teams beneath it:</p>' +
-      '<ul>' +
-        '<li>The <b>Business Faculty</b> and <b>Hospitality Faculty</b>, each with one member and no manager. Their members report to Design Manager, the manager of the team above.</li>' +
-        '<li>The <b>IT Faculty</b>, managed by IT Faculty Manager, with Staff Demo as its member. Staff Demo reports only to IT Faculty Manager. IT Faculty Manager isn’t in System Default.</li>' +
-      '</ul>' +
-      '<figure class="shot" data-marks="67.9,40.8,28.5,24.8,zone,#"><img src="assets/img/wf-gov-chart.png" alt="Part of the compliance governance chart. Learning Design, managed by Design Manager, has three teams beneath it: Business Faculty, with Member Demo 1, and Hospitality Faculty, with Member Demo 2, neither with a manager; and the IT Faculty, outlined, managed by IT Faculty Manager, an Administrator, with Staff Demo, a Trainer/Assessor, beneath." loading="lazy"><figcaption>Learning Design and the three teams beneath it. The IT Faculty (outlined) is managed by IT Faculty Manager.</figcaption></figure>' +
-      '<div class="xl-book" data-hint="1">' +
-        '<div class="xl-bar" role="tablist" aria-label="What the IT Faculty Manager sees">' +
-          '<button type="button" role="tab" aria-selected="true">IT Faculty Manager</button>' +
-          '<button type="button" role="tab" aria-selected="false">IT Faculty Manager and System Default member</button>' +
-        '</div>' +
-        '<div class="xl-sheet" role="tabpanel">' +
-        '<p>In <b>Program Management</b>, IT Faculty Manager sees only the courses assigned to the IT Faculty and the unassigned courses in System Default:</p>' +
-        '<figure class="shot" data-marks="37.8,32.2,12.6,64,zone,#"><img src="assets/img/wf-gov-courses-team.png" alt="The Courses list as IT Faculty Manager sees it. The Team column, outlined, shows only System Default and IT Faculty courses, such as Diploma of Hospitality Management and Digital Literacy course wrapper in System Default, and Certificate III in Business, Diploma of Business and Certificate I in Engineering in the IT Faculty." loading="lazy"><figcaption>As a manager of the IT Faculty only: IT Faculty and System Default courses.</figcaption></figure>' +
-        '<p>If IT Faculty Manager managed the Business Faculty instead, they would see only the Business Faculty’s courses and any System Default courses. A member, such as Staff Demo, sees only the courses and units assigned to them.</p>' +
-        '</div>' +
-        '<div class="xl-sheet" role="tabpanel" hidden>' +
-        '<p>Once IT Faculty Manager is added to <b>System Default</b>, every course in the organisation appears, including Learning Design’s courses and those of the Business Faculty and Hospitality Faculty:</p>' +
-        '<figure class="shot" data-marks="34.4,23.6,16.6,76.4,zone,#"><img src="assets/img/wf-gov-courses-all.png" alt="The Courses list after IT Faculty Manager joins System Default. The Team column, outlined, now shows courses from every team, including System Default, IT Faculty, Learning Design, Business Faculty, with the Diploma of Business, and Hospitality Faculty, with the Diploma of Hospitality Management." loading="lazy"><figcaption>In System Default: every team’s courses.</figcaption></figure>' +
-        '</div>' +
-      '</div>' +
-      '<p>The <b>TAS Builder</b> works the same way. IT Faculty Manager can only build and manage TAS for courses their team can see:</p>' +
-      '<figure class="shot" data-marks="55.2,58.4,10.4,30.6,zone,#"><img src="assets/img/wf-gov-tas.png" alt="The TAS Builder on the Master TAS tab, listing two draft TAS, Advanced Diploma of Cyber Security and Diploma of Business, both in the IT Faculty, outlined." loading="lazy"><figcaption>The TAS Builder shows only the IT Faculty’s TAS.</figcaption></figure>' +
-      '<h4>Where else this applies</h4>' +
-      '<ul>' +
-        '<li><b>Workforce Management</b>: a manager sees only their own members and the manager they report to. Someone in System Default sees everyone in the organisation.</li>' +
-        '<li><b>Continuous Improvement</b>: improvement items can only be assigned to people you can see.</li>' +
-        '<li><b>Complaints &amp; Suggestions</b>: a form submitted to a team can only be viewed by that team’s managers and members with the right permissions.</li>' +
-      '</ul>' +
-      '<p>This keeps each team’s work to itself. The Business Faculty doesn’t receive the IT Faculty’s courses, TAS, improvement items or complaints.</p>' +
-      '<div class="callout tip"><b>Tip</b><span>Can’t find someone or something? Check the compliance governance chart to see whether it belongs to your team. If you need to oversee the whole organisation, ask an Admin to add you to <b>System Default</b> in <b>Settings</b> › <b>User Management</b>.</span></div>' +
+      '<p>The chart decides what each person can see and work on in RTO Radar. See <a href="article.html?id=users-governance">Understanding the compliance governance chart</a> in Users, Roles &amp; Teams.</p>' +
       '<h2 id="team">Open a team</h2>' +
       '<p>Select a team in the list, such as Compliance &amp; Validation, to open it. You’ll see its analytics, such as how its improvement items are progressing and how many members it has, and its <b>Member Permissions Overview</b>: what members in each role can view, create, edit and delete in each feature.</p>' +
       '<figure class="shot" data-marks="17.2,43.9,arrow-left,small"><img src="assets/img/wf-teams-open.png" alt="The Teams tab. An arrow points at Compliance and Validation in the Teams list. On the left, Teams lists 9 teams, such as System Default, Executive Team, its sub-teams Compliance and Validation, Training Delivery and Programs, Student Services and Administration, and Systems and Digital Services, and the Training Delivery and Programs faculties Business Faculty and Community and Health. On the right, the read-only compliance governance chart shows System Default, managed by Admin Demo, at the top, with the Executive Team and its sub-teams branching beneath it, each with its manager and members." loading="lazy"><figcaption>Select a team, such as Compliance &amp; Validation, to open it.</figcaption></figure>' +
@@ -1700,7 +3586,15 @@
             '<div><h4><span class="sn">3</span>Documents for the role</h4><p>Each document type with its category, how many have been <b>Received</b> (for example 1 / 3), how many are <b>Expiring soon</b>, and how many have an <b>Upcoming review</b>. Hover over the <b>i</b> beside a column heading for more about it.</p></div>' +
           '</div></li>' +
       '</ol>' +
-      '<div class="callout tip"><b>Tip</b><span>When staff upload a document, they can link it to a checklist item. It then counts towards the role’s coverage and shows as provided on their profile.</span></div>',
+      '<div class="callout tip"><b>Tip</b><span>When staff upload a document, they can link it to a checklist item. It then counts towards the role’s coverage and shows as provided on their profile.</span></div>' +
+      '<h2 id="staff-view">What trainers and assessors see</h2>' +
+      '<p>Trainers and assessors see their role’s checklist in <b>My Documents</b> › <b>My Document Checklist</b> (circled). It shows how many of the required documents they’ve provided, grouped by category, such as Qualifications, Licences and General. Each item is:</p>' +
+      '<ul>' +
+        '<li><b>Missing</b>: no document has been linked to it yet.</li>' +
+        '<li><b>Provided</b>: a document is linked, shown under <b>Matched by</b>.</li>' +
+        '<li><b>Expired</b>: the linked document has passed its expiry date and needs replacing.</li>' +
+      '</ul>' +
+      '<figure class="shot" data-marks="10.6,1.2,13,5,oval,#"><img src="assets/img/wf-checklist-staff.png" alt="My Document Checklist, circled, beside My Documents, showing the Trainer/Assessor Requirement Checklist with 2 of 6 provided. Qualifications, 1 of 3: Certificate IV in Training and Assessment Transcript, Missing; Trainer and Assessor Qualification - TAE40122, Missing; and Vocational Qualification / Relevant Trade Certificate, Provided, matched by 01_Vocational_Competency_Profile. Licences, 1 of 2: First Aid Certificate, Missing; and Working With Children Check, Expired, matched by Working With Children Check (WWCC) - Victoria. General, 0 of 1: Trainer CV/ Resume, Missing." loading="lazy"><figcaption>A trainer’s checklist, with 2 of 6 documents provided.</figcaption></figure>',
 
     'wf-export':
       '<p class="lead">Workforce Management can export five reports, for audits, governance meetings or your own records.</p>' +
@@ -1708,7 +3602,7 @@
       '<ol class="steps-list">' +
         '<li>Go to <b>Workforce Management</b>.</li>' +
         '<li>Select <b>Export</b> at the top right of the page.' +
-          '<figure class="shot" data-marks="67.6,58.2,8.6,22,oval,#"><img src="assets/img/wf-export.png" alt="The top of Workforce Management, with the Export button circled beside Assign Training at the top right." loading="lazy"><figcaption>Select Export at the top right of Workforce Management.</figcaption></figure></li>' +
+          '<figure class="shot" data-marks="78.3,17.4,7,4.4,oval,#"><img src="assets/img/wf-landing.png" alt="The top of Workforce Management, with the Export button circled beside Assign Training at the top right." loading="lazy"><figcaption>Select Export at the top right of Workforce Management.</figcaption></figure></li>' +
         '<li>Choose a report.</li>' +
       '</ol>' +
       '<h2 id="reports">The reports</h2>' +
@@ -1730,7 +3624,7 @@
       '<p>Along the top of the page are three tabs:</p>' +
       '<ul>' +
         '<li><b>Overview</b>: your risk profile, actions and risk factors. This is the tab described below.</li>' +
-        '<li><b>Version History</b>: every saved version of your risk register, and how your risks have changed over time. See <a href="article.html?id=risk-versions">Save, view and export risk register versions</a>.</li>' +
+        '<li><b>Version History</b>: every saved revision of your risk register, any versions you’ve finalised, and how your risks have changed over time. See <a href="article.html?id=risk-versions">Risk register revisions and versions</a>.</li>' +
         '<li><b>Guide</b>: how course risk is worked out and the validation frequency for each risk score. See <a href="article.html?id=risk-provider-factors">Risk scores and validation frequency</a>.</li>' +
       '</ul>' +
       '<h2 id="cards">What’s on the Overview</h2>' +
@@ -1974,7 +3868,7 @@
         '<tr><td>1</td><td>Low Risk</td><td>36 months</td></tr>' +
       '</tbody></table>' +
       '<p>The <b>Status</b> column on the Guide tab shows whether each band is the <b>Recommended</b> default or a <b>Custom</b> setting, and a <b>Custom Settings Applied</b> badge appears when any band has been changed.</p>' +
-      '<div class="callout note"><b>Note</b><span>Admins can change the bands in <b>Settings</b> › <b>Risk</b>. See <a href="article.html?id=cust-frequency-bands">Validation frequency bands and escalation</a>.</span></div>' +
+      '<div class="callout note"><b>Note</b><span>Admins can change the bands in <b>Settings</b> › <b>Customisation</b> › <b>Risk</b>. See <a href="article.html?id=cust-frequency-bands">Set validation frequency and escalation</a>.</span></div>' +
       '<p>For the factors that add to a course’s risk, see <a href="article.html?id=prog-course-risk#factors">Course-specific risk factors</a> in Program Management.</p>',
 
     'risk-escalation-manager':
@@ -1998,8 +3892,6 @@
         '<tr><td><b>Their job</b></td><td>Oversee all organisational risks and act on serious ones</td><td>Carry out the proposed treatment for one risk</td></tr>' +
         '<tr><td><b>What they get</b></td><td>Emails and risk reports</td><td>An improvement item in the Continuous Improvement Register</td></tr>' +
       '</tbody></table>' +
-      '<h2 id="team">The System Default team</h2>' +
-      '<p>Your Escalation Manager is also the default manager for the <b>System Default</b> team in <a href="feature.html?m=users">Users, Roles &amp; Teams</a>.</p>' +
       '<h2 id="change">Changing your Escalation Manager</h2>' +
       '<p>Update their name and email in Update RTO Profile and save. From then on, all risk emails go to the new person. Each version in Version History records who the Escalation Manager was when it was saved, so you can show who had oversight at any point.</p>' +
       '<div class="callout tip"><b>Tip</b><span>When your Escalation Manager changes, send the new one a risk report straight away with Email Escalation Manager, so they start with the full picture.</span></div>',
@@ -2065,65 +3957,141 @@
           '<figure class="shot"><img src="assets/img/risk-export-archived.png" alt="The Archived Categories sheet of the Excel export, with the columns Category, Category Type, RTO Name, RTO Code, Archived By, Role, Email, Date Archived, Why do you want to archive this risk category, and Please detail the actions taken that resulted in archiving this category. One row shows Political Risk, a Default category, archived by Admin Demo, RTO Admin, on 01/09/2026 at 3:38 PM, because a recent risk review found it no longer relevant, with the actions taken to confirm that." loading="lazy"><figcaption>The Archived Categories sheet, with one archived category.</figcaption></figure>' +
         '</div>' +
       '</div>' +
-      '<div class="callout tip"><b>Tip</b><span>Need the register as it was on an earlier date? Export that version from Version History. See <a href="article.html?id=risk-versions">Save, view and export risk register versions</a>.</span></div>',
+      '<div class="callout tip"><b>Tip</b><span>Need the register as it was on an earlier date? Export that revision or version from Version History. See <a href="article.html?id=risk-versions">Risk register revisions and versions</a>.</span></div>',
 
     'risk-versions':
-      '<p class="lead">Every time your risk register is saved, RTO Radar keeps a version of it. Version History lets you see how your risks have changed, look at the register as it was on any date, and export any version.</p>' +
-      '<h2 id="created">When versions are created</h2>' +
-      '<p>A new version is saved automatically when you:</p>' +
+      '<p class="lead">Every time your risk register is saved, RTO Radar keeps a revision of it. If your RTO uses versioning, you can also finalise revisions as versions: named, permanent copies, such as the register your governance meeting approved. Version History lets you see how your risks have changed, look at the register as it was, and export it.</p>' +
+      '<div class="callout note"><b>Note</b><span>Revisions are always kept. Versions are only available when an Admin turns on <b>Enable risk register versioning</b> in <b>Settings</b> › <b>Customisation</b> › <b>Risk</b> › <b>Risk Register</b>. Every save also becomes a version only when <b>Create a version automatically for every revision</b> is on too. See <a href="article.html?id=cust-risk-categories#versions">Register versioning</a>.</span></div>' +
+      '<h2 id="created">When revisions are saved</h2>' +
+      '<p>A new revision is saved when you:</p>' +
       '<ul>' +
         '<li>complete a comprehensive risk assessment</li>' +
         '<li>select <b>Save Risk Register</b> at the top right of Risk Assessment.</li>' +
       '</ul>' +
-      '<p>Each version records why it was saved, for example “Completed comprehensive risk assessment” or “Manually saved risk register”.</p>' +
-      '<h2 id="open">How to view risk register versions</h2>' +
+      '<p>Each revision records why it was saved, for example “Completed comprehensive risk assessment” or “Manually saved risk register”.</p>' +
+      '<h2 id="open">Open Version History</h2>' +
       '<p>Go to <b>Risk Assessment</b> (1) and select the <b>Version History</b> tab (2).</p>' +
       '<figure class="shot" data-marks="0.5,62.1,14.5,6.4,oval,right,#1; 48.9,46.6,16.2,6.6,oval,above,#2"><img src="assets/img/risk-versions-tab.png" alt="Risk Assessment, circled as marker 1 in the navigation bar, with the Version History tab selected and circled as marker 2. Below, Risk Register Versions explains that versions are created automatically when a risk register is saved, with an Export all button, and Risk trend over time with a Show button." loading="lazy"><figcaption>Go to Risk Assessment (1), then select the Version History tab (2).</figcaption></figure>' +
+      '<p>When versioning is turned on, Version History has two tabs: <b>Versions</b> and <b>Revisions</b>. When it’s off, it lists revisions only.</p>' +
       '<h2 id="trend">Risk trend over time</h2>' +
-      '<p>At the top of the Version History tab, <b>Risk trend over time</b> charts the total number of risks in each version, split into Extreme, High, Medium and Low.</p>' +
+      '<p>At the top of the Version History tab, <b>Risk trend over time</b> charts the total number of risks over time, split into Extreme, High, Medium and Low.</p>' +
       '<ul>' +
         '<li>Choose a period: <b>All time</b>, <b>Last 30 days</b>, <b>Last 6 months</b>, <b>Last 12 months</b> or a <b>Custom date range</b>.</li>' +
         '<li>Select <b>Show</b> to open the chart, and <b>Hide</b> to fold it away.</li>' +
       '</ul>' +
       '<figure class="shot shot-medium"><img src="assets/img/risk-versions-trend.png" alt="Risk trend over time, open, with period buttons: All time, which is selected, Last 30 days, Last 6 months, Last 12 months and Custom date range. The chart shows the total number of risks across 65 versions, split into Extreme, High, Medium and Low." loading="lazy"><figcaption>The risk trend over time, for all time.</figcaption></figure>' +
       '<div class="callout tip"><b>Tip</b><span>A shrinking band of High and Extreme risks is good evidence for an auditor that your treatment plans are working.</span></div>' +
-      '<h2 id="list">The version list</h2>' +
-      '<p>Below the chart, every version is listed with the newest first. Use <b>Sort</b> to change the order, and filter by <b>Created Date</b> or <b>Review Date</b>. Each version shows:</p>' +
+      '<h2 id="list">The revision list</h2>' +
+      '<p>On the <b>Revisions</b> tab, below the chart, every revision is listed with the newest first. Use <b>Sort</b> to change the order, and filter by <b>Created Date</b> or <b>Review Date</b>. Each revision shows:</p>' +
       '<ul>' +
-        '<li>its version number and risk score, with <b>Active</b> on the current version</li>' +
+        '<li>its revision number and risk score, with <b>Active</b> on the current revision</li>' +
         '<li>when it was created and who saved it</li>' +
         '<li>how often the register is reviewed and when the next review is due</li>' +
         '<li>how many risks it holds, across how many categories</li>' +
         '<li>the Escalation Manager at the time</li>' +
         '<li>how it was saved.</li>' +
       '</ul>' +
-      '<figure class="shot shot-medium" data-marks="22,0.4,36.8,3.6,underline,#1; 34.4,9.1,arrow-left,tiny,#2"><img src="assets/img/risk-versions-list.png" alt="The version list. Marker 1 underlines Sort: Created Date and the Created Date and Review Date filters. Version 65, marked Active, with an arrow as marker 2 pointing at it, shows its creation date, RTO, review frequency, next review, who saved it, 24 risks across 11 categories, the Escalation Manager and the note Manually saved risk register, with Export Version and Current Version buttons. Versions 64 and 63 below each have Export Version and Load Version buttons." loading="lazy"><figcaption>Sort and filter the list (1). The current version is marked Active (2).</figcaption></figure>' +
-      '<h2 id="view">View an earlier version</h2>' +
+      '<figure class="shot shot-medium" data-marks="4.2,70.2,20.6,3.4,oval,right,#1; 85.6,70.4,10.6,6.4,oval,#2"><img src="assets/img/risk-revisions-list.png" alt="The Revisions tab of Version History: Risk Register Revisions, view and manage previous revisions of your risk register, created automatically when it’s saved, with Export all. Risk trend over time charts the total number of risks across revisions 2 to 68, split into Extreme, High, Medium and Low. Sort by Created Date, and filter by Created Date or Review Date. Revision 68, Active, circled as 1, created 27/10/2026, 3:02 pm, for RTO Radar Demo, with a risk score of 5.0/10, circled as 2. Reviewed every 12 months, next review 27 Oct 2027, saved by Admin Demo, 27 risks across 11 categories, escalation manager Admin Demo, saved after completing the comprehensive risk assessment. Export Revision, and Current Revision." loading="lazy"><figcaption>Revision 68, the current revision (1), with its risk score (2).</figcaption></figure>' +
+      '<h2 id="view">View an earlier revision</h2>' +
       '<ol class="steps-list">' +
-        '<li>In the version list, select <b>Load Version</b> on the version you want to see.' +
-          '<figure class="shot shot-medium" data-marks="66.6,58.1,10.2,3.5,oval,#"><img src="assets/img/risk-versions-list.png" alt="The version list, with the Load Version button on Version 64 circled." loading="lazy"><figcaption>Select Load Version.</figcaption></figure></li>' +
+        '<li>On the <b>Revisions</b> tab, select <b>Load Revision</b> (circled) on the revision you want to see.' +
+          '<figure class="shot shot-medium" data-marks="77.3,40.4,18.4,7,oval,#"><img src="assets/img/risk-revisions-load.png" alt="Revision 67, created 26/10/2026, 11:32 am, with a risk score of 8.0/10, 26 risks across 11 categories, saved after completing the comprehensive risk assessment, with Export Revision and Load Revision, which is circled. Revision 66, created 22/10/2026, 2:18 pm, with a risk score of 6.0/10, below." loading="lazy"><figcaption>Select Load Revision (circled).</figcaption></figure></li>' +
         '<li>The Overview shows the register as it was then. A banner reads <b>Viewing Historical Version</b> with the date it was created, and the version number appears next to the page title.</li>' +
         '<li>Look through its risk score, validation frequency, Escalation Manager and risk factors. You can still email it, schedule emails and export it to Excel.</li>' +
         '<li>Select <b>Return to Current Version</b> when you’re done.' +
           '<figure class="shot" data-marks="59,17.3,11.4,3.8,oval,#"><img src="assets/img/risk-versions-loaded.png" alt="Version 24 loaded, with a Version 24 label beside the Risk Register Overview title and a banner reading Viewing Historical Version 24, created on 8 Apr 2026, a read-only snapshot of your risk register. Its Return to Current Version button is circled. The Overview shows that version’s risk score of 6.8 out of 10, validation frequency of 6 months and 25 risks identified. Under Actions, Update RTO Profile and Edit Comprehensive Assessment are greyed out with a note to return to the current version to edit, while Email Escalation Manager and Schedule Email are available. A message confirms the version was loaded." loading="lazy"><figcaption>Select Return to Current Version (circled) when you’re done.</figcaption></figure></li>' +
       '</ol>' +
-      '<div class="callout note"><b>Note</b><span>An earlier version is a read-only snapshot. Update RTO Profile and Edit Comprehensive Assessment are unavailable until you return to the current version.</span></div>' +
-      '<h2 id="export">Export versions</h2>' +
+      '<div class="callout note"><b>Note</b><span>An earlier revision is a read-only snapshot. Update RTO Profile and Edit Comprehensive Assessment are unavailable until you return to the current revision.</span></div>' +
+      '<h2 id="finalise">Finalise a version</h2>' +
+      '<p>When versioning is turned on, finalise a revision as a version once it’s been reviewed, so there’s a permanent copy of the register as approved.</p>' +
+      '<ol class="steps-list">' +
+        '<li>In Version History, select the <b>Versions</b> tab (1). Until you finalise one, it shows <b>No version finalised yet</b>. If you’ve just turned on versioning, select <b>Backfill versions from revisions</b> to turn your saved revisions into versions in one go.' +
+          '<figure class="shot" data-marks="23.6,25.8,14.6,5,oval,#1; 63.8,51.4,10.4,5.4,oval,right,#2"><img src="assets/img/risk-versions-versions.png" alt="Risk Register Overview, on Version History, with the Versions tab circled as 1 beside Revisions. Versions: finalise the risk register by creating a new version from existing saved revisions; deleting a version does not delete the original revision. Current working revision: Revision 68. Versions are created automatically every time the risk register is saved. A warning says no version has been finalised yet. Below are Backfill versions from revisions (64), Create version, Export all and Delete versions. The Create version button in the warning is circled as 2. No versions yet." loading="lazy"><figcaption>The Versions tab (1) and Create version (2).</figcaption></figure></li>' +
+        '<li>Select <b>Create version</b> (2). In the dialog, choose the revision you’ve reviewed (1). The newest is selected. Search or page through the list for an earlier one.</li>' +
+        '<li>Check the <b>Version number</b>, and enter a <b>Title</b> and <b>Description</b> (2), such as when it was approved and any notes for auditors. Its review period and next review date are carried from the revision. Select <b>Create version</b> (3).' +
+          '<figure class="shot shot-medium" data-marks="4.2,25.6,88.8,10.8,zone,#1; 2,60.8,92,23,zone,#2; 80.8,92.6,16.6,5.8,oval,above,#3"><img src="assets/img/risk-versions-create.png" alt="Create version: elect one revision as a completed version; the version is a saved copy, so editing or deleting it never changes the revision it came from. Select the completed revision, with a search box: Revision 68, 27 risks, score 5, saved 27/10/2026, 3:02 PM by Admin Demo, next review 27 Oct 2027, selected and outlined as 1; Revision 67 and Revision 66 below, page 1 of 7. Version number 1, Title 2026 Risk Register - governance approved, and Description: Annual risk register review, approved at the governance meeting on 30/10/2026. Adds the new Third Party Delivery Risk category for partner-delivered training. These are outlined as 2. Carried from Revision 68: review period 12 months, next review 27 Oct 2027. Cancel, and Create version, circled as 3." loading="lazy"><figcaption>Revision 68 selected (1), its version details (2), then Create version (3).</figcaption></figure></li>' +
+        '<li>The version appears on the Versions tab (1), marked <b>Manual</b>, with the revision it came from (2) and your description. Use the buttons (3) to export, edit or delete it.' +
+          '<figure class="shot shot-medium" data-marks="5.2,58.9,60,3.6,oval,right,#1; 8.2,76.2,16,4.4,oval,#2; 78,90.6,17.4,5.8,oval,#3"><img src="assets/img/risk-versions-created.png" alt="The Versions tab: current working revision Revision 68, and versions are created automatically every time the risk register is saved. Risk trend over time says at least two versions are needed to show a trend. Search versions, Backfill versions from revisions (63), Create version, Export all and Delete versions. Version 1, 2026 Risk Register - governance approved, Manual, circled as 1: version saved 09/11/2026, 6:27 am, risk score 5.0/10, reviewed every 12 months, next review 27 Oct 2027, saved by Admin Demo, 27 risks across 11 categories, escalation manager Admin Demo. From revision 68, created 27/10/2026, 3:02 pm, circled as 2. The description: Annual risk register review, approved at the governance meeting on 30/10/2026. Adds the new Third Party Delivery Risk category for partner-delivered training. Export, edit and delete buttons, circled as 3." loading="lazy"><figcaption>Version 1 (1), from Revision 68 (2), with export, edit and delete (3).</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>If <b>Create a version automatically for every revision</b> is on, every save also creates a version.</p>' +
+      '<p>To remove versions, select <b>Delete versions</b>. The revisions they came from are kept. Once there are at least two versions, <b>Risk trend over time</b> on the Versions tab charts how your risks have changed between them.</p>' +
+      '<h2 id="export">Export</h2>' +
       '<ul>' +
-        '<li><b>Export Version</b> (1) on a version downloads that version’s register.</li>' +
-        '<li><b>Export all</b> (2) at the top of the list downloads every version.</li>' +
+        '<li><b>Export Revision</b> (1) on a revision downloads that revision’s register. On the Versions tab, use the export button on a version.</li>' +
+        '<li><b>Export all</b> (2) at the top of the list downloads every revision.</li>' +
       '</ul>' +
-      '<figure class="shot shot-medium" data-marks="59.6,92.4,17.8,3.9,oval,above,#1; 82.3,2.9,15,4.4,oval,#2"><img src="assets/img/risk-versions-export.png" alt="Risk Register Versions with the risk trend chart open and Version 38 below it. Marker 1 circles the Export Version button on Version 38, and marker 2 circles the Export all button at the top." loading="lazy"><figcaption>Export Version (1) downloads one version. Export all (2) downloads every version.</figcaption></figure>' +
+      '<figure class="shot shot-medium" data-marks="58.2,93.8,19.4,5,oval,above,#1; 81.8,8.8,15.8,5.4,oval,#2"><img src="assets/img/risk-revisions-list.png" alt="The Revisions tab, with Export all at the top circled as 2, and Export Revision on Revision 68 circled as 1." loading="lazy"><figcaption>Export Revision (1) downloads one revision. Export all (2) downloads every revision.</figcaption></figure>' +
       '<p>See <a href="article.html?id=risk-export">Export the risk register to Excel</a> for what’s in an export.</p>',
-    'cir-sources':
-      '<p>Improvement items can come from anywhere in RTO Radar. Each item keeps its source, so you can filter the register by where items came from and spot trends.</p>' +
-      '<h2 id="sources">Sources</h2>' +
-      '<ul><li><b>Feedback forms</b>: complaints, suggestions and conflict of interest submissions.</li><li><b>Risk register treatments</b>: treatment plans from the risk assessment.</li><li><b>Industry consultation</b>.</li><li><b>Audit findings</b>.</li><li><b>Unit validation outcomes</b>: findings from the four-phase validation.</li><li><b>Ad hoc entries</b>: anything added directly to the register.</li></ul>' +
-      '<div class="callout note"><b>Note</b><span>Admins can add source categories in Customisation › CIR › Sources. System sources can’t be deleted.</span></div>',
-    'mfa-levels':
-      '<p>MFA enforcement is set once for the whole organisation.</p>' +
-      '<ul><li><b>Optional</b>: users can turn on MFA themselves.</li><li><b>Recommended</b>: users are prompted to set it up.</li><li><b>Required</b>: users must set it up before they can continue.</li></ul>' +
-      '<p>You can see who has MFA turned on in Settings › Security › User MFA Status.</p>',
+    'gs-welcome':
+      '<p class="lead">This guide follows your RTO Radar onboarding session. Nine short steps take you from a new account to a dashboard filling up with your RTO’s work. Each step builds on the one before, so work through them in order.</p>' +
+
+      '<h2>Moving through the guide</h2>' +
+      '<p>Each step of this guide has its own page. There are two ways to move between them.</p>' +
+      '<ol class="ov-list">' +
+      '<li><h4>Previous and Next</h4>' +
+      '<p>At the bottom of every page there are two buttons like these. <b>Next</b> takes you to the following step, and <b>Previous</b> takes you back one. The button tells you which step you’ll go to.</p>' +
+      '<div class="demo" aria-hidden="true"><span class="demo-label">Example</span>' +
+        '<div class="pager"><a><small>← Previous</small><b>How to Use This Guide</b></a><a class="next"><small>Next →</small><b>Set Up Your Organisation</b></a></div>' +
+      '</div></li>' +
+      '<li><h4>The step list</h4>' +
+      '<p>The step list shows every step in the guide, with the one you’re on highlighted in blue. Select any step to jump straight to it.</p>' +
+      '<ul>' +
+        '<li><b>On a computer</b>, it runs down the left-hand side of the page, beside what you’re reading now.</li>' +
+        '<li><b>On a phone or tablet</b>, open it from the step button at the top of the page.</li>' +
+      '</ul>' +
+      '<div class="demo demo-steps" aria-hidden="true"><span class="demo-label">Example</span>' +
+        '<ol class="demo-nav">' +
+          '<li><a><span class="n">i</span><span>How to Use This Guide</span></a></li>' +
+          '<li><a class="on"><span class="n">1</span><span>Set Up Your Organisation</span></a></li>' +
+          '<li><a><span class="n">2</span><span>Set Up Your Organisational Risks</span></a></li>' +
+          '<li><a><span class="n">3</span><span>Visit the Continuous Improvement Register</span></a></li>' +
+        '</ol>' +
+      '</div></li>' +
+      '<li><h4>Notes, tips and warnings</h4>' +
+      '<p>Read these as you go. Each has its own colour and icon:</p>' +
+      '<div class="callout note"><b>Note</b><span>Explains how something works.</span></div>' +
+      '<div class="callout tip"><b>Tip</b><span>Points you to a shortcut or more detail.</span></div>' +
+      '<div class="callout warn"><b>Warning</b><span>Flags something to take care with, such as a setting only Admins can change.</span></div></li>' +
+      '<li><h4>Frequently asked questions</h4>' +
+      '<p>The last page answers common questions, such as how risk scores are worked out and when to use a silent user. Select a question to open its answer, like this one:</p>' +
+      '<section class="gs-faq demo-faq"><details><summary>Where can I find the answers to common questions?</summary><div class="prose"><p>On the last page of this guide, <b>Frequently asked questions</b>. Select it in the step list, or keep selecting <b>Next</b> until you reach it.</p></div></details></section></li>' +
+      '</ol>' +
+
+      '<h2>The RTO Radar screen</h2>' +
+      '<p>Every screen in RTO Radar has two parts:</p>' +
+      '<ul>' +
+        '<li><b>The navigation bar (1)</b> on the left lists every part of RTO Radar, from Dashboard and Document Management through to Risk Assessment, Events and Settings. Select one to open it. The navigation bar stays in place wherever you go.</li>' +
+        '<li><b>The content area (2)</b> on the right shows whatever you’ve opened, and changes as you move around.</li>' +
+      '</ul>' +
+      '<figure class="shot" data-marks="0.3,9,15.5,90.5,zone,#1; 17.2,6.4,81.6,93.2,zone,#2"><img src="assets/img/gs-welcome-dashboard.png" alt="RTO Radar after signing in. Marker 1 points to the navigation bar on the left, listing Dashboard, Document Management, Program Management, Continuous Improvement, Workforce Management, Risk Assessment, Complaints and Suggestions, Events and Settings. Marker 2 points to the content area on the right, showing the Admin Dashboard: a Risk Register Overview with 1 missing treatment, 1 responsibility gap and 12 overdue or missing dates, a Risk Level Breakdown bar chart and a Treatment Status Overview pie chart." loading="lazy"><figcaption>The navigation bar (1) and the content area (2), showing your dashboard.</figcaption></figure>' +
+      '<p>When you sign in, the content area opens on your <b>dashboard</b>. It brings forward everything across RTO Radar that needs your immediate attention, from risks and improvement items to documents, staff and upcoming events.</p>' +
+      '<p>If you’re new to RTO Radar, your dashboard will be mostly empty. That’s expected: it fills up as you work through this guide. Your organisational risks, improvement items, documents, courses and trainer each appear on it as you add them, and the last step shows you how to tailor it.</p>',
+    'mfa-set-organisation':
+      '<p class="lead">Two-factor authentication (MFA) adds a second step when someone signs in: a code from an authenticator app on their phone. Admins turn it on for the whole organisation and choose how strictly it’s enforced. Each person sets up their own.</p>' +
+      '<h2 id="set">Turn on MFA</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Settings</b> › <b>Security</b> (1). Under <b>Organisation MFA Settings</b>, turn on the switch (2). It shows <b>Disabled</b> while MFA is off for your organisation.' +
+          '<figure class="shot" data-marks="43.3,53.6,8.3,8.6,oval,above,#1; 84.6,78.4,9.4,8.6,oval,above,#2"><img src="assets/img/mfa-security.png" alt="Organisation Settings on the Security tab, circled as 1. Organisation MFA Settings: configure two-factor authentication for your organisation, with its switch set to Disabled, circled as 2." loading="lazy"><figcaption>Open Security (1), then turn on Organisation MFA Settings (2).</figcaption></figure></li>' +
+        '<li>Choose the <b>Enforcement Level</b> (circled):' +
+          '<ul>' +
+            '<li><b>Optional</b>: users can turn on MFA if they choose.</li>' +
+            '<li><b>Recommended</b>: users are prompted to set up MFA each time they sign in, until they’re enrolled.</li>' +
+            '<li><b>Required</b>: users must set up MFA before they can continue.</li>' +
+          '</ul>' +
+          '<figure class="shot" data-marks="1.8,57.6,47.6,18.6,oval,#"><img src="assets/img/mfa-level.png" alt="Organisation MFA Settings, Enabled, with the Enforcement Level set to Recommended - Prompt on login, circled: users will be prompted to set up MFA on each login until enrolled." loading="lazy"><figcaption>MFA turned on, with the Enforcement Level set to Recommended (circled).</figcaption></figure></li>' +
+      '</ol>' +
+      '<div class="callout note"><b>Note</b><span>The level applies to everyone in your RTO.</span></div>' +
+      '<h2 id="users">What users see</h2>' +
+      '<p>When MFA is Recommended or Required, people who aren’t enrolled see <b>Set Up Two-Factor Authentication</b> when they sign in. They need an authenticator app, such as Google Authenticator, Microsoft Authenticator or Authy. They select <b>Get Started</b> (arrow) to set it up. When MFA is Recommended, they can select <b>Set up later</b> to skip it for now. When it’s Required, there’s no <b>Set up later</b>.</p>' +
+      '<figure class="shot shot-small" data-marks="49.6,69.3,arrow-down,tiny"><img src="assets/img/mfa-prompt.png" alt="RTO Radar, Set Up Two-Factor Authentication: add an extra layer of security to your account, for Admin Demo, admindemo@rtoradar.com.au. What you’ll need: an authenticator app like Google Authenticator, Microsoft Authenticator, or Authy. An arrow points down at Get Started, above Set up later and Sign out and return to login." loading="lazy"><figcaption>The prompt at sign-in. Select Get Started (arrow).</figcaption></figure>' +
+      '<div class="callout tip"><b>Tip</b><span>Each person can also set up MFA, and manage their trusted devices, on the <b>MFA</b> tab of their profile. See <a href="article.html?id=profile-open">Your profile</a>.</span></div>' +
+      '<h2 id="reset">Reset MFA</h2>' +
+      '<p>If someone loses or replaces their phone, reset their MFA so they can set it up again.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Under <b>User MFA Status</b>, below the MFA settings, find the person, or search for them. The list shows how many people have MFA enabled (1), and whether each is <b>Enrolled</b> or <b>Not Enrolled</b>, with when they enrolled and last verified.</li>' +
+        '<li>Select <b>Reset</b> beside them (circled).' +
+          '<figure class="shot" data-marks="1.4,8.9,17.6,4.6,oval,right,#1; 91,86.9,5.4,5.4,oval,#"><img src="assets/img/mfa-status.png" alt="User MFA Status: 2 of 5 users have MFA enabled, circled as 1, with Refresh and a search box. Design Manager, IT Faculty Manager and Staff Demo are Not Enrolled. Compliance Manager is Enrolled, enrolled 28 Sep 2026 and last verified Oct 29, 2026 4:43 PM, and Admin Demo is Enrolled, enrolled 28 Sep 2026 and last verified Nov 5, 2026 4:06 PM. Each enrolled user has Reset under Actions; Admin Demo’s is circled." loading="lazy"><figcaption>2 of 5 users enrolled (1). Select Reset (circled) to reset someone’s MFA.</figcaption></figure></li>' +
+      '</ol>',
     'connect-axcelerate':
       '<p>Connecting aXcelerate imports your courses, units and staff, so you set up your account with less manual entry.</p>' +
       '<h2 id="steps">Connect</h2>' +
@@ -2135,7 +4103,271 @@
         '<li>Enter your API endpoint, paste both tokens, and connect.</li>' +
       '</ol>' +
       '<div class="callout warn"><b>Permission</b><span>Only Admins can connect integrations. Treat both tokens like passwords.</span></div>',
+    'gs-organisation':
+      '<h2>Set Up Your Organisation</h2>' +
+      '<p>Your RTO profile is the baseline for your risk score, so start here: confirm your details, choose your risk factors and add your logo.</p>' +
+      '<ol class="steps-list">' +
+        '<li>On your navigation bar, go to <b>Risk Assessment</b>.' +
+          '<figure class="shot" data-marks="0.2,32.3,11.4,6.9,oval,#"><img src="assets/img/gs-welcome-dashboard.png" alt="The RTO Radar dashboard, with Risk Assessment circled in the navigation bar on the left." loading="lazy"><figcaption>Select Risk Assessment in the navigation bar.</figcaption></figure>' +
+          '<p>Your RTO profile lives under Risk Assessment because it’s where your risk score starts: your enrolments and basic provider risk factors set the baseline for your organisational risk, and for how often every course is validated.</p></li>' +
+        '<li>Under <b>Actions</b>, select <b>Update RTO Profile</b>.' +
+          '<figure class="shot" data-marks="63.6,57.2,36,10.4,oval,#"><img src="assets/img/gs-org-step1.png" alt="The Risk Assessment page, with the Update RTO Profile button circled, the first button in the Actions panel." loading="lazy"><figcaption>Select Update RTO Profile under Actions.</figcaption></figure></li>' +
+        '<li>Check your RTO name and code, enter your RTO’s <b>Approximate Annual Enrolments</b>, and choose your <b>Basic Provider Risk Factors</b>. Together, your enrolments and risk factors feed into your organisational risk score.' +
+          '<figure class="shot shot-medium"><img src="assets/img/gs-org-details.png" alt="The top of the Update RTO Profile form. RTO Information shows the RTO name and code and Approximate Annual Enrolments of 200. Basic Provider Risk Factors lists checkboxes such as CRICOS registered, government funding received, compliance issues identified within the past 3 years and high assessor turnover." loading="lazy"><figcaption>Your RTO information and basic provider risk factors.</figcaption></figure>' +
+          '<div class="callout tip"><b>Tip</b><span>Not sure which risk factors apply? Choose what you know now. You can change them later from Update RTO Profile.</span></div></li>' +
+        '<li>Nominate an <b>Escalation Manager</b>, then select <b>Save &amp; Exit</b>.' +
+          '<div class="callout note"><b>Note</b><span>Your Escalation Manager keeps watch over your organisational risks. RTO Radar notifies them whenever a risk is added to or removed from your register, at any risk level, so nothing changes without them knowing. Choose a senior manager or board member.</span></div>' +
+          '<figure class="shot" data-marks="91.7,87,arrow-down,small"><img src="assets/img/gs-org-escalation.png" alt="The Escalation Manager section of the Update RTO Profile form, with Name and Email fields filled in as Admin Demo and admindemo@rtoradar.com.au, and a note that the Escalation Manager also serves as the default manager for the System Default team. Below it, the save bar shows Save Status: Not saved, with Edit Comprehensive Assessment and Save and Exit buttons. An arrow points down at the Save and Exit button." loading="lazy"><figcaption>Enter your Escalation Manager’s name and email, then select Save &amp; Exit.</figcaption></figure></li>' +
+      '</ol>' +
+      '<h2>Risk Register Overview</h2>' +
+      '<p>Your risk score, validation frequency, risks identified, Escalation Manager and basic risk factors.</p>' +
+      '<figure class="shot shot-medium"><img src="assets/img/gs-risk-overview.png" alt="The Risk Assessment overview for an RTO, showing a risk score of 6.0 out of 10, a validation frequency of 6 months, 27 risks identified, the Escalation Manager, an Actions panel and five active basic provider risk factors." loading="lazy"><figcaption>The Risk Register overview after saving your RTO profile.</figcaption></figure>' +
+      '<h2>Branding</h2>' +
+      '<p>Make RTO Radar your own. Your export logo appears on PDF and Word exports in place of the RTO Radar logo, and your sidebar icon replaces the default icon in the navigation for everyone in your RTO.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Settings</b> › <b>Customisation</b> › <b>Branding</b>.' +
+          '<figure class="shot" data-marks="0.2,52.6,11,8,oval,right,#1; 77.6,0.2,13.4,6,oval,right,#2; 85,22.2,13.6,6.6,oval,right,#3; 91.9,22,arrow-down; 65.6,60.6,arrow-left,#4"><img src="assets/img/gs-org-branding.png" alt="The Branding page in Settings. Marker 1 circles Settings in the navigation, marker 2 the Customisation tab along the top, and marker 3 the Branding tab under Customisation, with an arrow pointing down at it. Marker 4 is an arrow pointing left at Click to upload under Export Logo. The page shows two upload areas, Export Logo and Sidebar Icon, each with Click to upload." loading="lazy"><figcaption>Select Settings (1), then the Customisation tab (2), then Branding (3), then Click to upload (4).</figcaption></figure></li>' +
+        '<li>Import your organisation’s logo by selecting <b>Click to upload</b>.</li>' +
+      '</ol>',
+    'gs-risks':
+      '<p>Your organisational risk score combines your basic profile from the previous step with your comprehensive risk factors. It sets the baseline validation frequency for all your courses, and a course’s own risk factors can shorten it further.</p>' +
+      '<h2>Set Up Your Organisational Risks</h2>' +
+      '<ol class="steps-list">' +
+        '<li>Go to <b>Risk Assessment</b> › <b>Actions</b> › <b>Begin Comprehensive Assessment</b>.' +
+          '<figure class="shot" data-marks="0.4,47.3,15.6,7.8,oval,#1; 63.6,65.6,36,10.4,oval,#2"><img src="assets/img/gs-org-step1.png" alt="RTO Radar with Risk Assessment selected in the navigation, showing the Actions panel. Marker 1 circles Risk Assessment in the navigation, and marker 2 the second button in Actions, which reads Edit Comprehensive Assessment here and Begin Comprehensive Assessment before an assessment has been started." loading="lazy"><figcaption>Select Risk Assessment (1), then Begin Comprehensive Assessment (2). Once you’ve started an assessment, this button reads Edit Comprehensive Assessment.</figcaption></figure></li>' +
+        '<li>You’ll be greeted by the <b>Risk Heatmap</b>.' +
+          '<figure class="shot"><img src="assets/img/gs-risk-heatmap-grid.png" alt="The Risk Heatmap: a five by five grid with likelihood across the top, from Rare to Almost Certain, and consequence down the side, from Insignificant to Catastrophic. Each square is coloured Low, Medium, High or Extreme and shows how many risks fall in it." loading="lazy"><figcaption>The Risk Heatmap.</figcaption></figure>' +
+          '<p>The Risk Heatmap shows all your organisational risks at a glance, placed by how likely each one is and how serious it would be. The further towards the top right a risk sits, the more urgently it needs attention.</p></li>' +
+        '<li>Scroll down to <b>Risk Assessment by Category</b>.</li>' +
+        '<li>Choose the category where you want to enter your first risk, then select <b>Add Additional Risk</b>.' +
+          '<figure class="shot" data-marks="5.6,21.8,10.4,6.2,oval,right,#1; 55.4,30,15.4,4.4,oval,right,#2"><img src="assets/img/gs-risk-categories.png" alt="Risk Assessment by Category in the comprehensive assessment. On the left is the list of 12 risk categories with how many risks each has; Financial Risk is selected and shows 0 risks identified, an example, and an Add Additional Risk button. Marker 1 circles the Financial Risk category, and marker 2 the Add Additional Risk button. A bar along the bottom shows the save status and a Complete Risk Assessment button." loading="lazy"><figcaption>Choose a category such as Financial Risk (1), then select Add Additional Risk (2).</figcaption></figure>' +
+          '<div class="callout tip"><b>Tip</b><span>Want risk categories that fit your RTO? See how to set them up in <a href="feature.html?m=custom">Customisation</a>.</span></div></li>' +
+        '<li>Enter the risk title, description, likelihood and consequence, then select <b>Add Risk Factor</b>.' +
+          '<figure class="shot shot-medium" data-marks="2.9,86.9,26.9,9.3,oval,#"><img src="assets/img/gs-risk-add-factor.png" alt="The Add New Risk Factor form, filled in with an example: the risk title Cash-flow pressure from delayed student payments, a description, likelihood 3 - Possible and consequence 3 - Moderate. The Add Risk Factor button is circled." loading="lazy"><figcaption>Enter the risk details, then select Add Risk Factor.</figcaption></figure></li>' +
+      '</ol>' +
+      '<h2>Add Treatment Plan</h2>' +
+      '<p>For risks rated medium or higher, we recommend adding Existing Controls and a Treatment Plan.</p>' +
+      '<ol class="steps-list" start="6" style="counter-reset: s 5">' +
+        '<li>Add your <b>Existing Controls</b>: what you already do to manage this risk.' +
+          '<div class="callout note"><b>Note</b><span>Existing Controls and the treatment plan only appear after you select Add Risk Factor.</span></div></li>' +
+        '<li>Select <b>Treatment Plan Strongly Recommended</b>.' +
+          '<figure class="shot shot-medium" data-marks="2.1,81.2,58.2,6.7,oval,#; 30,81.2,arrow-down,tiny"><img src="assets/img/gs-risk-controls.png" alt="A saved risk, Cash-flow pressure from delayed student payments, rated Medium Risk with a score of 9 and marked Escalation Required, with its Existing Controls filled in. A small arrow leads from the last existing control, management review of outstanding debts, down to the Treatment Plan Strongly Recommended button, which is circled." loading="lazy"><figcaption>Select Treatment Plan Strongly Recommended.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>This button’s wording depends on the risk’s score. For medium, high and extreme risks it reads Treatment Plan Strongly Recommended. For low risks a treatment plan is optional, so it reads Add Optional Treatment Plan instead.</span></div></li>' +
+        '<li>Enter a title, description and proposed treatment, nominate the person responsible, and set a due date and status.' +
+          '<div class="callout note"><b>Note</b><span>The responsible person gets an improvement item in the <a href="feature.html?m=cir">Continuous Improvement Register (CIR)</a> with the proposed treatment.</span></div>' +
+          '<figure class="shot"><img src="assets/img/gs-risk-treatment.png" alt="A treatment plan being added to a risk: title Monthly Cash-Flow Monitoring, a description, a proposed treatment, responsible person Compliance Manager, due date 30/10/2026 and status Not started. A bar along the bottom shows the save status, 1 item queued for CI Register and a Complete Risk Assessment button." loading="lazy"><figcaption>Fill in the treatment plan. Use the calendar icon to pick a due date.</figcaption></figure></li>' +
+        '<li>Repeat steps 4 to 8 to add more risks, then select <b>Complete Risk Assessment</b>.' +
+          '<figure class="shot" data-marks="8.4,54.2,17.6,10,oval,#1; 49,16.4,arrow-down,#2; 88.1,92.6,arrow-down,#3"><img src="assets/img/gs-risk-repeat.png" alt="Risk Assessment by Category with a second category selected. Marker 1 circles ICT and Cyber-Security Risk in the category list, and marker 2 is an arrow pointing down at its content on the right: its description, an example, and a risk being entered, Staff Awareness of Cyber Risks, rated Medium Risk with a score of 9. Marker 3 is an arrow pointing down at the Complete Risk Assessment button in the save bar along the bottom, which shows 2 items queued for CI Register." loading="lazy"><figcaption>Choose another category (1), add its risks the same way (2), then select Complete Risk Assessment (3).</figcaption></figure></li>' +
+        '<li>Review your changes, then select <b>Complete Risk Assessment</b>.' +
+          '<figure class="shot" data-marks="60.9,89.4,23.5,7.4,oval,#"><img src="assets/img/gs-risk-review.png" alt="The review shown before completing the assessment, headed New Risks Added (2). It lists both new risks with their category, likelihood and consequence, and treatment plan: Cash-flow pressure from delayed student payments, rated Medium with a score of 9, and Staff Awareness of Cyber Risks, rated Low with a score of 4. The Complete Risk Assessment button, between Discard and Exit and Cancel, is circled." loading="lazy"><figcaption>Review the new risks and their treatment plans, then select Complete Risk Assessment.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>You can add more risks later from Risk Assessment › Actions › Edit Comprehensive Assessment.</span></div></li>' +
+        '<li>Check that your <b>Escalation Manager</b> has received an email about the risks you’ve added.' +
+          '<div class="callout tip"><b>Tip</b><span>No email? Check that the right person is nominated in Update RTO Profile, that their email address is entered correctly, and their junk folder.</span></div></li>' +
+      '</ol>' +
+      '<h2>Risk Heatmap</h2>' +
+      '<ol class="steps-list" start="12" style="counter-reset: s 11">' +
+        '<li>Check the updated <b>Risk Heatmap</b>.' +
+          '<figure class="shot"><img src="assets/img/gs-risk-heatmap-updated.png" alt="The Risk Heatmap after completing the assessment, with the number of risks in each square. The pointer is over the Possible and Moderate square, which shows 4 risks, likelihood 3 times consequence 3 for a score of 9, and lists the risks in it, each marked Medium Risk." loading="lazy"><figcaption>Hover over a square to see the risks in it and how they were scored.</figcaption></figure></li>' +
+      '</ol>',
+    'gs-cir':
+      '<p>The Continuous Improvement Register (CIR) is one list of every improvement action in your RTO. Risk treatments, feedback, validation findings and audit outcomes all land here, each with a person responsible, a due date and a priority, so nothing slips through and you have a record of continuous improvement ready for audit.</p>' +
+      '<ol class="steps-list">' +
+        '<li>From your navigation bar, go to <b>Continuous Improvement</b>.' +
+          '<figure class="shot" data-marks="0.1,21.9,11.8,5.4,oval,#"><img src="assets/img/gs-cir-nav.png" alt="The Continuous Improvement Register, with Continuous Improvement circled in the navigation bar on the left. The Item List shows 10 improvement items with their item number, who created them, status, source, person responsible, assigned date, description, tags, due date and priority." loading="lazy"><figcaption>Select Continuous Improvement in the navigation bar.</figcaption></figure></li>' +
+        '<li>Find the item created from your treatment plan. Its source is <b>Risk Register</b>, and it shows the person responsible, due date and priority. Select the eye icon in the <b>Actions</b> column to open it.' +
+          '<figure class="shot" data-marks="23.9,57.4,6.9,9.6,underline,#; 93.4,54.6,5.6,14.6,oval,#"><img src="assets/img/gs-cir-list.png" alt="The Continuous Improvement item list, showing two items with Risk Register as their source. Each row shows the item number, who created it, status, person responsible, assigned date, description, tags, due date and priority. Risk Register is underlined on the first item, and its eye icon is circled." loading="lazy"><figcaption>Items created from treatment plans show Risk Register as their source. Select the eye icon to open one.</figcaption></figure></li>' +
+        '<li>Review the item. It carries over everything from the risk: its title, category and description, its risk level and score, your existing controls, and the proposed treatment from your treatment plan, along with who’s responsible and when it’s due. From here you can edit, verify or complete the item.' +
+          '<figure class="shot shot-small"><img src="assets/img/gs-cir-item.png" alt="An improvement item opened in full. It shows the title, source, person responsible, dates, tags and the original risk score, notes carried over from the risk (category, description, level, existing controls, likelihood and consequence), and the proposed treatment. Buttons along the bottom are Delete Item, Complete Item, Verify, More info and Edit Item." loading="lazy"><figcaption>An improvement item created from a risk treatment plan.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>The person responsible gets this exact item too.</span></div></li>' +
+      '</ol>',
+    'gs-documents':
+      '<p>RTO Radar is also your quality management system (QMS). Your policies, procedures and other compliance documents live in one repository, each with an owner, a reviewer and review reminders, and each mapped to the standards it evidences. The Compliance Dashboard then shows how well your documents cover your frameworks.</p>' +
+      '<h2>Upload Document</h2>' +
+      '<ol class="steps-list">' +
+        '<li>From your navigation bar, go to <b>Document Management</b>, then select <b>Upload Document</b>.' +
+          '<figure class="shot" data-marks="0.2,15.1,12.8,5,oval,#1; 78.2,10.7,10.6,5.6,oval,right,#2"><img src="assets/img/gs-doc-upload.png" alt="Document Management (QMS), showing totals for documents, approved, review due and drafts, and the Document Repository. Marker 1 circles Document Management in the navigation bar, and marker 2 circles the Upload Document button at the top right." loading="lazy"><figcaption>Select Document Management (1), then Upload Document (2).</figcaption></figure></li>' +
+        '<li>Choose <b>File upload</b>, then select <b>Choose File</b> and pick a file from your computer.' +
+          '<figure class="shot" data-marks="49.2,80.4,arrow-down"><img src="assets/img/gs-doc-file.png" alt="The Upload Document form, with Source set to File upload and a Link option beside it. An arrow points down at the Choose File button under Document File." loading="lazy"><figcaption>Select Choose File to add a document from your computer.</figcaption></figure>' +
+          '<div class="callout tip"><b>Tip</b><span>Is the document stored online? Choose <b>Link</b> instead and paste its web address.</span></div></li>' +
+        '<li>Fill in the document details.' +
+          '<figure class="shot shot-medium"><img src="assets/img/gs-doc-details.png" alt="The document details section of the Upload Document form, filled in for an enrolment and admissions policy: document number (left blank to auto-generate), initial version 1.0, document title, document type Policy, category, description, tags, a review frequency of 12 months, a review due date, and the document owner." loading="lazy"><figcaption>Document details, including the review frequency and document owner.</figcaption></figure></li>' +
+        '<li>Nominate a document reviewer and set up email reminders for reviews. Along with the reminders, the reviewer is given a Continuous Improvement item to work on.' +
+          '<figure class="shot"><img src="assets/img/gs-doc-reviewer.png" alt="The Document Reviewer and Email Reminders section of the form. Claire Smith, an Administrator, is chosen as reviewer, and reminders can be sent 1 day, 3 days, 5 days, 7 days, 14 days or 1 month before the review due date, with 14 days ticked." loading="lazy"><figcaption>Choose a reviewer and when they’re reminded before the review is due.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>The reviewer is emailed as the document’s review due date approaches, at each reminder you tick. The reviewer can be different from the document’s owner.</span></div></li>' +
+        '<li>Map the document to the compliance frameworks set for your RTO.' +
+          '<figure class="shot"><img src="assets/img/gs-doc-mapping.png" alt="Compliance Framework Mapping for Demo RTO, with 5 standards selected. Under the Standards for RTOs 2025, standards such as 1.6, 1.7, 2.1 and 2.2 are ticked, each with its description, and there is a search box for finding standards." loading="lazy"><figcaption>Tick each standard the document provides evidence for.</figcaption></figure></li>' +
+        '<li>Set the document’s status and compliance status, add any notes, then select <b>Upload Document</b>.' +
+          '<figure class="shot" data-marks="86.4,86.3,arrow-down,small"><img src="assets/img/gs-doc-status.png" alt="The Document Status section, with Status set to Approved, Compliance Status set to Compliant, and an empty notes box. An arrow points down at the Upload Document button." loading="lazy"><figcaption>Set the statuses, then select Upload Document.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>Until a document is approved and compliant, Admins can upload newer versions of it to make corrections.</span></div></li>' +
+        '<li>Repeat steps 1 to 6 to add your RTO’s initial documents.</li>' +
+        '<li>Find your documents in the <b>Document Repository</b>.' +
+          '<figure class="shot"><img src="assets/img/gs-doc-repository.png" alt="The Document Repository, listing three documents with their document number, title and category, type, compliance status, review date, reviewer and the SRTO 2025 standards each is mapped to, such as 2.1 and 4.1." loading="lazy"><figcaption>Each document shows its compliance status, next review date, reviewer and the standards it’s mapped to.</figcaption></figure></li>' +
+      '</ol>' +
+      '<h2>Compliance Dashboard</h2>' +
+      '<p>The Compliance Dashboard shows how well your documents cover each framework, using the standards you mapped them to. As you upload and map more documents, it fills in.</p>' +
+      '<p>To open it, go to <b>Document Management</b> and select the <b>Compliance Dashboard</b> tab.</p>' +
+      '<figure class="shot" data-marks="21.2,43.2,9.8,6.6,oval,#"><img src="assets/img/gs-cd-tab.png" alt="Document Management (QMS), showing totals for documents, approved, review due and drafts, and the Document Repository. The Compliance Dashboard tab, beside Documents, is circled." loading="lazy"><figcaption>Select the Compliance Dashboard tab in Document Management.</figcaption></figure>' +
+      '<p><b>Standards coverage</b> shows how many standards have at least one mapped document. <b>Policy Compliance Health</b> is a score out of 100 that combines standards coverage, review timeliness and document freshness.</p>' +
+      '<figure class="shot"><img src="assets/img/gs-cd-coverage.png" alt="The top of the Compliance Dashboard for the Standards for RTOs 2025: 23 total standards, 9 covered and 14 missing. A Standards Coverage chart shows 39 percent coverage, and a Policy Compliance Health gauge shows 52, rated Fair, on a scale of 0 to 39, 40 to 69 and 70 to 100." loading="lazy"><figcaption>Standards coverage and Policy Compliance Health.</figcaption></figure>' +
+      '<p><b>Upcoming reviews</b> shows documents that are overdue, or due for review in the next 30 or 90 days.</p>' +
+      '<figure class="shot"><img src="assets/img/gs-cd-reviews.png" alt="Upcoming Reviews for the next 90 days, on a timeline: 1 overdue, 1 due in 30 days and 1 due in 90 days." loading="lazy"><figcaption>Documents overdue or due for review soon.</figcaption></figure>' +
+      '<p><b>Quality area coverage</b> shows how well each quality area of the framework is documented, and lists the standards that still have no documents mapped to them.</p>' +
+      '<div class="shot-pair"><figure class="shot"><img src="assets/img/gs-cd-missing.png" alt="Missing Standards (14), listing standards such as 1.5, 1.6, 1.7, 2.1, 2.2 and 2.3, each with no documentation found." loading="lazy"><figcaption>Standards that still need a document.</figcaption></figure>' +
+      '<figure class="shot"><img src="assets/img/gs-cd-quality.png" alt="Quality Area Coverage as a bar chart: Quality Area 1 is about 63 percent covered and Quality Area 4 is fully covered, while Quality Areas 2 and 3 have no coverage yet. Colours show 80 percent and above, 60 to 79, 40 to 59 and under 40." loading="lazy"><figcaption>Coverage for each quality area.</figcaption></figure></div>',
+    'gs-programs':
+      '<p>Program Management is where your courses and units live. It’s connected to training.gov.au, so you can search for nationally recognised courses and units and add them in a few clicks, and each course gets a risk assessment that recommends how often it’s validated.</p>' +
+      '<h2>Add a Course</h2>' +
+      '<ol class="steps-list">' +
+        '<li>From your navigation bar, go to <b>Program Management</b>, then select <b>Add Course</b>.' +
+          '<figure class="shot" data-marks="0.6,39.1,17,6.3,oval,right,#1; 86.5,10.8,9.7,8.1,oval,above,#2"><img src="assets/img/gs-prog-add.png" alt="Program Management, with Schedule, View Archived and Add Course buttons, summary cards for total programs, accredited programs, units managed, risk assessed and pending risk assessment, and the Courses and TAS Builder tabs. Marker 1 circles Program Management in the navigation bar, and marker 2 circles the Add Course button at the top right." loading="lazy"><figcaption>Select Program Management (1), then Add Course (2).</figcaption></figure></li>' +
+        '<li>Choose <b>TGA Accredited Courses</b>, or enter a custom program.' +
+          '<div class="callout note"><b>Note</b><span>Custom programs aren’t TGA-accredited qualifications. You’ll need to add their units or modules yourself and make sure they meet the relevant industry standards.</span></div></li>' +
+        '<li>Under TGA Accredited Courses, search by course code, title or keyword, then select <b>Search TGA</b>.' +
+          '<figure class="shot" data-marks="19.6,37.4,17.8,4.2,underline,#1; 18.6,70.6,arrow-left,tiny,#2; 79.2,66,12.1,9.2,oval,right,#3"><img src="assets/img/gs-prog-search.png" alt="Add Courses and Programs, on the TGA Accredited Courses tab. Marker 1 underlines TGA Accredited Courses, marker 2 is an arrow pointing left at the course code BSB50120 entered in the search box, and marker 3 circles the Search TGA button. Hints below say you can search by national code, course title or keywords, and that results come directly from training.gov.au." loading="lazy"><figcaption>On TGA Accredited Courses (1), enter a course code (2), then select Search TGA (3).</figcaption></figure></li>' +
+        '<li>Find your course in the search results and select <b>Add Course</b>.' +
+          '<figure class="shot" data-marks="73.5,82.6,15.2,6.2,oval,#"><img src="assets/img/gs-prog-results.png" alt="Search results for BSB50120, showing 1 of 1 results: BSB50120 Diploma of Business, marked Qualification and Current. Its Add Course button is circled." loading="lazy"><figcaption>Select Add Course beside your course.</figcaption></figure></li>' +
+        '<li>Under <b>Course-Specific Risk Factors</b>, answer each question. They’re all required.' +
+          '<figure class="shot shot-medium"><img src="assets/img/prog-risk-factors.png" alt="Course-Specific Risk Factors: Primary Delivery Mode set to Blended (+1 point), Use of Recognition of Prior Learning set to Minimal use (0 points), Use of unsupervised assessments set to Extensive use (+2 points), a student enrolment volume of 180, where 101 to 200 adds 1 point, and a course completion rate of 72%, where 50% to 74% adds 1 point." loading="lazy"><figcaption>The required course-specific risk factors.</figcaption></figure></li>' +
+        '<li>Under <b>Additional Risk Factors</b>, tick any that apply to the course. They’re optional.' +
+          '<figure class="shot"><img src="assets/img/prog-risk-additional.png" alt="Additional Risk Factors, each a tick box with the points it adds. Structured work placement or employer-based assessment included (+1 point) and Delivery to international (CRICOS) students (+1 point) are ticked. Others include delivery below nominal hours, new or recently updated assessment tools, a course new to the RTO, offshore delivery (+2 points), government funding contracts, apprenticeships or traineeships, and a history of complaints, validation issues or non-compliance (+2 points)." loading="lazy"><figcaption>Tick any additional risk factors that apply.</figcaption></figure></li>' +
+        '<li>Review the course risk assessment result and the recommended validation frequency, then select <b>Complete Course Assessment</b>.' +
+          '<figure class="shot" data-marks="61.3,86.5,35.2,8.1,oval,#"><img src="assets/img/gs-prog-result.png" alt="The Course Risk Assessment Result: provider risk 3.6 out of 6, course risk 7 out of 24, and a total risk score of 5.2 out of 10, rated Medium Risk. The recommended validation frequency is every 18 months, based on combined provider and course-specific risk factors. The Complete Course Assessment button is circled." loading="lazy"><figcaption>Your course’s risk score and recommended validation frequency.</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>You can change how risk scores map to validation frequencies in <a href="feature.html?m=custom">Customisation</a>.</span></div></li>' +
+        '<li>Find your course in <b>Program Management</b>.' +
+          '<figure class="shot"><img src="assets/img/gs-courses-list.png" alt="The Courses list in Program Management, showing three courses with their program code, title, team, number of units, a Manage button for units, risk status from Low to High, and when each was created." loading="lazy"><figcaption>Each course shows its team, number of units and risk status.</figcaption></figure></li>' +
+      '</ol>' +
+      '<h2>Manage Course Units</h2>' +
+      '<ol class="steps-list">' +
+        '<li>In <b>Program Management</b>, on the <b>Courses</b> tab, select <b>Manage</b> next to your course.' +
+          '<figure class="shot" data-marks="0.6,39.1,15.1,6.4,oval,right,#1; 20.3,4.8,4.2,6.4,oval,#2; 62,60.2,6.3,7.4,oval,above,#3"><img src="assets/img/gs-prog-manage.png" alt="Program Management on the Courses tab, listing BSB50120 Diploma of Business in the Business Faculty with 0 units and a Medium risk status, and CHC50121 Diploma of Early Childhood Education and Care with 26 units. Marker 1 circles Program Management in the navigation bar, marker 2 the Courses tab, and marker 3 the Manage button for the Diploma of Business." loading="lazy"><figcaption>Select Program Management (1), the Courses tab (2), then Manage next to your course (3).</figcaption></figure></li>' +
+        '<li>Select <b>Add Unit</b>. Under <b>Search TGA units</b>, select <b>Search [course code]’s Units</b> to load all the units in your course, or enter a unit code to find one.' +
+          '<figure class="shot" data-marks="86.9,4.2,9.9,11.6,oval,#1; 8.1,42,15.6,5.4,underline,#2; 66.4,52,28.3,12.7,oval,above,#3"><img src="assets/img/gs-prog-add-unit.png" alt="The Add Unit panel for BSB50120. Marker 1 circles the Add Unit button at the top right, marker 2 underlines Search TGA units, and marker 3 circles the Search BSB50120’s Units button beside the search box. A Create custom unit option sits above, and a hint says to enter a unit code or select the button to load all BSB50120 units." loading="lazy"><figcaption>Select Add Unit (1), then under Search TGA units (2), select Search [course code]’s Units (3).</figcaption></figure>' +
+          '<div class="callout tip"><b>Tip</b><span>Unit not on training.gov.au? Choose <b>Create custom unit</b> instead.</span></div></li>' +
+        '<li>Filter and select from core or elective units, or from unit groups.</li>' +
+        '<li>When you’re happy with your units, select <b>Add Selected</b>. The button shows how many units you’ve chosen.' +
+          '<figure class="shot" data-marks="8.7,25.8,3.4,6.6,oval,#1; 18.6,9,15.6,7.4,oval,right,#2"><img src="assets/img/gs-prog-select-units.png" alt="The unit list for the course, showing 12 of 12 units selected: 5 core and 7 elective. Units are grouped under Core Units and Group A, Business Operations, each with a ticked box, its code, Core or Elective, and Current. Filters for status, type and group sit at the top. Marker 1 circles the ticked box beside the first core unit, and marker 2 circles the Add Selected (12) button." loading="lazy"><figcaption>Tick the units you want (1), then select Add Selected (2).</figcaption></figure></li>' +
+        '<li>Scroll down to find your units under <b>Course Units</b>.</li>' +
+        '<li>Configure each unit: any physical risks or sensitive content involved, and its completion rate. These give the unit its own validation frequency.' +
+          '<figure class="shot"><img src="assets/img/gs-course-units-v2.png" alt="Course Units (12), with search, sort, order and units per page, showing 10 of 12 units. Each unit shows its code and title, its recommended validation frequency, such as every 24 or 18 months, Validation not scheduled, Validate Now and Schedule buttons, and settings for unit type, physical risk, sensitive content and completion rate. BSBCRT412 has a completion rate of 80, set for this unit, with a Use course rate link." loading="lazy"><figcaption>Each unit’s settings give it its own recommended validation frequency.</figcaption></figure></li>' +
+        '<li>Select <b>Save Changes</b> at the top of the page.' +
+          '<figure class="shot" data-marks="82.6,18.4,12.6,8.6,oval,#"><img src="assets/img/gs-prog-save.png" alt="Manage Course Units for BSB50120 Diploma of Business, marked Unsaved Changes. The Save Changes button at the top right is circled. Below, the added units are marked Added in the unit list." loading="lazy"><figcaption>Select Save Changes. Until you do, the page shows Unsaved Changes.</figcaption></figure></li>' +
+      '</ol>',
+    'gs-workforce':
+      '<p>Add your trainer as a <b>silent user</b> first. A silent user has a profile but can’t sign in and isn’t emailed an invitation, so you can set up their courses, units and documents before they ever see RTO Radar. Most RTOs add their trainers this way, then invite them once everything’s ready.</p>' +
+      '<ol class="steps-list">' +
+        '<li>On your navigation bar, go to <b>Settings</b> › <b>User Management</b> › <b>Staff</b>, then select <b>Add New User</b>.' +
+          '<figure class="shot" data-marks="0.5,80.4,8.2,6.2,oval,right,#1; 39.2,43.2,14.6,7.6,oval,above,#2; 35.1,77.3,7.7,5.8,oval,right,#3; 28.6,87.6,13.8,10.8,oval,right,#4"><img src="assets/img/gs-trainer-add.png" alt="Organisation Settings on the User Management tab. Marker 1 circles Settings in the navigation bar, marker 2 the User Management tab, marker 3 the Staff tab, and marker 4 the Add New User button." loading="lazy"><figcaption>Select Settings (1), User Management (2) and Staff (3), then Add New User (4).</figcaption></figure></li>' +
+        '<li>Choose a trainer who will deliver a course you’ve added to RTO Radar. You’ll assign that course to them in the next step.</li>' +
+        '<li>Enter their name and email, select the <b>Trainer/Assessor</b> role, leave the team as <b>System Default</b>, and turn on <b>Silent user</b>.' +
+          '<figure class="shot shot-small" data-marks="78.9,68.2,14.7,4.7,oval,#; 60.1,90.2,36.8,6.3,oval,#"><img src="assets/img/gs-trainer-silent.png" alt="The Create New User form, filled in with a first and last name, an email address, the Trainer/Assessor role and the team left as System Default (no team). The Silent user (no login access) switch is turned on and circled, and a note says the user will be created for compliance tracking only and won’t receive an invitation email or be able to log in. The Create Profile button is circled." loading="lazy"><figcaption>Turn on Silent user, then select Create Profile.</figcaption></figure>' +
+          '<div class="callout tip"><b>Tip</b><span>For more on roles, permissions and teams, see <a href="feature.html?m=users">Users, Roles &amp; Teams</a> in Features.</span></div></li>' +
+        '<li>Select <b>Create Profile</b>. Their profile is created without sending an invitation.' +
+          '<div class="callout note"><b>Note</b><span>When they’re ready to sign in, you can send them an invitation. See <a href="feature.html?m=getting-started&amp;s=faq">the FAQs</a> for the difference between silent and regular users, and how to convert one to the other.</span></div></li>' +
+      '</ol>',
+    'gs-dashboard':
+      '<p>Your dashboard is a live snapshot of your whole RTO. Risk, improvement items, workforce readiness, documents and upcoming events each have their own widget, and each one brings forward only the items that need your immediate attention. No digging through every module: what’s overdue, due soon or at risk is right in front of you.</p>' +
+      '<ol class="steps-list">' +
+        '<li>Select <b>Dashboard</b> in the navigation bar.' +
+          '<figure class="shot" data-marks="0.3,13.6,7.3,3.9,oval,#"><img src="assets/img/gs-welcome-dashboard.png" alt="The Admin Dashboard, with Dashboard circled in the navigation bar. It shows a Risk Register Overview with missing treatments, responsibility gaps and overdue or missing dates, a Risk Level Breakdown bar chart and a Treatment Status Overview pie chart." loading="lazy"><figcaption>Select Dashboard in the navigation bar.</figcaption></figure></li>' +
+        '<li>Look over your widgets. Everything you set up in this series, from your organisational risks to your trainer, now shows up here.' +
+          '<figure class="shot"><img src="assets/img/gs-dashboard-widgets.png" alt="Further down the dashboard: Admin’s Continuous Improvement Items, with Overdue, Upcoming and All tabs listing items with their due dates and priority; Workforce, with pending admin actions such as documents pending verification and overdue PD, and a Delivery Readiness chart for each trainer; and a QMS Overview with total, approved, review due and draft documents." loading="lazy"><figcaption>Improvement items, workforce readiness and your QMS documents, each in its own widget.</figcaption></figure></li>' +
+        '<li>Make it yours: select the gear icon at the top right. In <b>Customise Dashboard</b>, turn widgets on or off to show only what matters to you, use the arrows to reorder them, then select <b>Save</b>.' +
+          '<figure class="shot" data-marks="92.55,13.65,3.45,6,oval,#; 93.3,30.5,arrow-down,small; 88.2,87.85,4.9,6.1,oval,#"><img src="assets/img/gs-dashboard-customise.png" alt="The Admin Dashboard with the Customise Dashboard menu open on top of it. The gear icon at the top right is circled, and an arrow points from it down to the menu, which lists widgets such as Risk Matrix Dashboard, Continuous Improvement, Workforce Statistics, Workforce Table and QMS Overview, each with a tick box and arrows to reorder it. The Save button at the bottom of the menu is circled." loading="lazy"><figcaption>Select the gear icon to open Customise Dashboard, choose your widgets, then select Save.</figcaption></figure></li>' +
+        '<li>Use the filter on any widget to narrow down the items it shows.' +
+          '<figure class="shot" data-marks="67,21.9,8.5,5.8,oval,#; 3.3,48.7,7.1,4.5,underline,#; 3.3,61.4,7.1,4.5,underline,#"><img src="assets/img/gs-dashboard-filter.png" alt="The Matrix Risks Identified widget, filtered by Category to Financial Risk, which is circled. The two remaining risks, Reliance on State Funding rated High and a cash-flow risk rated Medium, both have their Financial Risk category underlined." loading="lazy"><figcaption>Filtering by Financial Risk shows only the risks in that category.</figcaption></figure></li>' +
+      '</ol>' +
+      '<p>That’s the foundations in place. As your team adds documents, risks and evidence, your dashboard keeps watch, surfacing whatever needs action next.</p>',
+    'gs-training':
+      '<p>Give your new trainer the courses and units they’ll deliver, set out the documents trainers need to provide, and see how it all comes together on their profile.</p>' +
+      '<h2>Assign Training</h2>' +
+      '<ol class="steps-list">' +
+        '<li>On your navigation bar, go to <b>Workforce Management</b>.' +
+          '<figure class="shot" data-marks="0.1,29.6,12.7,4.4,oval,#"><img src="assets/img/gs-training-nav.png" alt="Workforce Management, with Workforce Management circled in the navigation bar. The page shows the total workforce, RTO staff and admin actions, and the Workforce tab lists three trainers: Ken Lombardo, John Doe and Staff Demo." loading="lazy"><figcaption>Select Workforce Management in the navigation bar.</figcaption></figure></li>' +
+        '<li>On the <b>Workforce</b> tab, select the trainer you just added to open their profile.' +
+          '<figure class="shot" data-marks="34.8,91.3,arrow-left"><img src="assets/img/gs-training-nav.png" alt="The Workforce tab in Workforce Management, listing three trainers: Ken Lombardo, John Doe and Staff Demo. An arrow points left at Staff Demo." loading="lazy"><figcaption>Select your new trainer, such as Staff Demo here.</figcaption></figure></li>' +
+        '<li>Select <b>Assign Training</b> at the top right of the page.' +
+          '<figure class="shot" data-marks="81,15.2,14.3,8.1,oval,#"><img src="assets/img/gs-training-assign.png" alt="Workforce Management, now viewing Staff Demo, with Profile, Documents, Units and PD Calendar tabs. The Assign Training button at the top right is circled." loading="lazy"><figcaption>Select Assign Training while viewing the trainer.</figcaption></figure></li>' +
+        '<li>Under <b>Course Assignments</b>, search for and tick their courses, scroll down, then select <b>Assign Courses</b>. The button shows how many you’ve chosen.' +
+          '<figure class="shot" data-marks="29.5,17.1,11.5,3.7,oval,#1; 55,30.4,4.8,3.2,underline,right,#2; 53.4,56.9,1.9,3.6,oval,#3; 86.3,1.6,1.9,39.2,oval,#; 89.6,64,arrow-down,#4; 52,75.2,33.6,6.5,oval,#5"><img src="assets/img/gs-training-courses.png" alt="Manage Assignments for Staff Demo, on step 1, Course Assignments. Current course assignments are listed on the left. On the right, under Assign New Courses, the search box contains BSB50120 and the Diploma of Business is ticked. Marker 1 circles the Course Assignments tab, marker 2 underlines the course code in the search box, marker 3 circles the tick box before the course, marker 4 circles the scroll bar, with an arrow beside it showing to scroll down, and marker 5 circles the Assign 1 Course(s) button." loading="lazy"><figcaption>On Course Assignments (1), search by course code (2), tick the course (3), scroll down (4), then select Assign Courses (5).</figcaption></figure></li>' +
+        '<li>Under <b>Unit Assignments</b>, search for and tick the units they’ll deliver, scroll down, then select <b>Assign Units</b>. The button shows how many you’ve chosen.' +
+          '<figure class="shot" data-marks="59,1,9.2,3.6,oval,#1; 50.5,21.2,2.4,2.9,underline,right,#2; 49,47.5,1.7,3,oval,#3; 81.3,9.5,1.9,42.4,oval,#; 85.4,58,arrow-down,#4; 47.6,81.3,33,6.4,oval,#5"><img src="assets/img/gs-training-units.png" alt="Manage Assignments for Staff Demo, on step 2, Unit Assignments. The Current Unit Assignments list on the left is empty. On the right, under Assign New Units, the search box contains BSB and units such as Manage business resources and Articulate, present and debate ideas are ticked, each showing the course it comes from. Marker 1 circles the Unit Assignments tab, marker 2 underlines the search term, marker 3 circles the tick box before the first unit, marker 4 circles the page scroll bar, with an arrow showing to scroll down, and marker 5 circles the Assign 5 Unit(s) button." loading="lazy"><figcaption>On Unit Assignments (1), search by unit code (2), tick the units (3), scroll down (4), then select Assign Units (5).</figcaption></figure>' +
+          '<div class="callout note"><b>Note</b><span>You can only assign units from courses already assigned to this trainer.</span></div></li>' +
+        '<li>From their staff profile, open the <b>Units</b> tab to check the units assigned to them.' +
+          '<figure class="shot" data-marks="11.1,26.2,3.75,6.3,oval,#"><img src="assets/img/gs-staff-units.png" alt="The Units tab of a staff profile, with the Units tab circled, headed Units Delivered: 11. Each row shows the unit code and title, its course, team, unit status of Assigned, an evidence map icon, the assigned date, and the completed date, which reads No map provided." loading="lazy"><figcaption>The Units tab lists every unit assigned to the trainer, with its course, status and evidence map.</figcaption></figure></li>' +
+      '</ol>' +
+      '<h2>Create a Document Checklist</h2>' +
+      '<ol class="steps-list">' +
+        '<li>In <b>Workforce Management</b>, go to the <b>Document Checklist</b> tab.' +
+          '<figure class="shot" data-marks="34.6,39.4,15.6,7.6,oval,above,#1; 63.8,73.8,13.4,8.6,oval,#2"><img src="assets/img/gs-checklist-role.png" alt="The Document Checklist tab in Workforce Management, asking you to select a role. Roles shown are Administrator and Trainer/Assessor, with a Display all documents option. Marker 1 circles the Document Checklist tab, and marker 2 circles the Trainer/Assessor role." loading="lazy"><figcaption>Open Document Checklist (1), then choose the Trainer/Assessor role (2).</figcaption></figure></li>' +
+        '<li>Select the <b>Trainer/Assessor</b> role.</li>' +
+        '<li>Select <b>Add Document Type</b> and add each document trainers need, such as a Working With Children Check or White Card.' +
+          '<figure class="shot" data-marks="82.6,65.2,13.6,9.2,oval,#"><img src="assets/img/gs-checklist-add.png" alt="The document checklist for the Trainer/Assessor role. Document Expiry Health shows 10 current documents and 1 expired, and Role coverage shows how many trainers have submitted each required document. The table lists White Card and Working With Children Check with how many have been received. The Add document type button is circled." loading="lazy"><figcaption>Select Add document type to add each document trainers need.</figcaption></figure></li>' +
+      '</ol>' +
+      '<h2>Staff Documents</h2>' +
+      '<p>Your trainer is a silent user, so you upload their documents for them.</p>' +
+      '<p>Would you rather the trainer upload their own documents? Send them an invitation to RTO Radar. Once they sign in, they can upload documents from their checklist and send them for review, see their assigned courses and units, and use AI to map their evidence against those units.</p>' +
+      '<p>To upload a document for them, open their staff profile, then:</p>' +
+      '<ol class="steps-list">' +
+        '<li>Select the <b>Documents</b> tab.</li>' +
+        '<li>Select <b>Upload Document</b>, then add each document on their checklist.' +
+          '<figure class="shot" data-marks="6.5,22.2,6.6,7.8,oval,#1; 84,37.6,11.1,9.1,oval,above,#2"><img src="assets/img/gs-staff-docs.png" alt="The Documents tab of the Staff Demo profile, listing 11 documents with their category, document checklist item, status and expiry, such as a Working With Children Check marked Approved. Marker 1 circles the Documents tab, and marker 2 circles the Upload Document button." loading="lazy"><figcaption>Open the Documents tab (1), then select Upload Document (2).</figcaption></figure></li>' +
+        '<li>Select the file box and choose the document from your computer.' +
+          '<figure class="shot" data-marks="51,72,arrow-down,small"><img src="assets/img/gs-staff-file.png" alt="The Upload Qualifications window, for uploading certificates, diplomas, degrees and other formal qualifications. An arrow points down at the Select File box, which shows a chosen file, Diploma of Community Services.docx." loading="lazy"><figcaption>Select the file box to choose a document.</figcaption></figure></li>' +
+        '<li>Choose the document’s <b>Category</b>, then under <b>Requirement checklist (optional)</b>, choose the checklist item it meets, such as <i>Vocational Qualification / Relevant Trade Certificate · Trainer/Assessor</i>. Linking it means the document counts towards the trainer’s document checklist.' +
+          '<div class="callout note"><b>Note</b><span>The list only shows required documents of the chosen category for the trainer’s role, such as those in the checklist you created above.</span></div></li>' +
+        '<li>Write a detailed <b>Description</b>. This is the most important field in the form.' +
+          '<p>When you later create the trainer’s evidence map, RTO Radar’s AI reads each document’s description to write evidence statements for their vocational competency and industry currency. To protect personal information, the AI reads <b>only the description</b>, not the file itself, so the more detail you give, the stronger the evidence it can write.</p>' +
+          '<p>Describe how the document supports the trainer’s competency or currency, including:</p>' +
+          '<ul>' +
+            '<li>the skills or knowledge it demonstrates</li>' +
+            '<li>for a qualification, the units it covers, with their codes and titles</li>' +
+            '<li>how it connects to the units they deliver</li>' +
+            '<li>any systems or processes they manage</li>' +
+            '<li>how it reflects current industry practice.</li>' +
+          '</ul>' +
+          '<div class="demo demo-text"><span class="demo-label">Example description</span>' +
+            '<p>Certificate II in Community Services, completed on 18 November 2025.</p>' +
+            '<p>Units completed include:<br>CHCCOM005 Communicate and work in health or community services<br>CHCDIV001 Work with diverse people<br>HLTWHS001 Participate in workplace health and safety<br>CHCCCS015 Provide individualised support<br>CHCVOL002 Lead volunteer teams</p>' +
+            '<p>Developed communication skills, awareness of diversity, safe work practices and introductory client support skills.</p>' +
+          '</div>' +
+          '<div class="callout note"><b>Note</b><span>Learn how descriptions become evidence statements in <a href="feature.html?m=workforce">Workforce Management</a>, under evidence maps.</span></div></li>' +
+        '<li>Fill in the remaining details, then select <b>Upload Document</b>. If you linked a checklist item, the document’s expiry follows that item.' +
+          '<figure class="shot" data-marks="40,43.4,arrow-down,small; 83.5,94,13.1,3.8,oval,#"><img src="assets/img/wf-upload-form.png" alt="The upload form for a qualification: category Qualifications, Requirement checklist set to Vocational Qualification / Relevant Trade Certificate for the Trainer/Assessor role, document name Staff_Demo_Qualification_CHC52015, course code CHC52015, course name Diploma of Community Services, a description beginning Completed on 14 June 2026 and listing the units completed, a completion date of 14/06/2026, and a note that this requirement does not expire. An arrow points down at the Description field, and the Upload Document button is circled." loading="lazy"><figcaption>Fill in the details, then select Upload Document.</figcaption></figure></li>' +
+        '<li>Find the document you uploaded on the <b>Documents</b> tab.</li>' +
+        '<li>Open the <b>Profile</b> tab to see how it all comes together: their role and team, delivery competency, most recent credentials and evidence map, document checklist and upcoming document expiry.' +
+          '<figure class="shot" data-marks="3.4,12.3,4.7,4.2,oval,#"><img src="assets/img/gs-staff-profile.png" alt="The Profile tab of the Staff Demo profile, circled. It shows their role, last login, team and manager; a delivery competency chart of 16 units assigned; their most recently issued credentials, including the Diploma of Community Services and an expired Working With Children Check; their most recent evidence map; their document checklist with 1 of 2 provided; and upcoming staff document expiry." loading="lazy"><figcaption>A trainer’s profile brings together their units, credentials, evidence map, checklist and document expiry.</figcaption></figure></li>' +
+      '</ol>'
   };
+
+  // Getting Started steps that share a written guide with their module
+  BODIES['gs-connect-axcelerate'] = BODIES['connect-axcelerate'] +
+    '<h2 id="import-courses">Import Courses</h2>' +
+    '<ol class="steps-list">' +
+      '<li>Under <b>aXcelerate Integration</b>, go to <b>Import Courses</b> › <b>Fetch from aXcelerate</b>.' +
+        '<figure class="shot" data-marks="44.3,22.3,12.2,12.1,oval,#1; 4.3,69.8,20.3,15.8,oval,right,#2"><img src="assets/img/gs-ax-import-courses.png" alt="The aXcelerate Integration panel on the Import Courses tab. Connection Status shows a green tick and says the integration is configured and ready to use. Marker 1 circles the Import Courses tab, and marker 2 circles the Fetch from aXcelerate button." loading="lazy"><figcaption>Select Import Courses (1), then Fetch from aXcelerate (2).</figcaption></figure></li>' +
+      '<li>Filter your programs, or select them one by one by ticking the box before each program code.' +
+        '<figure class="shot" data-marks="2.8,6.5,4.2,88,oval,#"><img src="assets/img/gs-ax-select-courses.png" alt="Three courses fetched from aXcelerate, each with a ticked box before its program code: BSB30120 Certificate III in Business, CHC30121 Certificate III in Early Childhood Education and Care, and CHC33021 Certificate III in Individual Support. Each shows how many of its units are selected and is marked New. The ticked boxes are circled." loading="lazy"><figcaption>Tick the box before each course you want to import.</figcaption></figure></li>' +
+      '<li>Choose which units to import from each course. Select the arrow before a course’s program code to show its units.' +
+        '<figure class="shot" data-marks="10.5,2.8,2.9,4.5,oval,#; 12,15.6,arrow-down,small"><img src="assets/img/gs-ax-select-units.png" alt="CHC30121 Certificate III in Early Childhood Education and Care, expanded to show its units. The arrow before the program code is circled, and an arrow points down from it to the list of 17 units, each with a ticked box, its unit code and title, and an Active status. A Deselect All option sits at the top right." loading="lazy"><figcaption>Expand a course to see its units, then untick any you don’t want to import.</figcaption></figure></li>' +
+      '<li>Scroll up to find your <b>Import Summary</b>, then select <b>Import Selected Courses</b>.' +
+        '<figure class="shot" data-marks="75.1,86.5,23,10,oval,#"><img src="assets/img/gs-ax-import-summary.png" alt="The Import Summary, listing three courses by code with an editable program title for each and its default title underneath. It shows 3 courses selected and 77 units, and the Import Selected Courses button at the bottom right is circled." loading="lazy"><figcaption>Check or rename the program titles, then select Import Selected Courses.</figcaption></figure></li>' +
+      '<li>Find your imported programs in <b>Program Management</b> in your navigation bar.</li>' +
+    '</ol>' +
+    '<h2 id="import-trainers">Import Trainers</h2>' +
+    '<ol class="steps-list">' +
+      '<li>Under <b>aXcelerate Integration</b>, go to <b>Import Trainers</b> › <b>Fetch Trainers from aXcelerate</b>.' +
+        '<figure class="shot" data-marks="74,23.9,14.5,10.6,oval,#1; 5.1,71.4,29.3,15.7,oval,right,#2"><img src="assets/img/gs-ax-import-trainers.png" alt="The aXcelerate Integration panel on the Import Trainers tab. Connection Status shows a green tick and says the integration is ready to sync trainers. Marker 1 circles the Import Trainers tab, and marker 2 circles the Fetch Trainers from aXcelerate button." loading="lazy"><figcaption>Select Import Trainers (1), then Fetch Trainers from aXcelerate (2).</figcaption></figure></li>' +
+      '<li>Filter your trainers, or select them one by one by ticking the box before each contact ID.' +
+        '<figure class="shot" data-marks="3.6,7.9,3.9,82,oval,#"><img src="assets/img/gs-ax-select-trainers.png" alt="Three trainers fetched from aXcelerate, each with a ticked box and marked Contact Active. Their contact IDs, names and email addresses are blurred. The ticked boxes are circled." loading="lazy"><figcaption>Tick the box before each trainer you want to import.</figcaption></figure></li>' +
+      '<li>Scroll up to find your <b>Import Summary</b>, then select <b>Import &amp; Invite</b>.' +
+        '<figure class="shot" data-marks="77.8,39,20,31.6,oval,#"><img src="assets/img/gs-ax-trainer-summary.png" alt="The Import Summary for 3 selected trainers, with Import Silently and Import and Invite buttons. The Import and Invite button is circled. A note says silent import creates profiles without sending sign-in invitations, and that they can be invited later from Staff Management." loading="lazy"><figcaption>Select Import &amp; Invite to send each trainer a sign-in invitation.</figcaption></figure>' +
+        '<div class="callout tip"><b>Tip</b><span>Not ready to invite them yet? Choose <b>Import Silently</b> to create their profiles without sending invitations. You can invite them later from User Management. See <a href="feature.html?m=users&find=What%E2%80%99s%20a%20silent%20user#faq">What’s a silent user?</a></span></div></li>' +
+      '<li>Find your imported trainers in <b>Workforce Management</b> in your navigation bar.</li>' +
+    '</ol>';
+  // The Customisation guide is the same as the Getting Started step
+  BODIES['connect-axcelerate'] = BODIES['gs-connect-axcelerate'];
+
+  // A module's FAQs (BODIES['faq-<module id>']) sit on its module page, after its guides
   MODULES.forEach(function (m) { if (BODIES['faq-' + m.id]) m.faqHtml = BODIES['faq-' + m.id]; });
 
   var ARTICLES = {}, ORDER = [];
@@ -2162,14 +4394,13 @@
     ['pd', 'workforce', 'Assigned PD appears on staff PD calendars'],
     ['pd', 'events', 'PD sessions appear in the calendar'],
     ['events', 'dashboard', 'Upcoming events widget'],
-    ['integrations', 'programs', 'Imports courses and units'],
-    ['integrations', 'users', 'Imports staff'],
-    ['security', 'users', 'MFA enforcement applies to every user'],
     ['custom', 'risk', 'Risk scoring weights, bands and categories'],
     ['custom', 'qms', 'Compliance health weighting and document types'],
     ['custom', 'dashboard', 'Which widgets everyone sees'],
     ['custom', 'cir', 'Sources, item templates and reminders'],
-    ['custom', 'programs', 'TAS templates and course risk weights']
+    ['custom', 'programs', 'aXcelerate imports, TAS templates and course risk scoring'],
+    ['custom', 'users', 'aXcelerate imports staff, and MFA applies to every user'],
+    ['custom', 'pd', 'PD calendar, paid PD approval and evidence requirements']
   ];
 
   // steps: [articleId, what to do]
@@ -2184,8 +4415,8 @@
     ['How is my Policy Compliance Health score calculated?', 'qms-health'],
     ['What does “delivery ready” mean for a trainer?', 'wf-dashboard'],
     ['Which roles can see the risk register?', 'users-roles'],
-    ['What imports from aXcelerate?', 'ax-what-imports']
+    ['How do I import from aXcelerate?', 'connect-axcelerate']
   ];
 
-  window.RH = { ONLY: ['features', 'configuration'], ROLES: ROLES, MODULES: MODULES, ARTICLES: ARTICLES, ORDER: ORDER, LINKS: LINKS, WORKFLOWS: WORKFLOWS, WF_GROUPS: WF_GROUPS, ROLE_HUBS: ROLE_HUBS, FAQS: FAQS };
+  window.RH = { ONLY: ['getting-started', 'features', 'configuration'], ROLES: ROLES, MODULES: MODULES, ARTICLES: ARTICLES, ORDER: ORDER, LINKS: LINKS, WORKFLOWS: WORKFLOWS, WF_GROUPS: WF_GROUPS, ROLE_HUBS: ROLE_HUBS, FAQS: FAQS };
 })();
