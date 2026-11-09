@@ -69,7 +69,7 @@
       '<button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">' + ICON.menu + '</button>' +
       '<nav class="main-nav" id="main-nav" aria-label="Main">' + nav.map(function (n) { return '<a href="' + n[1] + '"' + (n[0] === active ? ' aria-current="page"' : '') + '>' + n[2] + '</a>'; }).join('') + '</nav>' +
       (active === 'home' || document.body.getAttribute('data-page') === 'features' ? '' : '<form class="header-search" action="search.html" role="search"><label for="hs" class="visually-hidden">Search help</label>' + ICON.search + '<input id="hs" name="q" type="search" placeholder="Search help"></form>') +
-      (ONLY ? '' : '<a class="btn btn-primary contact" href="page.html?p=contact">Contact us</a>') +
+      '<a class="btn btn-primary contact" href="page.html?p=contact">Contact us</a>' +
       '</div></header>';
   }
   // In the features-only build, unwrap links to pages and guides that weren't published, and
@@ -88,7 +88,8 @@
     [].forEach.call(document.querySelectorAll('a[href]'), function (a) {
       var h = a.getAttribute('href'), m, ok = true;
       if (!h || h.charAt(0) === '#' || /^(https?:|mailto:)/.test(h)) return;
-      if (/^(page|guides|workflows?|roles)\.html/.test(h)) ok = false;
+      // Contact us and Submit a request are published; the other pages aren't
+      if (/^(guides|workflows?|roles)\.html/.test(h) || (/^page\.html/.test(h) && !/^page\.html\?p=(contact|request)\b/.test(h))) ok = false;
       else if ((m = /^article\.html\?id=([^&#]*)/.exec(h))) ok = !!A[decodeURIComponent(m[1])];
       else if ((m = /^feature\.html\?m=([^&#]*)/.exec(h))) ok = !!MOD[decodeURIComponent(m[1])];
       if (ok) return;
@@ -843,6 +844,7 @@
         '<label for="rq-name"><b>Your name</b></label><input id="rq-name" required style="font:inherit;padding:12px;border:1px solid #64748b;border-radius:8px">' +
         '<label for="rq-email"><b>Work email</b></label><input id="rq-email" type="email" required style="font:inherit;padding:12px;border:1px solid #64748b;border-radius:8px">' +
         '<label for="rq-what"><b>What were you trying to do?</b></label><textarea id="rq-what" rows="5" required style="font:inherit;padding:12px;border:1px solid #64748b;border-radius:8px"></textarea>' +
+        '<input type="checkbox" name="botcheck" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">' +
         '<button class="btn btn-primary" type="submit" style="justify-self:start">Send request</button>' +
         '<p class="muted" id="rq-msg" role="status"></p></form>';
     } else if (key === 'webinars') {
@@ -855,10 +857,27 @@
     var f = $('#req-form');
     if (f) f.addEventListener('submit', function (e) {
       e.preventDefault();
-      if (!f.checkValidity()) { $('#rq-msg').textContent = 'Please fill in your name, a valid email and what you were trying to do.'; return; }
-      $('#rq-msg').textContent = 'Prototype: this form isn’t connected to the support desk yet, so nothing was sent.';
+      var msg = $('#rq-msg'), btn = f.querySelector('button[type="submit"]');
+      if (!f.checkValidity()) { msg.textContent = 'Please fill in your name, a valid email and what you were trying to do.'; return; }
+      if (!CONTACT_KEY) { msg.textContent = 'This form isn’t connected yet, so nothing was sent.'; return; }
+      if (f.querySelector('[name="botcheck"]').checked) return;
+      btn.disabled = true; msg.textContent = 'Sending…';
+      var name = $('#rq-name').value.trim(), topic = from ? ' about ' + from.t : '';
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ access_key: CONTACT_KEY, subject: 'RadarHelp request' + topic + ' from ' + name, from_name: 'RadarHelp',
+          name: name, email: $('#rq-email').value.trim(), replyto: $('#rq-email').value.trim(), guide: from ? from.t : '', page: location.href, message: $('#rq-what').value.trim() })
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        if (!d.success) throw new Error(d.message);
+        f.reset(); msg.textContent = 'Thanks, your request has been sent. We’ll reply to your work email.';
+      }).catch(function () {
+        msg.textContent = 'Sorry, your request couldn’t be sent. Please try again in a moment.';
+      }).then(function () { btn.disabled = false; });
     });
   };
+  // Contact us and Submit a request are emailed through Web3Forms (web3forms.com). The access key is
+  // tied to the address requests go to; it isn’t a secret, so it lives here in the page.
+  var CONTACT_KEY = '48816cbf-c765-4057-886b-ec0f9ed90330';
 
   // ---------- smart search ----------
   // Searches guide names, their section and sub-heading titles, and FAQ questions, in the browser,
