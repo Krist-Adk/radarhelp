@@ -662,7 +662,7 @@
           '<figure class="shot shot-small"><img src="assets/img/fb-create-contact.png" alt="Contact Information, with Optional selected: users can choose to provide contact details. The other options are Anonymous Only, with no contact details collected, and Required, where contact details must be provided." loading="lazy"><figcaption>Optional lets people choose whether to give their contact details.</figcaption></figure></li>' +
         '<li>Optionally, turn on <b>Email notifications</b> and choose the <b>Responsible person</b>. They receive an email each time someone submits the form.' +
           '<figure class="shot shot-small"><img src="assets/img/fb-create-notify.png" alt="Email notifications turned on, with Design Manager chosen as the responsible person, who will receive an email each time a submission is made on this form." loading="lazy"><figcaption>The Design Manager is emailed about each submission.</figcaption></figure></li>' +
-        '<li>Choose the <b>Team</b> that owns the form. Its submissions go to that team. Leave it empty to keep the form in <b>System Default</b>, visible to everyone. Then select <b>Create &amp; Build Form</b>.' +
+        '<li id="team">Choose the <b>Team</b> that owns the form. Its submissions go to that team. Leave it empty to keep the form in <b>System Default</b>, visible to everyone. Then select <b>Create &amp; Build Form</b>.' +
           '<figure class="shot shot-small" data-marks="79,65.6,arrow-down,tiny"><img src="assets/img/fb-create-team.png" alt="Team, which is optional, set to Community and Health Faculty. A note says that as a System Default member you can assign this form to any team, and submissions will go to the team you pick. An arrow points down at Create and Build Form." loading="lazy"><figcaption>The form is owned by the Community &amp; Health Faculty. Select Create &amp; Build Form.</figcaption></figure>' +
           '<div class="callout note"><b>Note</b><span>Provided you have the right permissions, the teams you can choose depend on where you are:' +
             '<ul>' +
@@ -761,7 +761,14 @@
       '<ol class="steps-list">' +
         '<li>On the <b>Submissions</b> tab, select the eye <svg class="ui-icon" viewBox="0 0 24 24" aria-label="eye" role="img"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6a3 3 0 1 0 0-6z"/></svg> (circled) to open the submission. See <a href="article.html?id=fb-submissions#respond">Respond to a submission</a>.' +
           '<figure class="shot" data-marks="94,26,3.4,46,oval,#"><img src="assets/img/fb-sub-row-progress.png" alt="FS-0001, a General submission in the learning resources category, from the CHC33021 Course Feedback form, in the Community and Health Faculty. It’s In Progress, assigned to the Design Manager, dated 05 Nov 2026. Its eye button is circled." loading="lazy"><figcaption>FS-0001, now In Progress and assigned to the Design Manager. Select the eye (circled).</figcaption></figure></li>' +
-        '<li>Scroll down to <b>Action Items</b> and select <b>Add</b> (circled).' +
+        '<li>Check the suggested action item. When the submitter answers <b>What could we improve?</b>, RTO Radar adds their answer as an action item, marked <b>Draft</b> (1). It’s only a suggestion, and nothing is sent to the CI register yet. With its buttons (2), you can:' +
+          '<ul>' +
+            '<li>select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="send" role="img"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg> to send it to the person responsible, so it becomes an improvement item;</li>' +
+            '<li>select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="edit" role="img"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/></svg> to edit it first, such as giving it a clearer title, a person responsible and a due date;</li>' +
+            '<li>select <svg class="ui-icon" viewBox="0 0 24 24" aria-label="bin" role="img"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg> to remove it if no action is needed.</li>' +
+          '</ul>' +
+          '<figure class="shot shot-medium" data-marks="83.2,67.8,8.8,3.8,oval,#1; 75.6,85.8,15.6,5,oval,#2"><img src="assets/img/fb-action-draft.png" alt="The lower half of submission FS-0006. What could we improve: The CHCCCS031 learner workbook still refers to the old Aged Care Quality Standards, which confused me on placement because my host employer uses the strengthened standards. Updating the workbook and adding a short session on the changes would help. Status Open, assigned to the Design Manager, with internal notes confirming the workbook needs updating. Action Items, 1: General – FS-0006, marked Draft and circled as 1, with the same text as the response, Admin Demo, Medium priority, due 22/11/2026, and the edit, send and bin buttons, circled as 2. Add is at the top right of Action Items." loading="lazy"><figcaption>The submitter’s suggestion, added as a Draft action item (1), with edit, send and remove (2).</figcaption></figure></li>' +
+        '<li>To add your own action item, scroll down to <b>Action Items</b> and select <b>Add</b> (circled).' +
           '<figure class="shot shot-medium" data-marks="83.4,81.4,12.8,10.4,oval,#"><img src="assets/img/fb-ai-add.png" alt="The lower half of FS-0001: Status In Progress, Assigned To Design Manager, and the internal notes. Below, Action Items, with Add circled." loading="lazy"><figcaption>Select Add (circled) under Action Items.</figcaption></figure></li>' +
         '<li>Enter a <b>Title</b> (optional) and a <b>Description</b> of what needs to happen. Choose the <b>Person Responsible</b>, the <b>Priority</b> and the <b>Due Date</b>, then select <b>Add Action Item</b>.' +
           '<figure class="shot shot-medium" data-marks="80.4,86.2,arrow-down,small"><img src="assets/img/fb-ai-form.png" alt="A new action item. The title is Update CHCCCS031 learner workbook to strengthened Aged Care Quality Standards. The description reads: Student feedback (FS-0001) reports the CHCCCS031 learner workbook still refers to the old Aged Care Quality Standards. Review the workbook and replace outdated references with the strengthened standards. Check the related assessment tasks and marking guide for the same references, and brief CHC33021 trainers on the changes before the Semester 1 2027 intake. The person responsible is the Training Coordinator, the priority is High and the due date is 30/01/2027. An arrow points down at Add Action Item." loading="lazy"><figcaption>The Design Manager hands the work to the Training Coordinator. Select Add Action Item.</figcaption></figure>' +
@@ -871,7 +878,7 @@
         '<li>In the register, select <b>Add Item</b> (1), then <b>Add Item (Default)</b> (2).' +
           '<figure class="shot" data-marks="84.6,63.6,9.2,10.4,oval,above,#1; 84.8,77.4,9,6.8,oval,#2"><img src="assets/img/cir-add-menu.png" alt="The Continuous Improvement Register’s Item List, with Add Item circled as 1 and its menu open, showing Add Item (Default), circled as 2, and External CI Register." loading="lazy"><figcaption>Select Add Item (1), then Add Item (Default) (2).</figcaption></figure>' +
           '<div class="callout note"><b>Note</b><span>The menu also lists your RTO’s custom CI registers, such as <b>External CI Register</b>, which add extra fields of your own. Admins set them up in <b>Settings</b> › <b>Customisation</b> › <b>CIR</b>. See <a href="article.html?id=cust-cir-settings#custom">Create a custom CI register</a>.</span></div></li>' +
-        '<li>Choose the <b>Person Responsible</b> and the <b>Due Date</b>. Add a short <b>Title</b>: it’s what shows in the register. Then describe the improvement under <b>Description</b>. The description shows when someone opens the item.' +
+        '<li id="person">Choose the <b>Person Responsible</b> and the <b>Due Date</b>. Add a short <b>Title</b>: it’s what shows in the register. Then describe the improvement under <b>Description</b>. The description shows when someone opens the item.' +
           '<figure class="shot shot-medium"><img src="assets/img/cir-add-form.png" alt="Add New Improvement Item: Person Responsible Student Services Coordinator, Due Date 15/12/2026, and the title Update the student handbook complaints and appeals process. The description reads: Internal audit (November 2026) found the student handbook still describes the previous complaints and appeals process, with outdated timeframes and contact details. Update the handbook to match the current Complaints and Appeals Policy, including the 10 working day response timeframe and how to request an external review. Publish the updated version on the website and the learning platform, and brief student services staff on the changes." loading="lazy"><figcaption>An item raised from an internal audit finding.</figcaption></figure></li>' +
         '<li>Set the <b>Priority</b>, <b>Status</b> and <b>Source</b>.' +
           '<figure class="shot shot-medium"><img src="assets/img/cir-add-status.png" alt="Priority Medium, Status Open and Source Ad Hoc." loading="lazy"><figcaption>Medium priority, Open, from an Ad Hoc source.</figcaption></figure></li>' +
@@ -1670,7 +1677,7 @@
         '<li>Choose the <b>Team Manager</b> (2). Their team’s members report to them. They can view and assign items tagged to the team, see every member and item across the team and its sub-teams, and receive email notifications when their team’s staff files are about to expire.</li>' +
         '<li>Choose the <b>Parent team</b> (3), if it sits under another team.</li>' +
         '<li>Choose the <b>Team Colour</b> (4). The team’s label and its people cards on the chart take this colour.</li>' +
-        '<li>Under <b>Team Members</b> (5), tick each member and choose their role. Members see only the items tagged to their team, on top of what their user role allows.</li>' +
+        '<li>Under <b>Team Members</b> (5), tick each person, and choose whether they’re a <b>Member</b> or a <b>Manager</b> of the team. Members see only the items tagged to their team, on top of what their user role allows.</li>' +
         '<li>Select <b>Save</b> (6). Then assign items to the team, such as its programs and feedback forms. On the chart, the manager’s card sits under the team’s name, with its members beneath.' +
           '<figure class="shot shot-narrow"><img src="assets/img/users-team-tree.png" alt="The IT Faculty on the Compliance Governance Chart. IT Faculty Manager, Head of Faculty, sits under the team name as its manager, and a line leads down to Staff Demo, Trainer/Assessor, who reports to them." loading="lazy"><figcaption>IT Faculty Manager manages the IT Faculty, and Staff Demo reports to them.</figcaption></figure>' +
         '</li>' +
@@ -1680,7 +1687,7 @@
       '<p>Each team in the list has <b>Add Staff</b>, a pencil <svg class="ui-icon" viewBox="0 0 24 24" aria-label="pencil" role="img"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/></svg> to edit it and a bin <svg class="ui-icon bin" viewBox="0 0 24 24" aria-label="bin" role="img"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg> to delete it.</p>' +
       '<figure class="shot" data-marks="84.2,30,#1; 89.4,30,#2; 93.6,30,#3"><img src="assets/img/users-team-row.png" alt="The IT Faculty row in team settings, a sub-team of Learning Design with 1 member. Numbers mark Add Staff as 1, the pencil as 2 and the bin as 3." loading="lazy"><figcaption>Add Staff (1), edit (2) and delete (3).</figcaption></figure>' +
       '<ol class="ov-list">' +
-        '<li><h4>Add staff</h4><p>Select <b>Add Staff</b>. Search for each person by name or email, tick them, then select <b>Review changes</b>.</p>' +
+        '<li><h4>Add staff to a team</h4><p>Select <b>Add Staff</b> on the team. Search for each person by name or email, tick them, then select <b>Review changes</b>.</p>' +
           '<figure class="shot shot-small" data-marks="80.1,89,arrow-down,small"><img src="assets/img/users-team-staff.png" alt="Manage staff in IT Faculty, with Trainer One, Trainer Three and Trainer Two ticked and Training Coordinator not ticked. Each shows the team they are in now. A note says new users to teams are added as Team Member, and users without teams are automatically allocated to the System Default team. 3 people added, with an arrow pointing down at Review changes." loading="lazy"><figcaption>Three trainers ticked. Select Review changes.</figcaption></figure>' +
           '<div class="callout note"><b>Note</b><span>People are added as a <b>Team Member</b>. Anyone not in a team is automatically in <b>System Default</b>.</span></div>' +
           '<p><b>Preview visibility changes</b> shows what each person will be able to see. Nothing is saved yet. Select <b>Confirm and save</b>, or <b>Back to editing</b> to change your selection.</p>' +
@@ -1698,6 +1705,15 @@
           '<figure class="shot shot-medium" data-marks="91.4,90.5,arrow-down,small"><img src="assets/img/users-team-delete.png" alt="Delete team, about to delete the IT Faculty, with the warning that this cannot be undone and items will no longer belong to the team. Its assigned items will move to System Default; none are tagged to it. Under visibility changes, CEO Demo and Design Manager stay in the same teams but see 2 fewer people, and Staff Demo and IT Faculty Manager will be moved from IT Faculty to System Default, seeing 15 and 14 more items. IT Faculty is typed to confirm, and an arrow points down at Delete team." loading="lazy"><figcaption>Deleting the IT Faculty. Type its name, then select Delete team.</figcaption></figure>' +
           '<div class="callout warn"><b>Important</b><span>Deleting a team can’t be undone. Its members move up to the parent team, so check they’re in the right teams straight away.</span></div></li>' +
       '</ol>' +
+      '<h2 id="next">After you create a team</h2>' +
+      '<p>A new team is empty. Give it people and work, so its members see what they need, and its manager can oversee it:</p>' +
+      '<table><thead><tr><th>Give the team</th><th>How</th></tr></thead><tbody>' +
+        '<tr><td>Members</td><td>Select <b>Add Staff</b> on the team, and tick the people who belong to it. See <a href="#members">Team actions</a>.</td></tr>' +
+        '<tr><td>Programs</td><td>Assign its courses to the team, one or several at a time. See <a href="article.html?id=prog-overview#bulk">Assign courses to a team</a>.</td></tr>' +
+        '<tr><td>Complaints &amp; Suggestions forms</td><td>Choose the team that owns a form when you create it. Its submissions go to that team. See <a href="article.html?id=fb-create-form&find=team">Choose a form’s team</a>.</td></tr>' +
+        '<tr><td>Improvement items</td><td>Choose one of the team’s members as the person responsible when you add an item. The register can then be filtered by the team. See <a href="article.html?id=cir-add-item&find=person">Choose the person responsible</a>.</td></tr>' +
+      '</tbody></table>' +
+      '<p>The team then appears on the compliance governance chart, under its parent team. Admins choose where teams show across RTO Radar, such as team badges and the org chart. See <a href="article.html?id=cust-dashboard-widgets#teams">Teams settings</a>.</p>' +
       '<h2 id="chart">The Compliance Governance Chart</h2>' +
       '<p>The chart shows every team with its manager and members, in each team’s colour. A dotted line shows someone who belongs to a second team. To open it, select <b>View Compliance Chart</b> on the <b>Teams Configuration</b> tab.</p>' +
       '<figure class="shot" data-marks="10.6,74.8,arrow-up,small"><img src="assets/img/users-chart-button.png" alt="The Teams Configuration tab, explaining that moving user profiles into teams changes their scope of visibility. A note says all users can view every area of RTO Radar by default if they have the permissions, that the System Default team keeps the broadest visibility, suiting compliance managers and RTO admins, and that role-based permissions are set in User Roles, separately from teams. An arrow points up at View Compliance Chart." loading="lazy"><figcaption>Select View Compliance Chart.</figcaption></figure>' +
@@ -2190,12 +2206,12 @@
         '<li><h4>Manage</h4><p>Opens the course page, where you manage its units and validations. See <a href="article.html?id=prog-add-units">Add and manage a course’s units</a>.</p></li>' +
         '<li><h4>Actions (⋮)</h4><p>Has three options:</p>' +
           '<div class="sub-steps">' +
-            '<div><h4><span class="sn">2.1</span>View Details</h4><p>Shows the course’s details: its title, code, accreditation, level, team and when it was created. Select the pencil to change its title or team. Under <b>Program Risk Summary</b> are its risk level, risk score, validation frequency and the risk factors selected.</p>' +
+            '<div><h4><span class="sn">2.1</span>View Details</h4><p>Shows the course’s details: its title, code, accreditation, level, team and when it was created. Select the pencil <svg class="ui-icon" viewBox="0 0 24 24" aria-label="pencil" role="img"><path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/></svg> beside the title or team to rename the course or move it to another team. Under <b>Program Risk Summary</b> are its risk level, risk score, validation frequency and the risk factors selected.</p>' +
               '<figure class="shot shot-medium"><img src="assets/img/prog-details.png" alt="Program Details for CPC30220 Certificate III in Carpentry: TGA Accredited, a Qualification, created 2 months ago, in the Construction team, with pencils to edit the title and team. The Program Risk Summary shows a High risk level, a risk score of 7.8 out of 10, a validation frequency of every 36 months, and the selected risk factor Face-to-face delivery mode." loading="lazy"><figcaption>A course’s details and risk summary.</figcaption></figure></div>' +
             '<div><h4><span class="sn">2.2</span>Risk Assessment</h4><p>Complete the risk assessment for a course marked <b>Risk Assessment Pending</b>, or change one that needs amending. See <a href="article.html?id=prog-add-course#risk">Course Risk Assessment</a>.</p></div>' +
             '<div><h4><span class="sn">2.3</span>Archive</h4><p>Archives the course. See <a href="article.html?id=prog-archive">Archive and restore courses and unit validations</a>.</p><p>There’s no delete option here. To prevent accidental deletion of a course that may have unit validations and other evidence recorded against it, a course can only be deleted once it’s archived, from <b>View Archived</b>.</p></div>' +
           '</div></li>' +
-        '<li id="bulk"><h4>Select boxes</h4><p>Select multiple courses to assign them to a team or archive them. Tick the box before each course’s program code, or the box in the header to select every course. A bar shows how many programs are selected:</p>' +
+        '<li id="bulk"><h4>Assign courses to a team</h4><p>Select one or more courses to assign them to a team or archive them. Tick the box before each course’s program code, or the box in the header to select every course. A bar shows how many programs are selected:</p>' +
           '<ul>' +
             '<li><b>Assign Team</b> moves the selected courses to a team.</li>' +
             '<li><b>Archive Selected</b> archives them. See <a href="article.html?id=prog-archive">Archive and restore courses and unit validations</a>.</li>' +
@@ -2919,6 +2935,7 @@
           '<figure class="shot" data-marks="1.8,87.6,10,4.4,oval,right,#1; 72.6,33.8,14.4,4.8,oval,#2; 87.2,34.6,6.6,3.2,oval,above,#3; 93.9,93.6,arrow-down,tiny"><img src="assets/img/cust-cir-customfields.png" alt="Custom Fields for Audit Finding: Audit Type, Single Choice, Required, with the options Internal audit, ASQA audit, Funding body audit and Third-party audit; Standard, Short Text, Required, with its type circled as 2 and Required as 3; Finding Rating, Single Choice, Required, with the options Observation, Minor non-compliance and Major non-compliance; Auditor, Short Text; Date Rectified, Date; and Rectification Evidence, Attachment. Each has reorder arrows and a bin. Add Field is circled as 1, and an arrow points down at Save." loading="lazy"><figcaption>Six custom fields for Audit Finding. Add Field (1), a field’s type (2) and Required (3). Then select Save (arrow).</figcaption></figure></li>' +
         '<li>Select <b>Save</b> (arrow).</li>' +
       '</ol>' +
+      '<p>Your custom register then appears under <b>Add Item</b> in the register. To add items to it, see <a href="article.html?id=cir-add-item#add">Add an item</a>.</p>' +
       '<h2 id="import">Import items</h2>' +
       '<p>Bulk import improvement items on the <b>Import</b> tab, as default items or into a custom CI register. See <a href="article.html?id=cir-add-item#import">Bulk import items</a>.</p>' +
       '<h2 id="sources">Sources</h2>' +
@@ -3121,6 +3138,15 @@
         '</div></details>' +
         '<details><summary>Can one submission have several action items for different people?</summary><div class="prose">' +
           '<p>Yes. The submission’s owner can add an action item for each task, each with its own Person Responsible. For example, one for the Training Coordinator to update a workbook, and another for the Compliance Officer to check other resources. See <a href="article.html?id=fb-to-cir">Turn a submission into an improvement item</a>.</p>' +
+        '</div></details>' +
+        '<details><summary>Why is there a Draft action item on a form submission?</summary><div class="prose">' +
+          '<p>When the submitter answers <b>What could we improve?</b>, RTO Radar turns their answer into a suggested action item, marked <b>Draft</b>. It’s only a suggestion: nothing goes to the Continuous Improvement Register until you act on it.</p>' +
+          '<ul>' +
+            '<li>To act on it, send it to the person responsible. It becomes an improvement item.</li>' +
+            '<li>To change it first, edit it, such as giving it a clearer title, a person responsible and a due date.</li>' +
+            '<li>If no action is needed, remove it.</li>' +
+          '</ul>' +
+          '<p>You can also add your own action items. See <a href="article.html?id=fb-to-cir">Turn a submission into an improvement item</a>.</p>' +
         '</div></details>' +
       '</section>',
 
@@ -3678,7 +3704,7 @@
         '<li>Check your RTO name and code, enter your RTO’s <b>Approximate Annual Enrolments</b>, and choose your <b>Basic Provider Risk Factors</b>. Together, your enrolments and risk factors feed into your organisational risk score.' +
           '<figure class="shot shot-medium"><img src="assets/img/gs-org-details.png" alt="The top of the Update RTO Profile form. RTO Information shows the RTO name and code and Approximate Annual Enrolments of 200. Basic Provider Risk Factors lists checkboxes such as CRICOS registered, government funding received, compliance issues identified within the past 3 years and high assessor turnover." loading="lazy"><figcaption>Your RTO information and basic provider risk factors.</figcaption></figure>' +
           '<div class="callout tip"><b>Tip</b><span>Not sure which risk factors apply? Choose what you know now. You can change them later from Update RTO Profile.</span></div></li>' +
-        '<li>Nominate an <b>Escalation Manager</b>, then select <b>Save &amp; Exit</b>.' +
+        '<li id="escalation">Nominate an <b>Escalation Manager</b>, then select <b>Save &amp; Exit</b>.' +
           '<div class="callout note"><b>Note</b><span>Your Escalation Manager keeps watch over your organisational risks. RTO Radar notifies them whenever a risk is added to or removed from your register, at any risk level, so nothing changes without them knowing. Choose a senior manager or board member.</span></div>' +
           '<figure class="shot" data-marks="91.7,87,arrow-down,small"><img src="assets/img/gs-org-escalation.png" alt="The Escalation Manager section of the Update RTO Profile form, with Name and Email fields filled in as Admin Demo and admindemo@rtoradar.com.au, and a note that the Escalation Manager also serves as the default manager for the System Default team. Below it, the save bar shows Save Status: Not saved, with Edit Comprehensive Assessment and Save and Exit buttons. An arrow points down at the Save and Exit button." loading="lazy"><figcaption>Enter your Escalation Manager’s name and email, then select Save &amp; Exit.</figcaption></figure></li>' +
       '</ol>' +
@@ -3880,7 +3906,7 @@
       '<p class="lead">The Escalation Manager is the one person who keeps watch over your RTO’s organisational risks. Whatever happens on your risk register, they hear about it, so serious risks reach someone with the authority to act.</p>' +
       '<h2 id="who">Who to choose</h2>' +
       '<p>Choose a senior manager or board member: someone who can make decisions about resources, priorities and policy when a serious risk comes up. Your RTO has one Escalation Manager at a time.</p>' +
-      '<p>You nominate them by name and email in <a href="article.html?id=risk-rto-profile">Update RTO Profile</a>, and their details show on the Risk Register Overview.</p>' +
+      '<p>You nominate them by name and email in <a href="article.html?id=risk-rto-profile&find=escalation">Update RTO Profile</a>, and their details show on the Risk Register Overview.</p>' +
       '<h2 id="receive">What they receive</h2>' +
       '<ul>' +
         '<li><b>An email when a risk assessment is completed</b>, summarising the risks that were added.</li>' +
@@ -3898,7 +3924,7 @@
         '<tr><td><b>What they get</b></td><td>Emails and risk reports</td><td>An improvement item in the Continuous Improvement Register</td></tr>' +
       '</tbody></table>' +
       '<h2 id="change">Changing your Escalation Manager</h2>' +
-      '<p>Update their name and email in Update RTO Profile and save. From then on, all risk emails go to the new person. Each version in Version History records who the Escalation Manager was when it was saved, so you can show who had oversight at any point.</p>' +
+      '<p>Update their name and email in <a href="article.html?id=risk-rto-profile&find=escalation">Update RTO Profile</a> and save. From then on, all risk emails go to the new person. Each revision in Version History records who the Escalation Manager was when it was saved, so you can show who had oversight at any point.</p>' +
       '<div class="callout tip"><b>Tip</b><span>When your Escalation Manager changes, send the new one a risk report straight away with Email Escalation Manager, so they start with the full picture.</span></div>',
 
     'risk-escalation':

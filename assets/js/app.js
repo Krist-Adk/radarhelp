@@ -866,7 +866,7 @@
   // Best matches: every word appears as written. Related: matched through a typo, a synonym or
   // only some of the words. Opens with a click in any search bar, Ctrl/⌘ K or /.
   var SS = (function () {
-    var STOP = 'a an and are as at be by can do does for from how i if in is it its me my of on or our the their there this to was we what when where which who why will with you your'.split(' ');
+    var STOP = 'a an and are as at be by can do does for from got has have how i if in is it its me my of on or our the their there this to was we what when where which who why will with you your'.split(' ');
     var SYN = {
       pd: ['professional', 'development'], cir: ['continuous', 'improvement'], ci: ['continuous', 'improvement'],
       mfa: ['two-factor', 'authentication'], '2fa': ['two-factor', 'authentication'], tas: ['training', 'assessment', 'strategy'],
@@ -877,7 +877,8 @@
       overdue: ['due'], schedule: ['calendar'], calendar: ['event'], risk: ['treatment'], audit: ['auditor', 'export'],
       evidence: ['document'], certificate: ['evidence'], consultation: ['industry'], validation: ['validate'], validate: ['validation'],
       lost: ['find', 'missing', 'see'], missing: ['find', 'see'], disappear: ['find', 'missing', 'see'], gone: ['find', 'missing'], hidden: ['find', 'see'],
-      program: ['course'], course: ['program']
+      program: ['course'], course: ['program'], move: ['assign', 'change'], rename: ['title', 'change', 'edit'],
+      assign: ['tick', 'choose', 'select', 'add'], tick: ['select', 'choose', 'assign'], choose: ['select', 'tick'], select: ['choose', 'tick'], member: ['staff', 'people', 'person'], people: ['staff', 'member', 'person'], person: ['staff', 'member']
     };
     function stem(w) {
       if (w.length > 5 && /ies$/.test(w)) return w.slice(0, -3) + 'y';
@@ -939,6 +940,19 @@
           if (!x.t || seen[x.t.toLowerCase()]) return; seen[x.t.toLowerCase()] = 1;
           DOCS.push(doc('title', x.t, path, url + section, x.t, plain(body), ctx, a.id, cfg ? 'config' : 'title'));
         });
+        // Each numbered step is searchable too, by its own words, so an answer inside a step can be found
+        // even when no heading names it. A step with its own heading is already covered above.
+        var tpl = document.createElement('template'); tpl.innerHTML = html;
+        var sec = '', secT = '';
+        [].forEach.call(tpl.content.querySelectorAll('h2, ol.steps-list > li'), function (el) {
+          if (el.tagName === 'H2') { sec = el.id ? '#' + el.id : ''; secT = plain(el.innerHTML); return; }
+          if (el.querySelector('h2, h3, h4')) return;
+          var c = el.cloneNode(true); [].forEach.call(c.querySelectorAll('figure, .callout, ul, ol'), function (x) { x.remove(); });
+          var full = plain(c.innerHTML.replace(/<(p|div|br)\b/g, ' $&')); if (full.length < 12) return;
+          var first = (full.match(/^.*?[.?!](\s|$)/) || [full])[0].trim();
+          if (first.length > 110) first = first.slice(0, 106).replace(/\s+\S*$/, '') + '…';
+          DOCS.push(doc('step', first, [m.name, a.t, secT].filter(Boolean).join(' › '), url + sec, full.slice(0, 60), plain(el.innerHTML), ctx, a.id, cfg ? 'config' : 'title'));
+        });
       });
       RH.MODULES.forEach(function (m) {
         if (!m.faqHtml) return;
@@ -963,7 +977,7 @@
       }
       return best;
     }
-    var KIND = { guide: 0, title: 1, faq: 2 };
+    var KIND = { guide: 0, title: 1, faq: 2, step: 3 };
     // Weight of a word found in the name, in the text under it, or elsewhere in its guide
     var WT = { name: [0, 1, 2], body: [0, 0.75, 1.5], ctx: [0, 0.4, 0.8] };
     function search(q) {
@@ -984,7 +998,7 @@
         var r = { d: d, full: d.n === nq, phrase: nq.length > 2 && d.n.indexOf(nq) >= 0, cov: covered / terms.length };
         if (r.full || r.phrase || exact === terms.length) out.best.push(r);
         // Only some of the words matched: show it only if at least one is in the name, as typed
-        else if (r.cov >= 0.8 || ((r.cov >= 0.5 || terms.length < 3) && inName)) { r.s = s * (0.25 + 0.75 * r.cov * r.cov) * (1 + named / terms.length) * (d.kind === 'faq' ? 0.6 : 1); rel.push(r); }
+        else if (r.cov >= 0.8 || ((r.cov >= 0.5 || terms.length < 3) && inName)) { r.s = s * (0.25 + 0.75 * r.cov * r.cov) * (1 + named / terms.length) * (d.kind === 'faq' ? 0.6 : d.kind === 'step' ? 0.85 : 1); rel.push(r); }
       });
       out.best.sort(function (x, y) { return (y.full - x.full) || (y.phrase - x.phrase) || (KIND[x.d.kind] - KIND[y.d.kind]) || (x.d.text.length - y.d.text.length); });
       // Related: the best place in each guide, skipping guides already under Best matches
@@ -997,14 +1011,17 @@
     }
     // Answers pinned to the top for a kind of question. Something that’s gone missing is nearly always
     // in a team the person isn’t in, so that FAQ leads whenever a search is about losing or not seeing something.
+    // Putting people into a team is done with Add staff on the team.
+    function has(w, re) { return w.some(function (x) { return re.test(x); }); }
     var PINS = [{ faq: 'I can’t find a person, program or item. Why?',
-      when: function (w) { return w.some(function (x) { return /^(lost|missing|disappear|gone|hidden|vanish)/.test(x); }) ||
-        (w.some(function (x) { return /^(can[’']?t|cannot)$/.test(x); }) && w.some(function (x) { return /^(find|see|locate)/.test(x); })); } }];
+      when: function (w) { return has(w, /^(lost|missing|disappear|gone|hidden|vanish)/) || (has(w, /^(can[’']?t|cannot)$/) && has(w, /^(find|see|locate)/)); } },
+      { title: 'Add staff to a team',
+        when: function (w) { return has(w, /^team/) && has(w, /^(assign|add|put|tick|include)/) && has(w, /^(member|staff|people|person|user|someone|trainer)/); } }];
     function pin(q, out) {
       var w = words(q);
-      PINS.forEach(function (p) {
+      PINS.slice().reverse().forEach(function (p) {
         if (!p.when(w)) return;
-        var d = build().filter(function (x) { return x.kind === 'faq' && x.text === p.faq; })[0]; if (!d) return;
+        var d = build().filter(function (x) { return p.faq ? x.kind === 'faq' && x.text === p.faq : x.kind === 'title' && x.text === p.title; })[0]; if (!d) return;
         out.best = out.best.filter(function (r) { return r.d !== d; }); out.related = out.related.filter(function (r) { return r.d !== d; });
         out.best.unshift({ d: d, cov: 1 });
       });
@@ -1133,6 +1150,13 @@
       var t = norm(c.textContent);
       if (t === w || (t.length > 3 && (t.indexOf(w) === 0 || w.indexOf(t) === 0))) { hitEl = el; return true; }
     });
+    // Or a step marked with an id, for links to a particular step (…&find=team)
+    if (!hitEl && /^[a-z][a-z0-9-]*$/.test(want)) hitEl = document.querySelector('#main [id="' + want + '"]');
+    // Or a step found by search, by the words it starts with
+    if (!hitEl) [].some.call(document.querySelectorAll('#main ol.steps-list > li'), function (li) {
+      var c = li.cloneNode(true); [].forEach.call(c.querySelectorAll('figure, .callout, ul, ol, .sn, svg'), function (x) { x.remove(); });
+      if (norm(c.textContent).indexOf(w) === 0) { hitEl = li; return true; }
+    });
     if (!hitEl) return;
     var box = hitEl, faq = hitEl.tagName === 'SUMMARY';
     if (faq) box = hitEl.parentNode;
@@ -1140,7 +1164,9 @@
     // Land at the top of the page first: drop the #faq jump, so the scroll down is seen
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
-    window.scrollTo(0, 0);
+    // Guide pages turn on smooth scrolling; each step here must land straight away, or the easing stalls
+    function jump(y) { window.scrollTo({ top: y, behavior: 'instant' }); }
+    jump(0);
     function flash() {
       box.classList.remove('rh-flash'); void box.offsetWidth; box.classList.add('rh-flash');
       setTimeout(function () { box.classList.remove('rh-flash'); }, 2400);
@@ -1148,12 +1174,12 @@
     // Ease the page down so the target sits a third of the way down the screen, then call done
     function glide(done) {
       var from = window.scrollY, to = Math.max(0, box.getBoundingClientRect().top + from - window.innerHeight / 3), dist = to - from;
-      if (still || Math.abs(dist) < 2) { window.scrollTo(0, to); done(); return; }
+      if (still || Math.abs(dist) < 2) { jump(to); done(); return; }
       var ms = Math.min(1200, 450 + Math.abs(dist) / 4), t0 = null;
       (function step(now) {
         if (t0 === null) t0 = now;
         var p = Math.min(1, (now - t0) / ms), e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
-        window.scrollTo(0, from + dist * e);
+        jump(from + dist * e);
         if (p < 1) requestAnimationFrame(step); else done();
       })(performance.now());
     }
@@ -1168,7 +1194,7 @@
     imgs.forEach(function (img) { img.loading = 'eager'; });
     var loaded = new Promise(function (done) { if (document.readyState === 'complete') done(); else window.addEventListener('load', done); });
     Promise.all([loaded].concat(imgs.map(function (img) { return img.complete ? 0 : new Promise(function (done) { img.addEventListener('load', done); img.addEventListener('error', done); }); })))
-      .then(function () { window.scrollTo(0, 0); setTimeout(go, still ? 0 : 500); });
+      .then(function () { jump(0); setTimeout(go, still ? 0 : 500); });
   }
 
   // ---------- boot ----------
