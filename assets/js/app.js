@@ -305,6 +305,7 @@
       var st = $('#gs-status');
       st.classList.add('done'); st.textContent = '✓'; st.setAttribute('aria-label', 'Completed');
       $('#gs-heading').textContent = 'Setup complete';
+      if ($('#gs-lede')) $('#gs-lede').textContent = 'Your onboarding is complete.';
       $('#gs-go').textContent = 'Revisit the setup series →';
     }
     $('#gs-chips').innerHTML = gs.slice(1, 4).map(function (a) { return '<a class="chip" href="' + artUrl(a.id) + '">' + esc(a.t) + '</a>'; }).join('') + '<span class="chip">+' + (gs.length - 4) + ' more</span>';
