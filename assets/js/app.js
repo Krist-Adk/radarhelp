@@ -65,7 +65,8 @@
       [['guides', 'guides.html', 'Help Guides'], ['videos', 'page.html?p=videos', 'Video Library'], ['webinars', 'page.html?p=webinars', 'Webinars'], ['ideas', 'page.html?p=ideas', 'Ideas Forum'], ['new', 'page.html?p=whats-new', 'What’s New']];
     return '<a class="skip" href="#main">Skip to content</a>' +
       '<header class="site-header"><div class="wrap bar">' +
-      '<a class="brand" href="index.html"><img src="assets/img/logo.png" alt="RTO Radar"><span>Help</span></a>' +
+      // The logo goes to RTO Radar, which opens the person's own dashboard once they're signed in
+      '<a class="brand" href="https://app.rtoradar.com.au/" title="Go to your RTO Radar dashboard"><img src="assets/img/logo.png" alt="RTO Radar"></a>' +
       '<button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">' + ICON.menu + '</button>' +
       '<nav class="main-nav" id="main-nav" aria-label="Main">' + nav.map(function (n) { return '<a href="' + n[1] + '"' + (n[0] === active ? ' aria-current="page"' : '') + '>' + n[2] + '</a>'; }).join('') + '</nav>' +
       (active === 'home' || document.body.getAttribute('data-page') === 'features' ? '' : '<form class="header-search" action="search.html" role="search"><label for="hs" class="visually-hidden">Search help</label>' + ICON.search + '<input id="hs" name="q" type="search" placeholder="Search help"></form>') +
@@ -982,7 +983,10 @@
     }
 
     function parse(q) {
-      var raw = words(q).filter(function (w) { return STOP.indexOf(w) < 0; });
+      // “RTO Radar” is in nearly every guide, so it tells the search nothing
+      var keep = function (w) { return STOP.indexOf(w) < 0; };
+      var raw = words(q.replace(/\brto\s*radar\b/ig, ' ')).filter(keep);
+      if (!raw.length) raw = words(q).filter(keep);
       if (!raw.length) raw = words(q);
       return raw.map(function (w, i) { var s = stem(w); return { w: w, s: s, alts: (SYN[w] || SYN[s] || []).map(stem), last: i === raw.length - 1 }; });
     }
@@ -1030,19 +1034,25 @@
     }
     // Answers pinned to the top for a kind of question. Something that’s gone missing is nearly always
     // in a team the person isn’t in, so that FAQ leads whenever a search is about losing or not seeing something.
-    // Putting people into a team is done with Add staff on the team.
+    // Putting people into a team is done with Add staff on the team. An auditor is added as a user with
+    // the view-only Quality Auditor role.
+    // docs: [kind, name] of each answer, in the order they're shown
     function has(w, re) { return w.some(function (x) { return re.test(x); }); }
-    var PINS = [{ faq: 'I can’t find a person, program or item. Why?',
-      when: function (w) { return has(w, /^(lost|missing|disappear|gone|hidden|vanish)/) || (has(w, /^(can[’']?t|cannot)$/) && has(w, /^(find|see|locate)/)); } },
-      { title: 'Add staff to a team',
-        when: function (w) { return has(w, /^team/) && has(w, /^(assign|add|put|tick|include)/) && has(w, /^(member|staff|people|person|user|someone|trainer)/); } }];
+    var PINS = [{ docs: [['faq', 'I can’t find a person, program or item. Why?']],
+      when: function (w) { return has(w, /^(lost|missing|disappear|gone|hidden|vanish)/) || (has(w, /^(can[’']?t|cannot|not|unable|don[’']?t|doesn[’']?t|won[’']?t|isn[’']?t|aren[’']?t)$/) && has(w, /^(find|see|locat|view|access|visib)/)); } },
+      { docs: [['title', 'Add staff to a team']],
+        when: function (w) { return has(w, /^team/) && has(w, /^(assign|add|put|tick|include)/) && has(w, /^(member|staff|people|person|user|someone|trainer)/); } },
+      { docs: [['guide', 'Add a user'], ['title', 'Give auditors view-only, temporary access'], ['title', 'Role templates']],
+        when: function (w) { return has(w, /^auditor/) && has(w, /^(add|invit|creat|new|access|set|account|login|log|sign|onboard|bring)/); } }];
     function pin(q, out) {
       var w = words(q);
       PINS.slice().reverse().forEach(function (p) {
         if (!p.when(w)) return;
-        var d = build().filter(function (x) { return p.faq ? x.kind === 'faq' && x.text === p.faq : x.kind === 'title' && x.text === p.title; })[0]; if (!d) return;
-        out.best = out.best.filter(function (r) { return r.d !== d; }); out.related = out.related.filter(function (r) { return r.d !== d; });
-        out.best.unshift({ d: d, cov: 1 });
+        p.docs.slice().reverse().forEach(function (k) {
+          var d = build().filter(function (x) { return x.kind === k[0] && x.text === k[1]; })[0]; if (!d) return;
+          out.best = out.best.filter(function (r) { return r.d !== d; }); out.related = out.related.filter(function (r) { return r.d !== d; });
+          out.best.unshift({ d: d, cov: 1 });
+        });
       });
     }
 
