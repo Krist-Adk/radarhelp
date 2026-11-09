@@ -175,7 +175,7 @@
     ['users', 'users-portal-custom', 'Concept', 'What each role sees', ALL, 5],
     ['users', 'users-plan-roles', 'Concept', 'Plan roles and permissions for your RTO', ADM, 7],
     ['users', 'users-governance', 'Concept', 'Understanding the compliance governance chart', ALL, 8],
-    ['users', 'users-teams', 'How-to', 'Create teams and set parent teams', ADM, 5],
+    ['users', 'users-teams', 'How-to', 'Create and organise teams', ADM, 5],
 
     ['risk', 'risk-overview', 'Overview', 'The Risk Register Overview', RISK, 5],
     ['risk', 'risk-rto-profile', 'How-to', 'Update your RTO profile', ADM, 5],
@@ -1382,7 +1382,7 @@
       '<ol class="ov-list">' +
         '<li><h4>Staff</h4><p>Everyone in your organisation, with their role, team and team role. Add, invite and manage people here. See <a href="article.html?id=users-invite">Add a user</a> and <a href="article.html?id=users-manage">Find and manage staff</a>.</p></li>' +
         '<li><h4>User Roles</h4><p>Your organisation’s roles and the role templates to start from. See <a href="article.html?id=users-roles">Organisation roles and role templates</a>.</p></li>' +
-        '<li><h4>Teams Configuration</h4><p>Your teams, their parent teams and members, and the Compliance Governance Chart. See <a href="article.html?id=users-teams">Create teams and set parent teams</a>.</p></li>' +
+        '<li><h4>Teams Configuration</h4><p>Your teams, their parent teams and members, and the Compliance Governance Chart. See <a href="article.html?id=users-teams">Create and organise teams</a>.</p></li>' +
       '</ol>' +
       '<h2 id="together">How roles and teams work together</h2>' +
       '<p>Keep roles few and based on the job, and let teams separate the work. Two heads of faculty can share one role and sit in different teams. Each then manages only their own faculty’s courses, TAS, trainers and validations. See <a href="article.html?id=users-plan-roles">Plan roles and permissions for your RTO</a>.</p>' +
@@ -1606,7 +1606,7 @@
       '<h2 id="review">Review it regularly</h2>' +
       '<ul>' +
         '<li>Check the <b>Users</b> count on each role. Look for people who are Administrators but don’t need to be. See <a href="article.html?id=users-roles#org">Organisation roles</a>.</li>' +
-        '<li>Check that each person is in the right team and that every team has a manager. See <a href="article.html?id=users-teams">Create teams and set parent teams</a>.</li>' +
+        '<li>Check that each person is in the right team and that every team has a manager. See <a href="article.html?id=users-teams">Create and organise teams</a>.</li>' +
         '<li>When someone leaves, reassign their work and delete them. See <a href="article.html?id=users-manage#actions">Staff actions</a>.</li>' +
       '</ul>',
 
@@ -2197,7 +2197,7 @@
           '<figure class="shot" data-marks="8.2,12,arrow-left,small"><img src="assets/img/prog-search.png" alt="The Courses tab with CPC typed in the search box, with an arrow pointing to it. Two courses match: CPC30220 Certificate III in Carpentry and CPC50220 Diploma of Building and Construction (Building). Below, Matching units shows 50 results, such as CPCCCA2011 Handle carpentry materials in CPC30220 with validation in progress at 0%, and CPCCBC4001 in CPC50220, not yet validated." loading="lazy"><figcaption>Searching for “CPC” finds two courses and their matching units.</figcaption></figure></li>' +
         '<li class="side"><h4>Filters</h4><p>Narrow the list by <b>Type</b> (Qualifications or Skill Sets) or <b>Accreditation</b> (Accredited or Custom). Select <b>Clear all</b> to start again.</p>' +
           '<figure class="shot shot-columns"><img src="assets/img/prog-filters.png" alt="The Filters menu, with Clear all. Under Type, Qualifications is ticked and Skill Sets is not. Under Accreditation, Accredited is ticked and Custom is not." loading="lazy"><figcaption>Showing accredited qualifications only.</figcaption></figure></li>' +
-        '<li class="side"><h4>Team</h4><p>Show only the courses for a team. Type in <b>Filter teams</b> to find one.</p><p>Courses in <b>System Default</b> are the ones not yet assigned to a team, so every team can see them. See <a href="article.html?id=users-teams">Create teams and set parent teams</a>.</p>' +
+        '<li class="side"><h4>Team</h4><p>Show only the courses for a team. Type in <b>Filter teams</b> to find one.</p><p>Courses in <b>System Default</b> are the ones not yet assigned to a team, so every team can see them. See <a href="article.html?id=users-teams">Create and organise teams</a>.</p>' +
           '<figure class="shot shot-columns"><img src="assets/img/prog-team.png" alt="The Team list with a Filter teams box, listing teams such as Business Faculty, Community and Health, Compliance and Validation, Construction, Executive Team, System Default, marked Default, Systems and Digital Services, and Training Delivery and Programs." loading="lazy"><figcaption>Choose a team.</figcaption></figure></li>' +
       '</ol>' +
       '<h2 id="row">Course actions</h2>' +
@@ -3324,7 +3324,7 @@
         '</div></details>' +
         '<details><summary>Why is a course in System Default, and why can my team see it?</summary><div class="prose">' +
           '<p>A course in <b>System Default</b> hasn’t been assigned to a team yet. Until it is, every team can see it.</p>' +
-          '<p>To give it to a team, tick it on the <b>Courses</b> tab and select <b>Assign Team</b>. See <a href="article.html?id=prog-overview#bulk">Course actions</a> and <a href="article.html?id=users-teams">Create teams and set parent teams</a>.</p>' +
+          '<p>To give it to a team, tick it on the <b>Courses</b> tab and select <b>Assign Team</b>. See <a href="article.html?id=prog-overview#bulk">Course actions</a> and <a href="article.html?id=users-teams">Create and organise teams</a>.</p>' +
         '</div></details>' +
         '<details><summary>Why can’t I generate evidence in Phase 2?</summary><div class="prose">' +
           '<p>Generate Evidence reads the files you uploaded and processed for the unit. If you skipped files, or none were processed, upload and process your assessment documents first. See <a href="article.html?id=prog-validate-unit">Upload files and navigate the unit validation</a>.</p>' +
@@ -3466,7 +3466,7 @@
           '<p>In short, review frequency is about the requirement; document expiry is about each staff member’s document. See <a href="article.html?id=wf-checklist">Set up a document checklist for a role</a>.</p>' +
         '</div></details>' +
         '<details><summary>Where do I add a new staff member?</summary><div class="prose">' +
-          '<p>In <b>Settings</b> › <b>User Management</b> › <b>Staff</b>, not in Workforce Management. That’s also where you set their role and team: roles on the <b>User Roles</b> tab, and teams on the <b>Teams Configuration</b> tab. You can open User Management from the button at the top right of Workforce Management. See <a href="article.html?id=users-invite">Add a user</a>, <a href="article.html?id=users-roles">Organisation roles and role templates</a> and <a href="article.html?id=users-teams">Create teams and set parent teams</a>.</p>' +
+          '<p>In <b>Settings</b> › <b>User Management</b> › <b>Staff</b>, not in Workforce Management. That’s also where you set their role and team: roles on the <b>User Roles</b> tab, and teams on the <b>Teams Configuration</b> tab. You can open User Management from the button at the top right of Workforce Management. See <a href="article.html?id=users-invite">Add a user</a>, <a href="article.html?id=users-roles">Organisation roles and role templates</a> and <a href="article.html?id=users-teams">Create and organise teams</a>.</p>' +
         '</div></details>' +
         '<details><summary>Why can’t I assign a unit to a trainer?</summary><div class="prose">' +
           '<p>You can only assign units from courses already assigned to that trainer. Assign the course first on <b>Course Assignments</b>, then its units on <b>Unit Assignments</b>. See <a href="article.html?id=wf-assign-units#units">Assign units</a>.</p>' +
@@ -3584,7 +3584,7 @@
       '<h4>Approval structure</h4>' +
       '<p>Scroll down to <b>Approval Structure</b>. It shows who approves whose work in the team: the team manager sits at the top, and the members whose work they approve sit beneath them. Here, the Compliance Manager approves the work of the Compliance Officer and the Compliance Specialist.</p>' +
       '<figure class="shot" data-marks="39.6,26.6,20.8,29.6,oval,#"><img src="assets/img/wf-team-approval.png" alt="The Approval Structure of the Compliance and Validation team: the Compliance Manager, the Team Manager, circled at the top, with the Compliance Officer, a Team Member, and the Compliance Specialist, an Administrator, beneath. Zoom and reset controls sit at the top right." loading="lazy"><figcaption>The team manager (circled) approves the work of the members reporting to them. Team managers are automatically assigned as workforce document reviewers and PD approvers for their team.</figcaption></figure>' +
-      '<div class="callout note"><b>Note</b><span>Teams are created and edited in <b>Settings</b> › <b>User Management</b>. See <a href="article.html?id=users-teams">Create teams and set parent teams</a>.</span></div>',
+      '<div class="callout note"><b>Note</b><span>Teams are created and edited in <b>Settings</b> › <b>User Management</b>. See <a href="article.html?id=users-teams">Create and organise teams</a>.</span></div>',
 
     'wf-checklist':
       '<p class="lead">A document checklist sets out the documents everyone in a role must provide, such as a Working With Children Check or White Card. RTO Radar then tracks who’s provided each one and when they expire.</p>' +
