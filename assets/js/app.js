@@ -1222,10 +1222,24 @@
     var nav = { guides: 'guides', workflows: 'guides', workflow: 'guides', features: 'guides', feature: 'guides', article: 'guides', roles: 'guides', home: 'home' }[page];
     if (page === 'page') nav = { videos: 'videos', webinars: 'webinars', ideas: 'ideas', 'whats-new': 'new' }[param('p')] || '';
     $('#site-header').outerHTML = header(nav);
-    $('#site-footer').outerHTML = footer();
+    if ($('#site-footer')) $('#site-footer').outerHTML = footer(); // the landing page ends with the newsletter instead
     var mb = $('.menu-btn');
     mb.addEventListener('click', function () { var n = $('#main-nav'); var o = n.classList.toggle('open'); mb.setAttribute('aria-expanded', String(o)); });
-    if ($('#news-form')) $('#news-form').addEventListener('submit', function (e) { e.preventDefault(); toast('Prototype: newsletter sign-up isn’t connected yet.'); });
+    // Newsletter sign-ups are emailed to the support inbox, the same way as Contact us
+    if ($('#news-form')) $('#news-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var nf = this, email = $('#news-email').value.trim(), btn = nf.querySelector('button');
+      if (!nf.checkValidity()) { toast('Please enter a valid email address.'); return; }
+      btn.disabled = true;
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ access_key: CONTACT_KEY, subject: 'RadarHelp newsletter sign-up: ' + email, from_name: 'RadarHelp', email: email, replyto: email, message: email + ' asked to join the RadarHelp newsletter.' })
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        if (!d.success) throw new Error(d.message);
+        nf.reset(); toast('Thanks, you’re on the list.');
+      }).catch(function () { toast('Sorry, that didn’t go through. Please try again in a moment.'); })
+        .then(function () { btn.disabled = false; });
+    });
     if (pages[page]) pages[page]();
     pruneUnpublished();
     openLinksInNewTab();
