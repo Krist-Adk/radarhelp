@@ -1222,7 +1222,8 @@
     var nav = { guides: 'guides', workflows: 'guides', workflow: 'guides', features: 'guides', feature: 'guides', article: 'guides', roles: 'guides', home: 'home' }[page];
     if (page === 'page') nav = { videos: 'videos', webinars: 'webinars', ideas: 'ideas', 'whats-new': 'new' }[param('p')] || '';
     $('#site-header').outerHTML = header(nav);
-    if ($('#site-footer')) $('#site-footer').outerHTML = footer(); // the landing page ends with the newsletter instead
+    // The landing page ends with the newsletter instead of the footer
+    if ($('#site-footer')) { if (page === 'features') $('#site-footer').remove(); else $('#site-footer').outerHTML = footer(); }
     var mb = $('.menu-btn');
     mb.addEventListener('click', function () { var n = $('#main-nav'); var o = n.classList.toggle('open'); mb.setAttribute('aria-expanded', String(o)); });
     // Newsletter sign-ups are emailed to the support inbox, the same way as Contact us
